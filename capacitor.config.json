@@ -4,7 +4,8 @@
   "webDir": "out",
   "server": {
     "url": "http://10.253.234.9:3000",
-    "cleartext": true
+    "cleartext": true,
+    "errorPath": "index.html"
   },
   "android": {
     "allowMixedContent": true
