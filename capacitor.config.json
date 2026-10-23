@@ -1,0 +1,12 @@
+{
+  "appId": "com.findyourstay.app",
+  "appName": "Find Your Stay",
+  "webDir": "out",
+  "server": {
+    "url": "http://10.253.234.9:3000",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
