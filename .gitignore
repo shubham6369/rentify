@@ -35,6 +35,8 @@ next-env.d.ts
 
 # build & test artifacts
 *.apk
+*.aab
+*.keystore
 phone_*.png
 device_*.png
 current_device_screen.png
