@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "94409413653",
+    "project_id": "rentify-ec2cb",
+    "storage_bucket": "rentify-ec2cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94409413653:android:384e38cd3b9453c580ea1c",
+        "android_client_info": {
+          "package_name": "com.findyourstay.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmUZ73m2ExYbXCo0guAUYc7H55spuQ4BI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94409413653:android:384e38cd3b9453c580ea1c",
+        "android_client_info": {
+          "package_name": "rentify.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmUZ73m2ExYbXCo0guAUYc7H55spuQ4BI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
