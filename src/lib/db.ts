@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Hotel, Room, Booking, Review, UserProfile, StayCategory, ApprovalStatus } from '@/types';
+import { getAdminFirestore } from './firebase-admin';
 
 interface DatabaseSchema {
   hotels: Hotel[];
@@ -573,7 +574,30 @@ class DatabaseService {
       otps: []
     };
     this.saveDatabase(initial);
+    this.syncFirestoreInit(initial);
     return initial;
+  }
+
+  private async syncFirestoreInit(initial: DatabaseSchema) {
+    try {
+      const firestore = getAdminFirestore();
+      if (!firestore) return;
+      const snapshot = await firestore.collection('hotels').limit(1).get();
+      if (snapshot.empty) {
+        console.log('Seeding initial hotels and rooms to Cloud Firestore...');
+        for (const h of initial.hotels) {
+          await firestore.collection('hotels').doc(h.hotelId).set(h, { merge: true });
+        }
+        for (const r of initial.rooms) {
+          await firestore.collection('rooms').doc(r.roomId).set(r, { merge: true });
+        }
+        for (const u of initial.users) {
+          await firestore.collection('users').doc(u.uid).set(u, { merge: true });
+        }
+      }
+    } catch (err) {
+      console.warn('Firestore initial sync skipped:', err);
+    }
   }
 
   private saveDatabase(dataToSave?: DatabaseSchema) {
@@ -710,6 +734,27 @@ class DatabaseService {
     return newRoom;
   }
 
+  updateRoom(roomId: string, updates: Partial<Room>): Room | null {
+    const index = this.data.rooms.findIndex((r) => r.roomId === roomId);
+    if (index === -1) return null;
+    this.data.rooms[index] = {
+      ...this.data.rooms[index],
+      ...updates
+    };
+    this.saveDatabase();
+    return this.data.rooms[index];
+  }
+
+  deleteRoom(roomId: string): boolean {
+    const initLen = this.data.rooms.length;
+    this.data.rooms = this.data.rooms.filter((r) => r.roomId !== roomId);
+    if (this.data.rooms.length !== initLen) {
+      this.saveDatabase();
+      return true;
+    }
+    return false;
+  }
+
   // BOOKINGS
   getBookings(filter?: { userId?: string; hotelId?: string; status?: string; paymentStatus?: string; category?: string; search?: string }) {
     let result = [...this.data.bookings];
@@ -809,6 +854,10 @@ class DatabaseService {
 
   getUserById(uid: string): UserProfile | null {
     return this.data.users.find((u) => u.uid === uid) || null;
+  }
+
+  getAllUsers(): UserProfile[] {
+    return [...this.data.users];
   }
 
   saveUser(user: UserProfile): UserProfile {
