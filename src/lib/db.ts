@@ -613,6 +613,26 @@ class DatabaseService {
     }
   }
 
+  private async syncFirestoreDoc(collectionName: string, docId: string, data: any) {
+    try {
+      const firestore = getAdminFirestore();
+      if (!firestore) return;
+      await firestore.collection(collectionName).doc(docId).set(data, { merge: true });
+    } catch (err) {
+      console.warn(`Firestore sync error for ${collectionName}/${docId}:`, err);
+    }
+  }
+
+  private async deleteFirestoreDoc(collectionName: string, docId: string) {
+    try {
+      const firestore = getAdminFirestore();
+      if (!firestore) return;
+      await firestore.collection(collectionName).doc(docId).delete();
+    } catch (err) {
+      console.warn(`Firestore delete error for ${collectionName}/${docId}:`, err);
+    }
+  }
+
   // HOTELS
   getHotels(filter?: {
     category?: string;
@@ -685,6 +705,7 @@ class DatabaseService {
     };
     this.data.hotels.push(newHotel);
     this.saveDatabase();
+    this.syncFirestoreDoc('hotels', hotelId, newHotel);
     return newHotel;
   }
 
@@ -697,6 +718,7 @@ class DatabaseService {
       updatedAt: new Date().toISOString()
     };
     this.saveDatabase();
+    this.syncFirestoreDoc('hotels', id, this.data.hotels[index]);
     return this.data.hotels[index];
   }
 
@@ -705,6 +727,7 @@ class DatabaseService {
     this.data.hotels = this.data.hotels.filter((h) => h.hotelId !== id);
     if (this.data.hotels.length !== initialLen) {
       this.saveDatabase();
+      this.deleteFirestoreDoc('hotels', id);
       return true;
     }
     return false;
@@ -731,6 +754,7 @@ class DatabaseService {
     };
     this.data.rooms.push(newRoom);
     this.saveDatabase();
+    this.syncFirestoreDoc('rooms', roomId, newRoom);
     return newRoom;
   }
 
@@ -742,6 +766,7 @@ class DatabaseService {
       ...updates
     };
     this.saveDatabase();
+    this.syncFirestoreDoc('rooms', roomId, this.data.rooms[index]);
     return this.data.rooms[index];
   }
 
@@ -750,6 +775,7 @@ class DatabaseService {
     this.data.rooms = this.data.rooms.filter((r) => r.roomId !== roomId);
     if (this.data.rooms.length !== initLen) {
       this.saveDatabase();
+      this.deleteFirestoreDoc('rooms', roomId);
       return true;
     }
     return false;
@@ -800,6 +826,7 @@ class DatabaseService {
     };
     this.data.bookings.push(newBooking);
     this.saveDatabase();
+    this.syncFirestoreDoc('bookings', bookingId, newBooking);
     return newBooking;
   }
 
@@ -812,6 +839,7 @@ class DatabaseService {
       updatedAt: new Date().toISOString()
     };
     this.saveDatabase();
+    this.syncFirestoreDoc('bookings', id, this.data.bookings[index]);
     return this.data.bookings[index];
   }
 
@@ -839,6 +867,7 @@ class DatabaseService {
     });
 
     this.saveDatabase();
+    this.syncFirestoreDoc('reviews', reviewId, newReview);
     return newReview;
   }
 
@@ -862,13 +891,17 @@ class DatabaseService {
 
   saveUser(user: UserProfile): UserProfile {
     const index = this.data.users.findIndex((u) => u.uid === user.uid);
+    let saved: UserProfile;
     if (index >= 0) {
-      this.data.users[index] = { ...this.data.users[index], ...user, updatedAt: new Date().toISOString() };
+      saved = { ...this.data.users[index], ...user, updatedAt: new Date().toISOString() };
+      this.data.users[index] = saved;
     } else {
-      this.data.users.push(user);
+      saved = user;
+      this.data.users.push(saved);
     }
     this.saveDatabase();
-    return user;
+    this.syncFirestoreDoc('users', user.uid, saved);
+    return saved;
   }
 
   // OTP MANAGEMENT
