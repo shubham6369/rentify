@@ -20,8 +20,14 @@ export function getAdminApp(): admin.app.App | null {
   try {
     const privateKey = (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
 
-    return admin.initializeApp({
-      credential: admin.credential.cert({
+    const adminSdk = (admin as any).default || admin;
+    const certFn = adminSdk.credential?.cert || admin.credential?.cert;
+    if (!certFn) {
+      throw new Error('Firebase Admin credential.cert not available');
+    }
+
+    return adminSdk.initializeApp({
+      credential: certFn({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: privateKey,
@@ -36,11 +42,13 @@ export function getAdminApp(): admin.app.App | null {
 export function getAdminFirestore(): admin.firestore.Firestore | null {
   const app = getAdminApp();
   if (!app) return null;
-  return admin.firestore(app);
+  const adminSdk = (admin as any).default || admin;
+  return adminSdk.firestore(app);
 }
 
 export function getAdminAuth(): admin.auth.Auth | null {
   const app = getAdminApp();
   if (!app) return null;
-  return admin.auth(app);
+  const adminSdk = (admin as any).default || admin;
+  return adminSdk.auth(app);
 }
