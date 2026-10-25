@@ -101,12 +101,12 @@ export function HotelCard({ hotel }: HotelCardProps) {
         <div className="pt-3.5 border-t border-slate-100 flex items-end justify-between gap-2">
           <div>
             <div className="flex items-baseline gap-1">
-              <span className="text-xl font-black text-slate-900 tracking-tight">
+              <span className="text-xl font-bold text-slate-900 tracking-tight">
                 {isStudent
                   ? formatINR(hotel.monthlyRent || hotel.startingPrice)
                   : formatINR(hotel.startingPrice)}
               </span>
-              <span className="text-xs text-slate-500 font-semibold">
+              <span className="text-xs text-slate-500 font-medium">
                 {isStudent ? '/ month' : '/ night'}
               </span>
             </div>
@@ -114,7 +114,7 @@ export function HotelCard({ hotel }: HotelCardProps) {
             {/* Advance deposit callout */}
             <div className="mt-1">
               {isStudent && hotel.securityDeposit ? (
-                <span className="text-[10px] font-bold tracking-wide uppercase text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
+                <span className="text-[10px] font-semibold tracking-wide uppercase text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
                   Deposit: {formatINR(hotel.securityDeposit)}
                 </span>
               ) : (
@@ -128,13 +128,13 @@ export function HotelCard({ hotel }: HotelCardProps) {
           <div className="flex items-center gap-2">
             <Link
               href={`/hotels/${hotel.hotelId}`}
-              className="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              className="px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
             >
               Details
             </Link>
             <Link
               href={`/book?hotelId=${hotel.hotelId}&category=${hotel.category}`}
-              className="px-3.5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-200 hover:shadow-md hover:shadow-indigo-300 transition-all flex items-center gap-1.5"
+              className="px-3.5 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-indigo-600 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-1.5"
             >
               <span>Book</span>
               <ArrowRight className="w-3.5 h-3.5" />

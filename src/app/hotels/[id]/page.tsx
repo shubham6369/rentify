@@ -160,7 +160,7 @@ export default function HotelDetailPage() {
             </div>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             {hotel.name}
           </h1>
 
@@ -173,19 +173,19 @@ export default function HotelDetailPage() {
         {/* Quick price card */}
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4 self-start md:self-auto">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 block">
               {isStudent ? 'Monthly Academic Rent' : 'Starting Price'}
             </span>
-            <span className="text-2xl font-black text-slate-900">
+            <span className="text-2xl font-bold text-slate-900">
               {isStudent
                 ? formatINR(hotel.monthlyRent || hotel.startingPrice)
                 : formatINR(hotel.startingPrice)}
             </span>
-            <span className="text-xs text-slate-500"> {isStudent ? '/ month' : '/ night'}</span>
+            <span className="text-xs text-slate-500 font-medium"> {isStudent ? '/ month' : '/ night'}</span>
           </div>
           <Link
             href={`/book?hotelId=${hotel.hotelId}&category=${hotel.category}`}
-            className="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-200 transition-all flex items-center gap-1.5"
+            className="px-5 py-3 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-semibold text-xs shadow-xs hover:shadow-md transition-all flex items-center gap-1.5"
           >
             <span>Reserve Now</span>
             <ArrowRight className="w-4 h-4" />

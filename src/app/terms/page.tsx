@@ -19,14 +19,14 @@ export default function TermsOfServicePage() {
       </Link>
 
       <div className="space-y-3">
-        <h1 className="text-3xl font-black text-slate-900">Terms of Service</h1>
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Terms of Service</h1>
         <p className="text-xs text-slate-500">Effective as of October 23, 2026</p>
       </div>
 
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6 text-xs text-slate-700 leading-relaxed">
         <section className="space-y-2">
-          <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-            1. Booking & Advance Payment Rules
+          <h2 className="text-sm font-bold text-slate-900 tracking-wide">
+            1. Booking &amp; Advance Payment Rules
           </h2>
           <p>
             By confirming a reservation on Find Your Stay:

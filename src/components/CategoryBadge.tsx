@@ -13,7 +13,7 @@ export function CategoryBadge({ category, className = '', showIcon = true }: Cat
     case 'student':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-indigo-50/95 text-indigo-700 border border-indigo-200/80 backdrop-blur-md shadow-xs ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-indigo-50/90 text-indigo-700 border border-indigo-200/70 backdrop-blur-md shadow-2xs ${className}`}
         >
           {showIcon && <GraduationCap className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
           <span>Student Stay</span>
@@ -22,9 +22,9 @@ export function CategoryBadge({ category, className = '', showIcon = true }: Cat
     case 'family':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-amber-50/95 text-amber-800 border border-amber-200/80 backdrop-blur-md shadow-xs ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-slate-100/90 text-slate-800 border border-slate-200/80 backdrop-blur-md shadow-2xs ${className}`}
         >
-          {showIcon && <Users className="w-3.5 h-3.5 text-amber-700 shrink-0" />}
+          {showIcon && <Users className="w-3.5 h-3.5 text-slate-600 shrink-0" />}
           <span>Family Stay</span>
         </span>
       );
@@ -32,9 +32,9 @@ export function CategoryBadge({ category, className = '', showIcon = true }: Cat
     default:
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-emerald-50/95 text-emerald-800 border border-emerald-200/80 backdrop-blur-md shadow-xs ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-teal-50/90 text-teal-800 border border-teal-200/70 backdrop-blur-md shadow-2xs ${className}`}
         >
-          {showIcon && <Compass className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
+          {showIcon && <Compass className="w-3.5 h-3.5 text-teal-600 shrink-0" />}
           <span>Trip Stay</span>
         </span>
       );

@@ -90,56 +90,56 @@ function HotelsSearchContent() {
       {/* 1. Header & Category Switcher */}
       <div className="space-y-5">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             {category === 'student'
-              ? '🎓 Student Stays'
+              ? 'Student Accommodations'
               : category === 'family'
-              ? '👨‍👩‍👧‍👦 Family Villas & Chalets'
+              ? 'Family Villas & Suites'
               : category === 'trip'
-              ? '✈️ Holiday Hotels & Trip Resorts'
-              : 'Browse Accommodations'}
+              ? 'Hotels & Vacation Resorts'
+              : 'All Accommodations'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium">
-            Showing <span className="font-bold text-slate-900">{hotels.length} verified properties</span> across India with secure advance payment.
+            Showing <span className="font-semibold text-slate-900">{hotels.length} verified properties</span> across India with secure direct booking.
           </p>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-1">
+        {/* Category Tabs - Clean Segmented Control */}
+        <div className="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 gap-1 flex-wrap">
           <button
             onClick={() => handleCategoryChange('student')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
               category === 'student'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 ring-2 ring-indigo-600 ring-offset-2'
-                : 'bg-white text-indigo-700 border border-indigo-200/80 hover:bg-indigo-50/70 shadow-2xs'
+                ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <GraduationCap className="w-4 h-4" />
-            <span>Student Stay (Hostels & PGs)</span>
+            <GraduationCap className="w-4 h-4 text-indigo-600" />
+            <span>Student Stay</span>
           </button>
 
           <button
             onClick={() => handleCategoryChange('family')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
               category === 'family'
-                ? 'bg-amber-600 text-white shadow-md shadow-amber-200 ring-2 ring-amber-600 ring-offset-2'
-                : 'bg-white text-amber-800 border border-amber-200/80 hover:bg-amber-50/70 shadow-2xs'
+                ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Users className="w-4 h-4" />
-            <span>Family Stay (Villas & Suites)</span>
+            <Users className="w-4 h-4 text-slate-700" />
+            <span>Family Stay</span>
           </button>
 
           <button
             onClick={() => handleCategoryChange('trip')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
               category === 'trip'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200 ring-2 ring-emerald-600 ring-offset-2'
-                : 'bg-white text-emerald-700 border border-emerald-200/80 hover:bg-emerald-50/70 shadow-2xs'
+                ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Compass className="w-4 h-4" />
-            <span>Trip Stay (Hotels & Resorts)</span>
+            <Compass className="w-4 h-4 text-teal-600" />
+            <span>Trip Stay</span>
           </button>
         </div>
       </div>

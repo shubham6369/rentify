@@ -12,24 +12,24 @@ export default function PrivacyPolicyPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8">
       <Link
         href="/"
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back to Home</span>
       </Link>
 
       <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold">
-          <Shield className="w-3.5 h-3.5" />
-          <span>Google Play Store Compliant Privacy Policy</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold">
+          <Shield className="w-3.5 h-3.5 text-indigo-600" />
+          <span>Official Privacy Policy</span>
         </div>
-        <h1 className="text-3xl font-black text-slate-900">Privacy Policy for Find Your Stay</h1>
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Privacy Policy for Find Your Stay</h1>
         <p className="text-xs text-slate-500">Last updated: October 23, 2026</p>
       </div>
 
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6 text-xs text-slate-700 leading-relaxed">
         <section className="space-y-2">
-          <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-sm font-bold text-slate-900 tracking-wide flex items-center gap-2">
             <Lock className="w-4 h-4 text-indigo-600" />
             1. Overview & Information We Collect
           </h2>
@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-2 pt-2 border-t border-slate-100">
-          <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-sm font-bold text-slate-900 tracking-wide flex items-center gap-2">
             <Mail className="w-4 h-4 text-indigo-600" />
             5. Contact Us
           </h2>
