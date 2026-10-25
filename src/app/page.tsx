@@ -117,10 +117,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 inline-block">
-                  HOSTELS & PGS
-                </span>
-                <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                   Student Stay
                 </h2>
               </div>
@@ -152,10 +149,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/70 inline-block">
-                  VILLAS & SUITES
-                </span>
-                <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                   Family Stay
                 </h2>
               </div>
@@ -187,10 +181,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/70 inline-block">
-                  HOTELS & RESORTS
-                </span>
-                <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                   Trip Stay
                 </h2>
               </div>
