@@ -110,7 +110,7 @@ export default function HomePage() {
           >
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-sky-500" />
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* Icon Container */}
               <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 group-hover:scale-105 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-xs">
                 <GraduationCap className="w-7 h-7" />
@@ -123,30 +123,7 @@ export default function HomePage() {
                 <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
                   Student Stay
                 </h2>
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                  Tailored for university scholars, coaching aspirants, and interns. Features monthly rent, deposit advance, mess meal plans, and quiet study libraries.
-                </p>
               </div>
-
-              {/* Feature Checklist */}
-              <ul className="space-y-2.5 pt-4 border-t border-slate-100 text-xs text-slate-600">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <span>Monthly rent billing & security deposit hold</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <span>4 nutritious meals / mess included</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <span>300 Mbps Wi-Fi & biometric curfew security</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <span>Student ID & guardian verification</span>
-                </li>
-              </ul>
             </div>
 
             {/* CTA Button */}
@@ -168,7 +145,7 @@ export default function HomePage() {
           >
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-500" />
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* Icon Container */}
               <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-700 group-hover:scale-105 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-xs">
                 <Users className="w-7 h-7" />
@@ -181,30 +158,7 @@ export default function HomePage() {
                 <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
                   Family Stay
                 </h2>
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                  Spacious accommodations curated for parents, kids, and grandparents. Enjoy private pools, modular kitchens, child cots, and flexible checkout.
-                </p>
               </div>
-
-              {/* Feature Checklist */}
-              <ul className="space-y-2.5 pt-4 border-t border-slate-100 text-xs text-slate-600">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Adults & children count breakdown</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Pay 30% advance, balance at check-in desk</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Child cribs & family lawn amenities</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Multi-bedroom private villas & chalets</span>
-                </li>
-              </ul>
             </div>
 
             {/* CTA Button */}
@@ -226,7 +180,7 @@ export default function HomePage() {
           >
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500" />
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* Icon Container */}
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-700 group-hover:scale-105 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-xs">
                 <Compass className="w-7 h-7" />
@@ -239,30 +193,7 @@ export default function HomePage() {
                 <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
                   Trip Stay
                 </h2>
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                  Leisure hotels and boutique resorts located right next to beaches, historic monuments, and mountain valleys with daily & package pricing.
-                </p>
               </div>
-
-              {/* Feature Checklist */}
-              <ul className="space-y-2.5 pt-4 border-t border-slate-100 text-xs text-slate-600">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Daily & package rate calculation</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Flexible advance payment or pay in full</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Instant Trip Voucher with QR confirmation</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Free cancellation up to 48h prior</span>
-                </li>
-              </ul>
             </div>
 
             {/* CTA Button */}
