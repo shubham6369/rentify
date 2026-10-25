@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Users,
   Building,
+  Clock,
   Shield,
   User,
   Menu,
@@ -41,11 +42,18 @@ export function Navbar() {
       badge: 'Villas & Suites'
     },
     {
-      name: 'Trip Stay',
-      href: '/hotels?category=trip',
-      icon: Compass,
-      category: 'trip',
-      badge: 'Resorts & Hotels'
+      name: 'Hourly Booking',
+      href: '/hotels?category=hourly',
+      icon: Clock,
+      category: 'hourly',
+      badge: 'Flexible Day Stays'
+    },
+    {
+      name: 'Regular Stay',
+      href: '/hotels?category=regular',
+      icon: Building,
+      category: 'regular',
+      badge: 'Hotels & Resorts'
     }
   ];
 

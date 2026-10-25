@@ -11,6 +11,8 @@ import {
   GraduationCap,
   Users,
   Compass,
+  Clock,
+  Building,
   X
 } from 'lucide-react';
 
@@ -95,6 +97,10 @@ function HotelsSearchContent() {
               ? 'Student Accommodations'
               : category === 'family'
               ? 'Family Villas & Suites'
+              : category === 'hourly'
+              ? 'Hourly & Flexible Day Stays'
+              : category === 'regular'
+              ? 'Regular Hotel & Resort Stays'
               : category === 'trip'
               ? 'Hotels & Vacation Resorts'
               : 'All Accommodations'}
@@ -108,7 +114,7 @@ function HotelsSearchContent() {
         <div className="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 gap-1 flex-wrap">
           <button
             onClick={() => handleCategoryChange('student')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
               category === 'student'
                 ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
@@ -120,7 +126,7 @@ function HotelsSearchContent() {
 
           <button
             onClick={() => handleCategoryChange('family')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
               category === 'family'
                 ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
@@ -131,15 +137,27 @@ function HotelsSearchContent() {
           </button>
 
           <button
-            onClick={() => handleCategoryChange('trip')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              category === 'trip'
+            onClick={() => handleCategoryChange('hourly')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+              category === 'hourly'
                 ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Compass className="w-4 h-4 text-teal-600" />
-            <span>Trip Stay</span>
+            <Clock className="w-4 h-4 text-sky-600" />
+            <span>Hourly Booking</span>
+          </button>
+
+          <button
+            onClick={() => handleCategoryChange('regular')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+              category === 'regular'
+                ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            }`}
+          >
+            <Building className="w-4 h-4 text-slate-700" />
+            <span>Regular Stay</span>
           </button>
         </div>
       </div>

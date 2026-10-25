@@ -648,7 +648,13 @@ class DatabaseService {
   }) {
     let result = [...this.data.hotels];
     if (filter?.category && filter.category !== 'all') {
-      result = result.filter((h) => h.category === filter.category);
+      if (filter.category === 'hourly') {
+        result = result.filter((h) => h.category === 'hourly' || h.category === 'trip');
+      } else if (filter.category === 'regular') {
+        result = result.filter((h) => h.category === 'regular' || h.category === 'trip');
+      } else {
+        result = result.filter((h) => h.category === filter.category);
+      }
     }
     if (filter?.city) {
       result = result.filter((h) => h.city.toLowerCase().includes(filter.city!.toLowerCase()));

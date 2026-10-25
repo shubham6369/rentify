@@ -1,4 +1,4 @@
-export type StayCategory = 'student' | 'family' | 'trip';
+export type StayCategory = 'student' | 'family' | 'trip' | 'hourly' | 'regular';
 export type PropertyType = 'hostel' | 'pg' | 'villa' | 'apartment' | 'hotel' | 'resort';
 export type UserRole = 'customer' | 'property_owner' | 'admin';
 export type HotelStatus = 'published' | 'draft' | 'archived';
