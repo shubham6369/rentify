@@ -10,10 +10,7 @@ import {
   Users,
   Compass,
   ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  LogOut,
-  UserCheck
+  LogOut
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -85,20 +82,13 @@ export default function HomePage() {
 
       {/* Main Container: The 3 Core Booking Experiences */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full flex flex-col justify-center">
-        <div className="text-center space-y-3 mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-indigo-100 text-indigo-700 text-xs font-bold shadow-xs backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Select Your Stay Category</span>
-          </div>
+        <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
             Find Your Ideal Stay,{' '}
             <span className="bg-gradient-to-r from-indigo-600 via-sky-600 to-emerald-600 bg-clip-text text-transparent">
               Simplified & Verified
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
-            Transparent monthly student leases, private family holiday villas, and leisure getaways across India with direct booking and secure advance payments.
-          </p>
         </div>
 
         {/* The 3 Core Booking Cards */}
@@ -196,39 +186,6 @@ export default function HomePage() {
                 <span>Book Trip Stay</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Trust & Security Features */}
-        <div className="mt-12 sm:mt-16 pt-8 border-t border-slate-200/60 max-w-4xl mx-auto w-full grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
-              <UserCheck className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-800">100% Aadhaar Verified</p>
-              <p className="text-[11px] text-slate-500">Genuine verified hosts & safe stays</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-800">Zero Brokerage</p>
-              <p className="text-[11px] text-slate-500">Direct booking with advance terms</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-800">Instant QR Confirmation</p>
-              <p className="text-[11px] text-slate-500">Official digital stay vouchers</p>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Hotel, StayCategory, PropertyType } from '@/types';
+import { Hotel, StayCategory } from '@/types';
 import { HotelCard } from '@/components/HotelCard';
 import {
   Search,
@@ -11,8 +11,7 @@ import {
   GraduationCap,
   Users,
   Compass,
-  X,
-  Building
+  X
 } from 'lucide-react';
 
 function HotelsSearchContent() {
@@ -27,10 +26,8 @@ function HotelsSearchContent() {
   // Local Filter States
   const [category, setCategory] = useState<StayCategory | 'all'>(initialCategory);
   const [city, setCity] = useState(initialCity);
-  const [propertyType, setPropertyType] = useState<PropertyType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [maxPrice, setMaxPrice] = useState<number>(30000);
-  const [selectedAmenity, setSelectedAmenity] = useState<string>('all');
 
   // Hotels State
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -51,20 +48,13 @@ function HotelsSearchContent() {
         const params = new URLSearchParams();
         if (category !== 'all') params.append('category', category);
         if (city) params.append('city', city);
-        if (propertyType !== 'all') params.append('propertyType', propertyType);
         if (searchQuery) params.append('search', searchQuery);
         params.append('maxPrice', maxPrice.toString());
 
         const res = await fetch(`/api/hotels?${params.toString()}`);
         const data = await res.json();
         if (data.success) {
-          let list: Hotel[] = data.hotels;
-          if (selectedAmenity !== 'all') {
-            list = list.filter((h) =>
-              h.amenities.some((a) => a.toLowerCase().includes(selectedAmenity.toLowerCase()))
-            );
-          }
-          setHotels(list);
+          setHotels(data.hotels);
         }
       } catch (err) {
         console.error('Fetch hotels error:', err);
@@ -74,15 +64,13 @@ function HotelsSearchContent() {
     }
 
     fetchHotels();
-  }, [category, city, propertyType, searchQuery, maxPrice, selectedAmenity]);
+  }, [category, city, searchQuery, maxPrice]);
 
   const resetFilters = () => {
     setCategory('student');
     setCity('');
-    setPropertyType('all');
     setSearchQuery('');
     setMaxPrice(30000);
-    setSelectedAmenity('all');
     router.push('/hotels?category=student');
   };
 
@@ -158,7 +146,7 @@ function HotelsSearchContent() {
 
       {/* 2. Interactive Search & Filters Panel */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-card space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Keyword Search */}
           <div>
             <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
@@ -198,54 +186,11 @@ function HotelsSearchContent() {
               </select>
             </div>
           </div>
-
-          {/* Property Type */}
-          <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
-              Accommodation Type
-            </label>
-            <div className="relative">
-              <Building className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <select
-                value={propertyType}
-                onChange={(e) => setPropertyType(e.target.value as any)}
-                className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 font-medium transition-all"
-              >
-                <option value="all">All Types (Hostel, Villa, Hotel...)</option>
-                <option value="hostel">Hostel (Student)</option>
-                <option value="pg">PG Accommodation (Student)</option>
-                <option value="villa">Private Villa (Family)</option>
-                <option value="apartment">Family Apartment</option>
-                <option value="hotel">Boutique Hotel</option>
-                <option value="resort">Leisure Resort</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Key Amenities */}
-          <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
-              Must-Have Amenity
-            </label>
-            <select
-              value={selectedAmenity}
-              onChange={(e) => setSelectedAmenity(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 font-medium transition-all"
-            >
-              <option value="all">Any Amenity</option>
-              <option value="Wi-Fi">Dedicated High-Speed Wi-Fi</option>
-              <option value="Mess">Nutritious Mess Meals Included</option>
-              <option value="Study">Quiet Study Library / Pods</option>
-              <option value="Pool">Swimming Pool</option>
-              <option value="Kitchen">Equipped Kitchen</option>
-              <option value="CCTV">24/7 Biometric / CCTV Security</option>
-            </select>
-          </div>
         </div>
 
         {/* Price Slider Bar */}
-        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex-1 max-w-md">
+        <div className="pt-3 border-t border-slate-100">
+          <div className="max-w-md">
             <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
               <span>Max Budget / Rent Limit:</span>
               <span className="text-indigo-600 font-extrabold text-sm">₹{maxPrice.toLocaleString('en-IN')}</span>
@@ -259,11 +204,6 @@ function HotelsSearchContent() {
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
-          </div>
-
-          <div className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
-            <span>💡</span>
-            <span>Student stays show monthly rent; Family and Trip stays show nightly/package rates.</span>
           </div>
         </div>
       </div>

@@ -2,9 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Compass, ShieldCheck } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Compass } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+
+  if (pathname === '/' || pathname.startsWith('/auth')) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-slate-200/80 bg-white/70 backdrop-blur-md mt-auto py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
