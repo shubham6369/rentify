@@ -192,7 +192,7 @@ export function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity animate-fade-in">
-      <div className="relative w-full max-w-[430px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden max-h-[94vh] overflow-y-auto">
+      <div className="relative w-full max-w-[430px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden">
         
         {/* ========================================================================= */}
         {/* 1. TOP HEADER: NIGHT CITYSCAPE & 3D HOTEL BUILDING ARTWORK (MATCHING IMAGE 2) */}

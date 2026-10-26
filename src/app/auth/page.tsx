@@ -277,7 +277,7 @@ function AuthContent() {
       suppressHydrationWarning
     >
       {/* Mobile Device Frame Container */}
-      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[890px] bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-y-auto flex flex-col justify-between transition-all relative">
+      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[890px] bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all relative">
         
         {/* ========================================================================= */}
         {/* VIEW 1: AUTHENTICATION & VERIFICATION (EXACT MATCH TO IMAGE 2)            */}
