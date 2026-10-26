@@ -111,15 +111,15 @@ export default function BookingConfirmationPage() {
         <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/80 px-5 py-3 flex items-center justify-between shadow-2xs">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] text-white flex items-center justify-center shadow-md shadow-indigo-950/20">
-              <Compass className="w-5 h-5 text-white" />
+              <BedDouble className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-slate-900">
-                  Find Your Stay
+              <div className="flex items-center gap-2">
+                <span className="font-black text-xl tracking-tight text-slate-900 select-none">
+                  Rent<span className="text-[#3b49df]">ify</span>
                 </span>
-                <span className="px-1.5 py-0.5 text-[9px] font-black tracking-wider bg-indigo-50 text-[#3b49df] border border-indigo-200 rounded-md">
-                  PRO
+                <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-bold bg-indigo-50 text-[#3b49df] border border-indigo-200 rounded-md select-none">
+                  Find Your Stay
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 font-medium hidden sm:block">

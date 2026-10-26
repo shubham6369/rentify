@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   Compass,
+  BedDouble,
   GraduationCap,
   Users,
   Building,
@@ -67,16 +68,16 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-sky-500 flex items-center justify-center text-white shadow-md shadow-indigo-200 group-hover:scale-105 transition-transform">
-              <Compass className="w-5 h-5 text-white animate-spin-slow" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-md shadow-indigo-200 group-hover:scale-105 transition-transform">
+              <BedDouble className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-700 bg-clip-text text-transparent">
-                  Find Your Stay
+              <div className="flex items-center gap-2">
+                <span className="font-black text-2xl tracking-tight text-slate-900 select-none">
+                  Rent<span className="text-[#3b49df]">ify</span>
                 </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/50 rounded-full">
-                  PRO
+                <span className="px-2 py-0.5 text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-md select-none">
+                  Find Your Stay
                 </span>
               </div>
               <p className="text-[10px] font-medium text-slate-500 hidden sm:block">

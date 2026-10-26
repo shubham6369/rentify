@@ -14,7 +14,8 @@ import {
   Bell,
   Compass,
   X,
-  SlidersHorizontal
+  SlidersHorizontal,
+  BedDouble
 } from 'lucide-react';
 
 function HotelsSearchContent() {
@@ -102,14 +103,14 @@ function HotelsSearchContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] text-white flex items-center justify-center shadow-md shadow-indigo-950/40">
-                <Compass className="w-5 h-5 text-white" />
+                <BedDouble className="w-5 h-5 text-white" />
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-white">
-                  Find Your Stay
+              <div className="flex items-center gap-2">
+                <span className="font-black text-xl tracking-tight text-white select-none">
+                  Rent<span className="text-[#38bdf8]">ify</span>
                 </span>
-                <span className="px-1.5 py-0.5 text-[9px] font-black tracking-wider bg-white/15 text-white border border-white/20 rounded-md backdrop-blur-xs">
-                  PRO
+                <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide bg-white/15 text-indigo-100 border border-white/20 rounded-md backdrop-blur-xs select-none">
+                  Find Your Stay
                 </span>
               </div>
             </div>

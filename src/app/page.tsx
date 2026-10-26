@@ -237,11 +237,16 @@ function HomeFlowContent() {
             <div className="pt-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-xs">
-                  <Compass className="w-4 h-4" />
+                  <BedDouble className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg font-black tracking-tight text-slate-900 select-none">
-                  Rent<span className="text-[#3b49df]">ify</span>
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-slate-900 select-none">
+                    Rent<span className="text-[#3b49df]">ify</span>
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-indigo-50 text-[#3b49df] rounded-md border border-indigo-200/60 select-none">
+                    Find Your Stay
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => setCurrentStep('choose')}
@@ -338,17 +343,17 @@ function HomeFlowContent() {
 
               {/* Top Bar: Brand */}
               <div className="relative z-10 flex items-center justify-between mb-5">
-                {/* Logo + Brand (Rentify / Find Your Stay) */}
+                {/* Logo + Brand (Rentify in big & first, Find Your Stay in small) */}
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center shadow-md shadow-indigo-950/40 text-white">
-                    <Compass className="w-4 h-4 text-white" strokeWidth={2.4} />
+                    <BedDouble className="w-4 h-4 text-white" strokeWidth={2.4} />
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-base font-black tracking-tight text-white">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg sm:text-xl font-black tracking-tight text-white select-none">
                       Rent<span className="text-[#38bdf8]">ify</span>
                     </span>
-                    <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-white/15 text-white rounded border border-white/20">
-                      PRO
+                    <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 bg-white/10 text-indigo-200 rounded-md border border-white/20 select-none backdrop-blur-xs">
+                      Find Your Stay
                     </span>
                   </div>
                 </div>
