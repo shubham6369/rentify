@@ -736,12 +736,16 @@
       "uid": "usr_1792700280091_p4p0",
       "fullName": "User 3210",
       "email": "9876543210@phone.findyourstay.in",
-      "phone": "9876543210",
+      "phone": "+919876543210",
       "phoneVerified": true,
       "emailVerified": true,
       "role": "customer",
       "createdAt": "2026-10-22T20:18:00.091Z",
-      "updatedAt": "2026-10-22T20:18:00.091Z"
+      "updatedAt": "2026-10-26T08:22:12.382Z",
+      "aadhaarNumber": "542189012345",
+      "collegeName": "Christ University",
+      "studentIdNumber": "CU2026-ENG-492",
+      "emergencyContact": "+91 98111 22334"
     },
     {
       "uid": "usr_1792700285877_5d83",
@@ -772,14 +776,14 @@
   ],
   "otps": [
     {
-      "phone": "9876543210",
-      "otp": "5556",
-      "expiresAt": 1792703873847
-    },
-    {
       "phone": "7080328260",
       "otp": "5556",
       "expiresAt": 1792742175597
+    },
+    {
+      "phone": "9876543210",
+      "otp": "5556",
+      "expiresAt": 1793006471003
     }
   ]
 }
