@@ -129,11 +129,6 @@ export default function BookingConfirmationPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl">
-              <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
-              <span>Role: Guest</span>
-            </span>
-
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 text-slate-800 text-xs font-bold border border-indigo-100">
               <span className="w-5 h-5 rounded-full bg-[#3b49df] text-white text-[10px] flex items-center justify-center">
                 US

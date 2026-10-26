@@ -17,8 +17,7 @@ import {
   X,
   LogOut,
   ChevronDown,
-  Calendar,
-  Sparkles
+  Calendar
 } from 'lucide-react';
 
 export function Navbar() {
@@ -110,23 +109,6 @@ export function Navbar() {
 
           {/* Right Action Area */}
           <div className="flex items-center gap-3">
-            {/* Role indicator button / Demo switcher */}
-            <button
-              onClick={() => openAuthModal('roles')}
-              className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors border shadow-2xs ${
-                user?.role === 'admin'
-                  ? 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'
-                  : user?.role === 'property_owner'
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                  : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
-              }`}
-              title="Click to switch role (Admin, Host, Guest)"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-              <span>
-                Role: {user?.role === 'admin' ? 'Admin' : user?.role === 'property_owner' ? 'Property Host' : 'Guest'}
-              </span>
-            </button>
 
             {user ? (
               <div className="relative">
