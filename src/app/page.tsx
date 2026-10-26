@@ -13,7 +13,8 @@ import {
   Users,
   Clock,
   Calendar,
-  Sparkles
+  Sparkles,
+  Compass
 } from 'lucide-react';
 
 interface OptionItem {
@@ -175,11 +176,8 @@ function HomeFlowContent() {
 
               {/* Brand Name: Rentify */}
               <div className="flex items-center justify-center">
-                <span className="text-4xl sm:text-[42px] font-extrabold tracking-tight text-white drop-shadow-sm">
-                  Rent
-                </span>
-                <span className="text-4xl sm:text-[42px] font-extrabold tracking-tight text-[#44c4ff] drop-shadow-sm">
-                  ify
+                <span className="text-4xl sm:text-[42px] font-black tracking-tight text-white drop-shadow-sm select-none">
+                  Rent<span className="text-[#38bdf8]">ify</span>
                 </span>
               </div>
 
@@ -219,12 +217,12 @@ function HomeFlowContent() {
           <div className="flex-1 bg-white flex flex-col justify-between p-6 sm:p-7 animate-fade-in select-none">
             {/* Top Brand / Skip */}
             <div className="pt-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-base font-extrabold tracking-tight text-slate-900">
-                  Rent
-                </span>
-                <span className="text-base font-extrabold tracking-tight text-[#1877f2]">
-                  ify
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-xs">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <span className="text-lg font-black tracking-tight text-slate-900 select-none">
+                  Rent<span className="text-[#3b49df]">ify</span>
                 </span>
               </div>
               <button
@@ -314,15 +312,15 @@ function HomeFlowContent() {
               <div className="relative z-10 flex items-center justify-between mb-5">
                 {/* Logo + Brand (Rentify / Find Your Stay) */}
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b82f6] via-[#6366f1] to-[#a855f7] flex items-center justify-center shadow-md shadow-indigo-600/30">
-                    <BedDouble className="w-4 h-4 text-white" strokeWidth={2.4} />
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center shadow-md shadow-indigo-950/40 text-white">
+                    <Compass className="w-4 h-4 text-white" strokeWidth={2.4} />
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-semibold tracking-tight text-white/95">
-                      Find Your Stay
+                    <span className="text-base font-black tracking-tight text-white">
+                      Rent<span className="text-[#38bdf8]">ify</span>
                     </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 bg-white/10 text-sky-300 rounded border border-white/15">
-                      Rentify
+                    <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-white/15 text-white rounded border border-white/20">
+                      PRO
                     </span>
                   </div>
                 </div>
