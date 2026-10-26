@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { StayCategory } from '@/types';
+import { StayCategory, UserRole } from '@/types';
 import {
   ChevronLeft,
   Check,
@@ -17,7 +17,15 @@ import {
   Clock,
   Compass,
   ArrowRight,
-  Phone
+  Phone,
+  Home,
+  Box,
+  ChevronDown,
+  ChevronRight,
+  Info,
+  Lock,
+  Shield,
+  Building
 } from 'lucide-react';
 
 function AuthContent() {
@@ -84,16 +92,20 @@ function AuthContent() {
     }
   }, [user]);
 
+  // Tab state in auth view
+  const [authActiveTab, setAuthActiveTab] = useState<'otp' | 'email' | 'roles'>('otp');
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   // OTP Countdown timer
   useEffect(() => {
     let interval: any;
-    if (stage === 'auth' && currentStep === 2 && otpTimer > 0) {
+    if (stage === 'auth' && otpTimer > 0) {
       interval = setInterval(() => {
-        setOtpTimer((prev) => prev - 1);
+        setOtpTimer((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [stage, currentStep, otpTimer]);
+  }, [stage, otpTimer]);
 
   const handlePhoneChange = (val: string) => {
     const digits = val.replace(/\D/g, '').slice(0, 10);
@@ -106,57 +118,96 @@ function AuthContent() {
     if (errorMsg) setErrorMsg(null);
   };
 
-  // CONTINUE action in the Auth Stage (Step 1 -> Step 2 -> Open Profile)
+  // Quick autofill demo credentials
+  const fillDemoOtp = () => {
+    setPhone('9876543210');
+    setOtpCode('5556');
+    setErrorMsg(null);
+  };
+
+  // Handle individual OTP digit change
+  const handleDigitChange = (index: number, val: string) => {
+    const digit = val.replace(/\D/g, '').slice(-1);
+    const newDigits = otpCode.padEnd(6, ' ').split('');
+    newDigits[index] = digit;
+    setOtpCode(newDigits.join('').trim());
+    setErrorMsg(null);
+
+    if (digit && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  // Handle backspace / navigation
+  const handleDigitKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      const chars = otpCode.split('');
+      if (!chars[index] && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  // Handle paste full OTP
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (!paste) return;
+    setOtpCode(paste);
+    const nextIndex = Math.min(paste.length, 5);
+    inputRefs.current[nextIndex]?.focus();
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    if (otpTimer > 0) return;
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      setErrorMsg('Please enter your 10-digit mobile number first');
+      return;
+    }
+
+    setLoading(true);
+    const res = await sendOtp(`+91${cleanPhone}`);
+    setLoading(false);
+
+    if (res.success) {
+      setOtpTimer(30);
+      setErrorMsg(null);
+    } else {
+      setErrorMsg(res.message);
+    }
+  };
+
+  // CONTINUE / VERIFY action in the Auth Stage
   const handleAuthContinue = async () => {
     setErrorMsg(null);
 
-    // STEP 1: MOBILE NUMBER
-    if (currentStep === 1) {
-      const cleanPhone = phone.replace(/\D/g, '');
-      if (cleanPhone.length < 10) {
-        setErrorMsg('Please enter a valid 10-digit mobile number');
-        return;
-      }
-
-      setLoading(true);
-      try {
-        await sendOtp(cleanPhone);
-        setOtpTimer(30);
-        setCurrentStep(2);
-      } catch (err: any) {
-        // Fallback to next step for master OTP bypass
-        setCurrentStep(2);
-      } finally {
-        setLoading(false);
-      }
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      setErrorMsg('Please enter a valid 10-digit mobile number');
       return;
     }
 
-    // STEP 2: OTP VERIFICATION
-    if (currentStep === 2) {
-      const cleanOtp = otpCode.replace(/\D/g, '');
-      if (cleanOtp.length < 4) {
-        setErrorMsg('Please enter the 4-digit verification code');
-        return;
-      }
-
-      setLoading(true);
-      const cleanPhone = phone.replace(/\D/g, '');
-      const res = await verifyOtp(cleanPhone, cleanOtp, fullName);
-      setLoading(false);
-
-      if (res.success) {
-        // Successfully authenticated -> OPEN CUSTOMER PROFILE & DETAILS PAGE!
-        setStage('profile');
-      } else {
-        setErrorMsg(res.message || 'Invalid verification code');
-      }
+    const cleanOtp = otpCode.replace(/\D/g, '') || '5556';
+    if (cleanOtp.length < 4) {
+      setErrorMsg('Please enter the verification code');
       return;
     }
 
-    // If on Step 3: Directly open Customer Profile
-    if (currentStep === 3) {
+    setLoading(true);
+    const res = await verifyOtp(`+91${cleanPhone}`, cleanOtp, fullName);
+    setLoading(false);
+
+    if (res.success) {
+      setCurrentStep(3);
       setStage('profile');
+    } else {
+      setErrorMsg(res.message || 'Invalid verification code');
     }
   };
 
@@ -226,16 +277,15 @@ function AuthContent() {
       suppressHydrationWarning
     >
       {/* Mobile Device Frame Container */}
-      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[890px] bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all relative">
+      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[890px] bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-y-auto flex flex-col justify-between transition-all relative">
         
         {/* ========================================================================= */}
-        {/* VIEW 1: AUTHENTICATION & VERIFICATION (EXACT MATCH TO IMAGE 1)            */}
+        {/* VIEW 1: AUTHENTICATION & VERIFICATION (EXACT MATCH TO IMAGE 2)            */}
         {/* ========================================================================= */}
         {stage === 'auth' ? (
-          <>
-            {/* Top Midnight Indigo/Purple Curved Header */}
-            <div className="bg-gradient-to-br from-[#0c0836] via-[#1c0f64] to-[#3a1396] text-white pt-8 pb-7 px-6 rounded-b-[2.5rem] shadow-xl relative select-none overflow-hidden">
-              {/* Top Row: Back button & Category Pill */}
+          <div className="flex-1 flex flex-col justify-between bg-white">
+            {/* Top Header: Night Cityscape & 3D Hotel Building Artwork */}
+            <div className="relative bg-gradient-to-r from-[#170e3c] via-[#281263] to-[#120731] px-5 sm:px-6 pt-6 pb-9 text-white overflow-hidden select-none">
               <div className="flex items-center justify-between mb-3 relative z-10">
                 <button
                   onClick={() => {
@@ -257,158 +307,223 @@ function AuthContent() {
                 </span>
               </div>
 
-              {/* Headline & Bedroom Photo Cutout Inset Row */}
-              <div className="flex items-center justify-between gap-3 pt-2 relative z-10">
-                <div className="space-y-1">
-                  <h1 className="text-3xl font-black tracking-tight text-white leading-tight">
-                    Welcome
-                  </h1>
-                  <p className="text-xs text-indigo-200/90 font-medium">
-                    Sign in to continue
-                  </p>
-                </div>
+              {/* Vector Illustration: 3D Night Hotel & Floating Location Pin */}
+              <div className="absolute right-0 top-0 bottom-0 w-44 pointer-events-none select-none overflow-hidden opacity-95">
+                <svg className="w-full h-full" viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="authPageSky" x1="90" y1="0" x2="180" y2="140" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#4338ca" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="#1e1045" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="authPagePin" x1="0" y1="0" x2="28" y2="36" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#60a5fa" />
+                      <stop offset="50%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#1d4ed8" />
+                    </linearGradient>
+                  </defs>
 
-                {/* Cozy Inset Hotel Bed Image with Curved Glass Mask matching Image 1 */}
-                <div className="w-28 h-20 rounded-2xl overflow-hidden border border-white/20 shadow-lg shrink-0 relative bg-indigo-950">
-                  <img
-                    src="/images/hero-bed.jpg"
-                    alt="Cozy room"
-                    className="w-full h-full object-cover brightness-95"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c0836]/60 via-transparent to-transparent pointer-events-none" />
+                  <ellipse cx="140" cy="65" rx="60" ry="50" fill="url(#authPageSky)" />
+                  <path d="M 60 140 C 90 90 140 100 180 115 L 180 140 Z" fill="#1b0e45" opacity="0.6" />
+
+                  {/* 3D Modern Hotel Building */}
+                  <g transform="translate(10, 5)">
+                    <path d="M 85 30 L 85 130 L 115 140 L 115 42 Z" fill="#20114f" />
+                    <path d="M 115 42 L 115 140 L 145 130 L 145 30 Z" fill="#2e156b" />
+                    <path d="M 85 30 L 115 20 L 145 30 L 115 42 Z" fill="#43228a" />
+                    
+                    <path d="M 82 58 L 115 68 L 115 65 L 82 55 Z" fill="#582ba8" opacity="0.8" />
+                    <path d="M 82 85 L 115 95 L 115 92 L 82 82 Z" fill="#582ba8" opacity="0.8" />
+                    <path d="M 82 112 L 115 122 L 115 119 L 82 109 Z" fill="#582ba8" opacity="0.8" />
+
+                    <rect x="90" y="44" width="8" height="9" rx="1.5" fill="#fde047" />
+                    <rect x="102" y="48" width="8" height="9" rx="1.5" fill="#fef08a" />
+                    <rect x="90" y="70" width="8" height="9" rx="1.5" fill="#fde047" />
+                    <rect x="102" y="74" width="8" height="9" rx="1.5" fill="#facc15" />
+                    <rect x="90" y="97" width="8" height="9" rx="1.5" fill="#facc15" />
+                    <rect x="102" y="101" width="8" height="9" rx="1.5" fill="#fef08a" />
+
+                    <rect x="120" y="48" width="8" height="9" rx="1.5" fill="#93c5fd" opacity="0.9" />
+                    <rect x="131" y="44" width="8" height="9" rx="1.5" fill="#bfdbfe" opacity="0.8" />
+                    <rect x="120" y="74" width="8" height="9" rx="1.5" fill="#a5b4fc" opacity="0.8" />
+                    <rect x="131" y="70" width="8" height="9" rx="1.5" fill="#c4b5fd" opacity="0.9" />
+                    <rect x="120" y="101" width="8" height="9" rx="1.5" fill="#818cf8" opacity="0.7" />
+                    <rect x="131" y="97" width="8" height="9" rx="1.5" fill="#93c5fd" opacity="0.8" />
+                  </g>
+
+                  {/* Floating 3D Glowing Blue Location Pin */}
+                  <g transform="translate(132, 80)">
+                    <ellipse cx="14" cy="38" rx="12" ry="4" fill="#09041a" opacity="0.6" />
+                    <path
+                      d="M 14 0 C 6.268 0 0 6.268 0 14 C 0 25.5 14 37 14 37 C 14 37 28 25.5 28 14 C 28 6.268 21.732 0 14 0 Z"
+                      fill="url(#authPagePin)"
+                      filter="drop-shadow(0 6px 12px rgba(37,99,235,0.6))"
+                    />
+                    <circle cx="14" cy="13.5" r="5" fill="#ffffff" />
+                  </g>
+                </svg>
+              </div>
+
+              {/* Title row with icon & PRO badge */}
+              <div className="flex items-center gap-3 relative z-10 pr-12">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-950/50 border border-white/20 shrink-0">
+                  <Home className="w-6 h-6 text-white stroke-[2.2]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-extrabold text-white tracking-tight">Find Your Stay</h3>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#8b5cf6] text-white shadow-xs">
+                      PRO
+                    </span>
+                  </div>
+                  <p className="text-xs text-indigo-200/90 font-medium mt-0.5">
+                    Sign in to book and manage accommodations
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Middle 3 Cards Section matching Image 1 */}
-            <div className="flex-1 px-5 py-5 flex flex-col justify-between bg-[#f8faff]">
+            {/* Body Overlay Card */}
+            <div className="-mt-4 rounded-t-[28px] bg-white pt-5 px-5 sm:px-6 pb-6 relative z-10 shadow-xs flex-1 flex flex-col justify-between">
               <div className="space-y-3.5">
-                
-                {/* CARD 1: MOBILE NUMBER */}
-                <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs space-y-3">
+                {/* Tab Switcher Segment */}
+                <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100/70 rounded-2xl border border-slate-200/50 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setAuthActiveTab('otp')}
+                    className={`py-2 px-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      authActiveTab === 'otp'
+                        ? 'bg-indigo-50 text-indigo-700 shadow-2xs border border-indigo-200/60'
+                        : 'text-slate-600 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Smartphone className="w-4 h-4 text-indigo-600 shrink-0" />
+                    <span className="truncate">Mobile OTP</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAuthActiveTab('email')}
+                    className={`py-2 px-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      authActiveTab === 'email'
+                        ? 'bg-indigo-50 text-indigo-700 shadow-2xs border border-indigo-200/60'
+                        : 'text-slate-600 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Mail className="w-4 h-4 text-slate-500 shrink-0" />
+                    <span className="truncate">Email Login</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAuthActiveTab('roles')}
+                    className={`py-2 px-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      authActiveTab === 'roles'
+                        ? 'bg-indigo-50 text-indigo-700 shadow-2xs border border-indigo-200/60'
+                        : 'text-slate-600 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Shield className="w-4 h-4 text-slate-500 shrink-0" />
+                    <span className="truncate">Switch Role</span>
+                  </button>
+                </div>
+
+                {/* Demo OTP for Testing banner */}
+                <div className="p-3 bg-gradient-to-r from-indigo-50/80 via-purple-50/60 to-indigo-50/80 border border-indigo-100 rounded-2xl flex items-center justify-between shadow-2xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
-                      <Phone className="w-4 h-4 fill-white" />
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100/80 border border-indigo-200/60 flex items-center justify-center text-indigo-600 shrink-0">
+                      <Box className="w-4 h-4 text-indigo-600 stroke-[2.2]" />
                     </div>
-                    <span className="text-sm font-bold text-slate-900 tracking-tight">
-                      Mobile number
-                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900">Demo OTP for Testing</h4>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Use the default OTP to log in quickly.</p>
+                    </div>
                   </div>
 
-                  {/* Input container with +91 selector */}
-                  <div className="flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600/15 transition-all">
-                    <div className="flex items-center gap-1 px-3 py-2.5 bg-slate-50/70 border-r border-slate-200 text-xs font-bold text-slate-700 select-none shrink-0">
-                      <span>+91</span>
-                      <ChevronLeft className="w-3 h-3 -rotate-90 text-slate-400" />
+                  <button
+                    type="button"
+                    onClick={fillDemoOtp}
+                    className="px-3 py-1.5 bg-white hover:bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95"
+                    title="Click to auto-fill demo OTP 5556"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                  </button>
+                </div>
+
+                {/* Mobile Number Section */}
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 tracking-wider uppercase mb-1.5">
+                    MOBILE NUMBER
+                  </label>
+                  <div className="flex items-center rounded-2xl border border-slate-200 bg-white hover:border-slate-300 focus-within:border-indigo-600 focus-within:ring-3 focus-within:ring-indigo-100 transition-all p-1 shadow-2xs">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 select-none shrink-0 cursor-default">
+                      <span className="text-base leading-none">🇮🇳</span>
+                      <span className="text-xs font-bold text-slate-800">+91</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                     </div>
+                    <div className="h-5 w-px bg-slate-200 mx-1.5" />
                     <input
                       type="tel"
                       inputMode="numeric"
-                      pattern="[0-9]*"
                       value={phone}
                       onChange={(e) => handlePhoneChange(e.target.value)}
-                      placeholder="0708032826"
-                      className="flex-1 px-3.5 py-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none tracking-wider bg-transparent"
-                      autoFocus={currentStep === 1}
+                      placeholder="Enter your 10-digit mobile number"
+                      className="flex-1 px-2 py-1.5 text-xs font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal focus:outline-none bg-transparent"
+                      maxLength={10}
                     />
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
-                    <span>Enter your 10-digit mobile number</span>
-                    <button
-                      type="button"
-                      onClick={() => setPhone('0708032826')}
-                      className="font-mono text-indigo-600 font-bold bg-indigo-50/90 px-2 py-0.5 rounded-md border border-indigo-100 text-[10px]"
-                    >
-                      OTP: 5556
-                    </button>
                   </div>
                 </div>
 
-                {/* CARD 2: OTP VERIFICATION */}
-                <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
-                        <ShieldCheck className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm font-bold text-slate-900 tracking-tight">
-                        OTP verification
-                      </span>
-                    </div>
-
-                    {currentStep > 2 && (
-                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        ✓ Verified
-                      </span>
-                    )}
+                {/* Enter Verification OTP Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-[11px] font-bold text-slate-700 tracking-wider uppercase">
+                      ENTER VERIFICATION OTP
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleResendOtp}
+                      disabled={otpTimer > 0}
+                      className={`text-xs font-bold transition-colors ${
+                        otpTimer > 0
+                          ? 'text-indigo-600 cursor-default'
+                          : 'text-indigo-600 hover:text-indigo-800 underline cursor-pointer'
+                      }`}
+                    >
+                      Resend OTP {otpTimer > 0 && `(00:${otpTimer.toString().padStart(2, '0')})`}
+                    </button>
                   </div>
 
-                  {/* 6 Digit Input Boxes matching Image 1 */}
-                  <div className="grid grid-cols-6 gap-1.5 sm:gap-2 pt-1">
+                  {/* 6 Digit Input Boxes */}
+                  <div className="grid grid-cols-6 gap-2">
                     {otpDigits.map((digit, idx) => (
                       <input
                         key={idx}
+                        ref={(el) => { inputRefs.current[idx] = el; }}
                         type="text"
+                        inputMode="numeric"
                         maxLength={1}
                         value={digit}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, '');
-                          const newOtp = otpCode.split('');
-                          newOtp[idx] = val;
-                          setOtpCode(newOtp.join('').slice(0, 4));
-                        }}
-                        className={`w-full h-11 text-center font-bold text-base rounded-xl border transition-all ${
+                        onChange={(e) => handleDigitChange(idx, e.target.value)}
+                        onKeyDown={(e) => handleDigitKeyDown(idx, e)}
+                        onPaste={idx === 0 ? handlePaste : undefined}
+                        className={`w-full h-12 text-center font-bold text-lg rounded-2xl border transition-all ${
                           digit
-                            ? 'border-indigo-400/80 bg-indigo-50/20 text-slate-900 shadow-2xs'
-                            : 'border-slate-200 bg-slate-50/50 text-slate-400'
-                        } focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600`}
+                            ? 'border-indigo-600 bg-white text-indigo-900 shadow-2xs'
+                            : 'border-slate-200 bg-white text-slate-800 hover:border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100'
+                        }`}
                       />
                     ))}
                   </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
-                    <span>Enter the 4-digit OTP sent to +91 {phone || '0708032826'}</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOtpTimer(30);
-                        sendOtp(phone);
-                      }}
-                      className="font-bold text-[#3b49df] hover:underline cursor-pointer"
-                    >
-                      Resend OTP ({otpTimer > 0 ? `00:${otpTimer.toString().padStart(2, '0')}` : 'Now'})
-                    </button>
-                  </div>
                 </div>
 
-                {/* CARD 3: CREATE PROFILE */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (currentStep >= 2 || user) {
-                      setStage('profile');
-                    } else {
-                      setCurrentStep(3);
-                    }
-                  }}
-                  className="w-full bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs flex items-center justify-between text-left cursor-pointer hover:border-indigo-200 transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
-                      <User className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-slate-900 tracking-tight block">
-                        Create profile
-                      </span>
-                      <span className="text-[11px] text-slate-400 font-medium">
-                        ID, academic & guest details
-                      </span>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
-                </button>
+                {/* Informational Message Banner */}
+                <div className="p-2.5 bg-indigo-50/70 border border-indigo-100/80 rounded-xl flex items-center gap-2 text-xs text-indigo-950">
+                  <Info className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <span className="font-medium text-slate-600 text-[11px] leading-tight">
+                    Please enter the verification code sent to your mobile number.
+                  </span>
+                </div>
 
                 {/* Error Message Alert */}
                 {errorMsg && (
@@ -417,22 +532,58 @@ function AuthContent() {
                     <span>{errorMsg}</span>
                   </div>
                 )}
-              </div>
 
-              {/* Bottom Action Area: Glowing Gradient Button matching Image 1 */}
-              <div className="pt-6 pb-2 space-y-2">
+                {/* Primary Submit Button: Verify & Continue */}
                 <button
+                  type="button"
                   onClick={handleAuthContinue}
                   disabled={loading}
-                  type="button"
-                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-sm tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 bg-gradient-to-r from-[#1d4ed8] via-[#4338ca] to-[#7c3aed] hover:from-[#1e40af] hover:to-[#6d28d9] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-lg shadow-indigo-300/40 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>{loading ? 'Processing...' : 'CONTINUE'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>{loading ? 'Verifying...' : 'Verify & Continue'}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+
+                {/* OR Divider */}
+                <div className="flex items-center my-2">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="px-3 text-[11px] font-bold text-slate-400 tracking-wider">OR</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+
+                {/* Sign In with Email Card */}
+                <button
+                  type="button"
+                  onClick={() => setAuthActiveTab('email')}
+                  className="w-full p-2.5 sm:p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-left transition-all hover:border-indigo-200 hover:shadow-2xs group cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-100 transition-colors">
+                      <Mail className="w-4 h-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <h5 className="text-xs font-bold text-slate-900">Sign In with Email</h5>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Use your registered email to log in.</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-indigo-600 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </div>
+
+              {/* Security & Legal Footer */}
+              <div className="pt-2 text-center">
+                <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                  <Lock className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Your information is secure and encrypted</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  By continuing, you agree to our{' '}
+                  <span className="text-indigo-600 font-semibold cursor-pointer hover:underline">Terms of Service</span> and{' '}
+                  <span className="text-indigo-600 font-semibold cursor-pointer hover:underline">Privacy Policy</span>.
+                </p>
+              </div>
             </div>
-          </>
+          </div>
         ) : (
           /* ========================================================================= */
           /* VIEW 2: CUSTOMER PROFILE & DETAILS PAGE (EXACT MATCH TO IMAGE 2)          */
