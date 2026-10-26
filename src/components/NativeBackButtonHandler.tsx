@@ -25,10 +25,14 @@ export function NativeBackButtonHandler() {
           // 1. Check if on root home or catalog page with nowhere to go back
           const isAtRoot = pathname === '/' || pathname === '';
 
-          // On home page, check if we can step back from 'choose' to 'onboarding'
+          // On home page, check if we can step back from 'home' to 'choose', or 'choose' to 'onboarding'
           if (isAtRoot) {
             const searchParams = new URLSearchParams(window.location.search);
             const currentStep = searchParams.get('step');
+            if (currentStep === 'home') {
+              window.dispatchEvent(new CustomEvent('rentify:navigate-step', { detail: 'choose' }));
+              return;
+            }
             if (currentStep === 'choose') {
               window.dispatchEvent(new CustomEvent('rentify:navigate-step', { detail: 'onboarding' }));
               return;

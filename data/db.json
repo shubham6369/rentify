@@ -1,6 +1,153 @@
 {
   "hotels": [
     {
+      "hotelId": "hotel_grand_vista_jnp",
+      "name": "Hotel Grand Vista",
+      "slug": "hotel-grand-vista-jaunpur",
+      "description": "Premier luxury stay in Civil Lines, Jaunpur. Featuring elegant modern rooms, panoramic views, multi-cuisine dining, and exceptional hospitality.",
+      "category": "regular",
+      "propertyType": "hotel",
+      "address": "Civil Lines",
+      "city": "Jaunpur",
+      "state": "Uttar Pradesh",
+      "country": "India",
+      "postalCode": "222002",
+      "startingPrice": 2499,
+      "advancePaymentType": "fixed",
+      "advancePaymentValue": 1000,
+      "gstPercentage": 12,
+      "serviceFeePercentage": 2,
+      "freeCancellationHours": 24,
+      "cancellationFeePercentage": 0,
+      "cancellationDescription": "Free cancellation up to 24 hours before check-in.",
+      "status": "published",
+      "approvalStatus": "approved",
+      "ownerId": "owner_demo_1",
+      "coverImage": "/images/hotel-grand-vista.jpg",
+      "images": [
+        "/images/hotel-grand-vista.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "amenities": [
+        "Free WiFi",
+        "Free Parking",
+        "Restaurant",
+        "Air Conditioning",
+        "24/7 Front Desk"
+      ],
+      "rules": [
+        "Valid Government Photo ID required at check-in",
+        "Check-in: 12:00 PM, Check-out: 11:00 AM"
+      ],
+      "nearbyLandmarks": [
+        "Shahi Bridge (1.5 km)",
+        "Jaunpur Junction (2.0 km)"
+      ],
+      "rating": 4.6,
+      "reviewCount": 1200,
+      "featured": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "hotelId": "royal_heritage_resort_vns",
+      "name": "Royal Heritage Resort",
+      "slug": "royal-heritage-resort-varanasi",
+      "description": "Scenic resort on Ganga Ghat Road, Varanasi. Enjoy river views, refreshing outdoor swimming pool, royal heritage ambiance, and multi-cuisine restaurant.",
+      "category": "family",
+      "propertyType": "resort",
+      "address": "Ganga Ghat Road",
+      "city": "Varanasi",
+      "state": "Uttar Pradesh",
+      "country": "India",
+      "postalCode": "221001",
+      "startingPrice": 3199,
+      "advancePaymentType": "fixed",
+      "advancePaymentValue": 1500,
+      "gstPercentage": 12,
+      "serviceFeePercentage": 2,
+      "freeCancellationHours": 48,
+      "cancellationFeePercentage": 10,
+      "cancellationDescription": "Free cancellation up to 48 hours before check-in.",
+      "status": "published",
+      "approvalStatus": "approved",
+      "ownerId": "owner_demo_1",
+      "coverImage": "/images/hotel-royal-heritage.jpg",
+      "images": [
+        "/images/hotel-royal-heritage.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "amenities": [
+        "Free WiFi",
+        "Swimming Pool",
+        "Restaurant",
+        "River View",
+        "Kids Play Area"
+      ],
+      "rules": [
+        "Government ID required for all adult guests",
+        "Pool timings: 7:00 AM - 8:00 PM"
+      ],
+      "nearbyLandmarks": [
+        "Dashashwamedh Ghat (800m)",
+        "Kashi Vishwanath Temple (1.2 km)"
+      ],
+      "rating": 4.5,
+      "reviewCount": 856,
+      "featured": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "hotelId": "the_park_inn_lko",
+      "name": "The Park Inn",
+      "slug": "the-park-inn-lucknow",
+      "description": "Stylish and comfortable stay situated in Hazratganj, Lucknow. Clean AC rooms, 24/7 room service, fast WiFi, and proximity to major shopping centers.",
+      "category": "hourly",
+      "propertyType": "hotel",
+      "address": "Hazratganj",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "country": "India",
+      "postalCode": "226001",
+      "startingPrice": 1799,
+      "advancePaymentType": "fixed",
+      "advancePaymentValue": 500,
+      "gstPercentage": 12,
+      "serviceFeePercentage": 2,
+      "freeCancellationHours": 12,
+      "cancellationFeePercentage": 0,
+      "cancellationDescription": "Flexible free cancellation up to 12 hours prior.",
+      "status": "published",
+      "approvalStatus": "approved",
+      "ownerId": "owner_demo_1",
+      "coverImage": "/images/hotel-the-park-inn.jpg",
+      "images": [
+        "/images/hotel-the-park-inn.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "amenities": [
+        "Free WiFi",
+        "AC Rooms",
+        "Room Service",
+        "Express Check-in",
+        "Power Backup"
+      ],
+      "rules": [
+        "Valid Government Photo ID required",
+        "Couple friendly with local ID accepted"
+      ],
+      "nearbyLandmarks": [
+        "Hazratganj Metro (200m)",
+        "Bara Imambara (4 km)"
+      ],
+      "rating": 4.3,
+      "reviewCount": 642,
+      "featured": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
       "hotelId": "stu_hostel_blr_1",
       "name": "Oxford Scholars Luxury Hostel & Co-Living",
       "slug": "oxford-scholars-hostel-bangalore",
