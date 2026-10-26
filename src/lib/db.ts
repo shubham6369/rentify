@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Hotel, Room, Booking, Review, UserProfile, StayCategory, ApprovalStatus } from '@/types';
 import { getAdminFirestore } from './firebase-admin';
+import { calculateDistanceKm } from './geo';
 
 interface DatabaseSchema {
   hotels: Hotel[];
@@ -15,6 +16,159 @@ interface DatabaseSchema {
 const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
 
 const INITIAL_HOTELS: Hotel[] = [
+  // Student Hostels & PGs with Coordinates
+  {
+    hotelId: 'hostel_apex_jaunpur',
+    name: 'Apex Scholar Youth Hostel & PG',
+    slug: 'apex-scholar-youth-hostel-jaunpur',
+    description: 'Premier student hostel & PG near Purvanchal University in Civil Lines, Jaunpur. Ergonomic study desks, high-speed WiFi, 4 wholesome meals, and 24/7 power backup.',
+    category: 'student',
+    propertyType: 'hostel',
+    address: 'Near Purvanchal University Road, Civil Lines',
+    city: 'Jaunpur',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    postalCode: '222002',
+    latitude: 25.7510,
+    longitude: 82.6890,
+    monthlyRent: 4500,
+    securityDeposit: 5000,
+    startingPrice: 4500,
+    advancePaymentType: 'fixed',
+    advancePaymentValue: 2000,
+    gstPercentage: 5,
+    serviceFeePercentage: 2,
+    freeCancellationHours: 72,
+    cancellationFeePercentage: 10,
+    cancellationDescription: 'Full advance refund up to 72h prior to check-in.',
+    status: 'published',
+    approvalStatus: 'approved',
+    ownerId: 'owner_demo_1',
+    coverImage: '/images/hostel-jaunpur.jpg',
+    images: ['/images/hostel-jaunpur.jpg', '/images/student-onboarding.jpg'],
+    amenities: ['300 Mbps Wi-Fi', 'Homestyle Mess Meals', 'Quiet Study Library', 'Power Backup 24/7', 'RO Drinking Water', 'CCTV Security'],
+    rules: ['Student / College ID required', 'Curfew: 10:00 PM', 'Alcohol and smoking strictly prohibited'],
+    nearbyLandmarks: ['VBS Purvanchal University (1.5 km)', 'Civil Lines Market (800m)', 'Jaunpur Junction (2.2 km)'],
+    rating: 4.8,
+    reviewCount: 320,
+    featured: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-02-01T00:00:00.000Z'
+  },
+  {
+    hotelId: 'hostel_bhu_varanasi',
+    name: 'Kashi Scholar Co-Living & Hostel',
+    slug: 'kashi-scholar-co-living-varanasi',
+    description: 'Ideal student hostel situated at Lanka near BHU main gate in Varanasi. Features air-conditioned study pods, hygienic mess food, biometric security, and fast fiber broadband.',
+    category: 'student',
+    propertyType: 'hostel',
+    address: 'Lanka, Near BHU Main Gate',
+    city: 'Varanasi',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    postalCode: '221005',
+    latitude: 25.2750,
+    longitude: 82.9980,
+    monthlyRent: 5500,
+    securityDeposit: 6000,
+    startingPrice: 5500,
+    advancePaymentType: 'fixed',
+    advancePaymentValue: 2500,
+    gstPercentage: 5,
+    serviceFeePercentage: 2,
+    freeCancellationHours: 72,
+    cancellationFeePercentage: 10,
+    cancellationDescription: 'Full refund before 72 hours of move-in date.',
+    status: 'published',
+    approvalStatus: 'approved',
+    ownerId: 'owner_demo_1',
+    coverImage: '/images/hostel-varanasi.jpg',
+    images: ['/images/hostel-varanasi.jpg', '/images/student-onboarding.jpg'],
+    amenities: ['High-Speed Wi-Fi', 'Hygienic Mess Meals', 'AC Study Rooms', 'Biometric Security', 'Laundry Service', 'Power Backup'],
+    rules: ['Valid student ID or coaching verification required', 'Quiet hours: 11:00 PM - 6:00 AM'],
+    nearbyLandmarks: ['BHU Main Gate (300m)', 'Lanka Crossing (200m)', 'Assi Ghat (1.8 km)'],
+    rating: 4.9,
+    reviewCount: 410,
+    featured: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-02-01T00:00:00.000Z'
+  },
+  {
+    hotelId: 'hostel_hazratganj_lucknow',
+    name: 'Hazratganj Student Suites & Hostel',
+    slug: 'hazratganj-student-suites-lucknow',
+    description: 'Centrally located student hostel on University Road near Hazratganj. Perfect for university scholars and civil service aspirants with individual study desks and nutritious food.',
+    category: 'student',
+    propertyType: 'hostel',
+    address: 'University Road, Hazratganj',
+    city: 'Lucknow',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    postalCode: '226001',
+    latitude: 26.8560,
+    longitude: 80.9450,
+    monthlyRent: 5200,
+    securityDeposit: 6000,
+    startingPrice: 5200,
+    advancePaymentType: 'fixed',
+    advancePaymentValue: 2000,
+    gstPercentage: 5,
+    serviceFeePercentage: 2,
+    freeCancellationHours: 48,
+    cancellationFeePercentage: 10,
+    cancellationDescription: 'Refundable security deposit with 48h prior notice.',
+    status: 'published',
+    approvalStatus: 'approved',
+    ownerId: 'owner_demo_1',
+    coverImage: '/images/hostel-lucknow.jpg',
+    images: ['/images/hostel-lucknow.jpg', '/images/student-onboarding.jpg'],
+    amenities: ['High-Speed Wi-Fi', 'Nutritious Meals', 'AC Rooms', 'Study Desks', '24/7 Security', 'RO Drinking Water'],
+    rules: ['Student ID required', 'Curfew: 10:30 PM'],
+    nearbyLandmarks: ['Lucknow University (800m)', 'Hazratganj Metro (400m)', 'Civil Hospital (1 km)'],
+    rating: 4.7,
+    reviewCount: 285,
+    featured: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-02-01T00:00:00.000Z'
+  },
+  {
+    hotelId: 'hostel_mariyahu_pg',
+    name: 'Mariyahu Campus PG & Youth Hostel',
+    slug: 'mariyahu-campus-pg-hostel',
+    description: 'Safe and budget-friendly student accommodation in Mariyahu. Near Degree College with clean rooms, healthy homemade food, power backup, and high-speed internet.',
+    category: 'student',
+    propertyType: 'hostel',
+    address: 'Station Road, Near Degree College',
+    city: 'Mariyahu',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    postalCode: '222161',
+    latitude: 25.6050,
+    longitude: 82.6140,
+    monthlyRent: 3800,
+    securityDeposit: 4000,
+    startingPrice: 3800,
+    advancePaymentType: 'fixed',
+    advancePaymentValue: 1500,
+    gstPercentage: 5,
+    serviceFeePercentage: 2,
+    freeCancellationHours: 48,
+    cancellationFeePercentage: 0,
+    cancellationDescription: 'Free cancellation up to 48 hours prior to check-in.',
+    status: 'published',
+    approvalStatus: 'approved',
+    ownerId: 'owner_demo_1',
+    coverImage: '/images/student-onboarding.jpg',
+    images: ['/images/student-onboarding.jpg'],
+    amenities: ['Free Wi-Fi', 'Daily Home Mess', 'Power Backup', 'Purified RO Water', 'Study Tables', 'CCTV Security'],
+    rules: ['College admission proof required', 'Quiet hours post 10:30 PM'],
+    nearbyLandmarks: ['Mariyahu Degree College (200m)', 'Mariyahu Railway Station (500m)'],
+    rating: 4.6,
+    reviewCount: 195,
+    featured: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-02-01T00:00:00.000Z'
+  },
   // Featured UP Stays from Mobile Screen
   {
     hotelId: 'hotel_grand_vista_jnp',
@@ -784,6 +938,8 @@ class DatabaseService {
     minPrice?: number;
     maxPrice?: number;
     includeAll?: boolean;
+    lat?: number;
+    lng?: number;
   }) {
     let result = [...this.data.hotels];
     if (filter?.category && filter.category !== 'all') {
@@ -826,6 +982,21 @@ class DatabaseService {
     if (filter?.approvalStatus) {
       result = result.filter((h) => h.approvalStatus === filter.approvalStatus);
     }
+
+    // Distance calculation and sorting if user coordinates provided
+    if (filter?.lat !== undefined && filter?.lng !== undefined) {
+      const uLat = filter.lat;
+      const uLng = filter.lng;
+      result = (result as (Hotel & { distanceKm?: number })[]).map((h) => {
+        if (h.latitude && h.longitude) {
+          const d = calculateDistanceKm(uLat, uLng, h.latitude, h.longitude);
+          return { ...h, distanceKm: d };
+        }
+        return { ...h, distanceKm: 9999 };
+      });
+      result.sort((a, b) => ((a as any).distanceKm ?? 9999) - ((b as any).distanceKm ?? 9999));
+    }
+
     return result;
   }
 

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { StayCategory } from '@/types';
+import { calculateDistanceKm, findClosestCity, KNOWN_CITIES } from '@/lib/geo';
 import {
   BedDouble,
   User,
@@ -34,7 +35,11 @@ import {
   Navigation,
   X,
   SlidersHorizontal,
-  Check
+  Check,
+  LocateFixed,
+  Crosshair,
+  ShieldCheck,
+  AlertCircle
 } from 'lucide-react';
 
 interface OptionItem {
@@ -118,7 +123,7 @@ const FEATURED_HOTELS = [
     price: 3199,
     originalPrice: 5499,
     discountBadge: '42% OFF',
-    badge: { text: 'Best Value', bg: 'bg-[#059669]', emoji: '🛡️' },
+    badge: { text: 'Best Value', bg: 'bg-emerald-600', emoji: '🛡️' },
     category: 'family' as StayCategory
   },
   {
@@ -139,6 +144,112 @@ const FEATURED_HOTELS = [
     discountBadge: '40% OFF',
     badge: { text: 'Budget Friendly', bg: 'bg-[#4f46e5]', emoji: '🛡️' },
     category: 'hourly' as StayCategory
+  }
+];
+
+interface NearestHostelItem {
+  id: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviewsCount: string;
+  location: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  monthlyRent: number;
+  originalPrice: number;
+  discountBadge: string;
+  amenities: { icon: React.ElementType; label: string }[];
+  badge: { text: string; bg: string; emoji: string };
+  category: StayCategory;
+  distanceKm?: number;
+}
+
+const NEAREST_HOSTELS_DATA: NearestHostelItem[] = [
+  {
+    id: 'hostel_apex_jaunpur',
+    title: 'Apex Scholar Youth Hostel & PG',
+    image: '/images/hostel-jaunpur.jpg',
+    rating: 4.8,
+    reviewsCount: '320 reviews',
+    location: 'Civil Lines, Near Purvanchal Univ, Jaunpur',
+    city: 'Jaunpur',
+    latitude: 25.7510,
+    longitude: 82.6890,
+    monthlyRent: 4500,
+    originalPrice: 6000,
+    discountBadge: '25% OFF',
+    amenities: [
+      { icon: Wifi, label: '300 Mbps WiFi' },
+      { icon: Utensils, label: 'Mess Meals' },
+      { icon: GraduationCap, label: 'Study Library' }
+    ],
+    badge: { text: 'Top Nearest', bg: 'bg-[#4f46e5]', emoji: '🎓' },
+    category: 'student'
+  },
+  {
+    id: 'hostel_bhu_varanasi',
+    title: 'Kashi Scholar Co-Living & Hostel',
+    image: '/images/hostel-varanasi.jpg',
+    rating: 4.9,
+    reviewsCount: '410 reviews',
+    location: 'Lanka, Near BHU Main Gate, Varanasi',
+    city: 'Varanasi',
+    latitude: 25.2750,
+    longitude: 82.9980,
+    monthlyRent: 5500,
+    originalPrice: 7500,
+    discountBadge: '27% OFF',
+    amenities: [
+      { icon: Wifi, label: 'High-Speed WiFi' },
+      { icon: Snowflake, label: 'AC Study Pods' },
+      { icon: Utensils, label: 'Daily Meals' }
+    ],
+    badge: { text: 'Verified PG', bg: 'bg-emerald-600', emoji: '🛡️' },
+    category: 'student'
+  },
+  {
+    id: 'hostel_hazratganj_lucknow',
+    title: 'Hazratganj Student Suites & Hostel',
+    image: '/images/hostel-lucknow.jpg',
+    rating: 4.7,
+    reviewsCount: '285 reviews',
+    location: 'University Road, Hazratganj, Lucknow',
+    city: 'Lucknow',
+    latitude: 26.8560,
+    longitude: 80.9450,
+    monthlyRent: 5200,
+    originalPrice: 7000,
+    discountBadge: '26% OFF',
+    amenities: [
+      { icon: Wifi, label: 'Fiber WiFi' },
+      { icon: Utensils, label: 'Mess Included' },
+      { icon: Snowflake, label: 'AC Rooms' }
+    ],
+    badge: { text: 'Campus Suite', bg: 'bg-[#4f46e5]', emoji: '🎓' },
+    category: 'student'
+  },
+  {
+    id: 'hostel_mariyahu_pg',
+    title: 'Mariyahu Campus PG & Youth Hostel',
+    image: '/images/student-onboarding.jpg',
+    rating: 4.6,
+    reviewsCount: '195 reviews',
+    location: 'Station Road, Mariyahu, Jaunpur',
+    city: 'Mariyahu',
+    latitude: 25.6050,
+    longitude: 82.6140,
+    monthlyRent: 3800,
+    originalPrice: 5000,
+    discountBadge: '24% OFF',
+    amenities: [
+      { icon: Wifi, label: 'Free WiFi' },
+      { icon: Utensils, label: 'Home Food' },
+      { icon: Car, label: 'Bike Parking' }
+    ],
+    badge: { text: 'Budget PG', bg: 'bg-emerald-600', emoji: '🛡️' },
+    category: 'student'
   }
 ];
 
@@ -163,15 +274,41 @@ function HomeFlowContent() {
   const [checkOutDate, setCheckOutDate] = useState('27 Oct 2025');
   const [guestsCount, setGuestsCount] = useState('1 Room · 2 Guests');
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [activeQuickPick, setActiveQuickPick] = useState<'recommended' | 'recent'>('recommended');
+  const [activeQuickPick, setActiveQuickPick] = useState<'recommended' | 'nearest' | 'recent'>('recommended');
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'home' | 'bookings' | 'search' | 'wishlist' | 'profile'>('home');
 
+  // Geolocation & Nearest Hostels state
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<'idle' | 'requesting' | 'granted' | 'denied'>('idle');
+  const [detectedLocationName, setDetectedLocationName] = useState<string>('');
+  const [showLocationModal, setShowLocationModal] = useState<boolean>(false);
+  const [locationToast, setLocationToast] = useState<string | null>(null);
+
   useEffect(() => {
     setMounted(true);
+    // Check if previously saved location exists
+    try {
+      const saved = localStorage.getItem('rentify_user_coords');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.lat && parsed.lng) {
+          setUserCoords({ lat: parsed.lat, lng: parsed.lng });
+          setDetectedLocationName(parsed.name || 'Your Location');
+          setLocationStatus('granted');
+        }
+      }
+    } catch (_) {}
   }, []);
+
+  const triggerToast = (msg: string) => {
+    setLocationToast(msg);
+    setTimeout(() => {
+      setLocationToast((curr) => (curr === msg ? null : curr));
+    }, 4000);
+  };
 
   // Step navigation with history push so going back doesn't close the app
   const goToStep = (step: 'splash' | 'onboarding' | 'choose' | 'home') => {
@@ -247,6 +384,66 @@ function HomeFlowContent() {
     return () => clearInterval(interval);
   }, [currentStep]);
 
+  // Request user location permission & compute nearest hostel
+  const requestUserLocation = (fallbackCity?: string) => {
+    setLocationStatus('requesting');
+    setShowLocationModal(false);
+
+    if (fallbackCity) {
+      const cityData = KNOWN_CITIES.find((c) => c.name.toLowerCase() === fallbackCity.toLowerCase()) || KNOWN_CITIES[0];
+      setUserCoords({ lat: cityData.latitude, lng: cityData.longitude });
+      setDetectedLocationName(cityData.name);
+      setLocationStatus('granted');
+      setActiveQuickPick('nearest');
+      triggerToast(`📍 Showing nearest hostels in ${cityData.name}!`);
+      try {
+        localStorage.setItem('rentify_user_coords', JSON.stringify({ lat: cityData.latitude, lng: cityData.longitude, name: cityData.name }));
+      } catch (_) {}
+      return;
+    }
+
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      setLocationStatus('denied');
+      triggerToast('Geolocation not supported by this browser. Please select your city.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setUserCoords({ lat: latitude, lng: longitude });
+        setLocationStatus('granted');
+
+        const { city, distanceKm } = findClosestCity(latitude, longitude);
+        const displayName = distanceKm < 15 ? city.name : `${city.name} (~${Math.round(distanceKm)} km)`;
+        setDetectedLocationName(displayName);
+
+        setActiveQuickPick('nearest');
+        triggerToast(`📍 Location detected: Nearest hostels to ${displayName} found!`);
+
+        try {
+          localStorage.setItem('rentify_user_coords', JSON.stringify({ lat: latitude, lng: longitude, name: displayName }));
+        } catch (_) {}
+      },
+      (err) => {
+        console.warn('Geolocation error:', err.message);
+        setLocationStatus('denied');
+        setShowLocationModal(true);
+        triggerToast('Location access denied. Please select your city below.');
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
+  };
+
+  const handleNearbyClick = () => {
+    if (locationStatus === 'granted' && userCoords) {
+      setActiveQuickPick('nearest');
+      triggerToast(`📍 Showing hostels nearest to ${detectedLocationName || 'your location'}`);
+    } else {
+      setShowLocationModal(true);
+    }
+  };
+
   const stayOptions: OptionItem[] = [
     {
       id: 'student',
@@ -305,7 +502,7 @@ function HomeFlowContent() {
 
   const handleCityClick = (cityId: string) => {
     if (cityId === 'nearby') {
-      setSelectedCity(null);
+      handleNearbyClick();
       return;
     }
     setSelectedCity((prev) => (prev === cityId ? null : cityId));
@@ -315,6 +512,10 @@ function HomeFlowContent() {
     const params = new URLSearchParams();
     if (searchDestination) params.append('search', searchDestination);
     if (selectedCity && selectedCity !== 'nearby') params.append('city', selectedCity);
+    if (userCoords) {
+      params.append('lat', userCoords.lat.toString());
+      params.append('lng', userCoords.lng.toString());
+    }
     router.push(`/hotels?${params.toString()}`);
   };
 
@@ -337,6 +538,32 @@ function HomeFlowContent() {
     }
     return true;
   });
+
+  // Dynamically computed nearest hostels based on user's coordinates
+  const computedNearestHostels = useMemo(() => {
+    const refLat = userCoords ? userCoords.lat : 25.7464; // Default to Jaunpur/UP reference
+    const refLng = userCoords ? userCoords.lng : 82.6837;
+
+    return NEAREST_HOSTELS_DATA.map((hostel) => {
+      const dist = calculateDistanceKm(refLat, refLng, hostel.latitude, hostel.longitude);
+      return { ...hostel, distanceKm: dist };
+    })
+      .filter((hostel) => {
+        if (selectedCity && selectedCity !== 'nearby') {
+          return hostel.city.toLowerCase() === selectedCity.toLowerCase();
+        }
+        if (searchDestination) {
+          const q = searchDestination.toLowerCase();
+          return (
+            hostel.title.toLowerCase().includes(q) ||
+            hostel.location.toLowerCase().includes(q) ||
+            hostel.city.toLowerCase().includes(q)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => (a.distanceKm ?? 9999) - (b.distanceKm ?? 9999));
+  }, [userCoords, selectedCity, searchDestination]);
 
   return (
     <div
@@ -662,7 +889,7 @@ function HomeFlowContent() {
         )}
 
         {/* ========================================================================= */}
-        {/* STEP 4: MAIN RENTIFY HOME SCREEN (Matching exact uploaded screenshot)     */}
+        {/* STEP 4: MAIN RENTIFY HOME SCREEN                                          */}
         {/* ========================================================================= */}
         {currentStep === 'home' && (
           <div className="flex-1 flex flex-col bg-slate-50 animate-fade-in relative">
@@ -695,7 +922,6 @@ function HomeFlowContent() {
 
               {/* Right: Notifications & Profile */}
               <div className="flex items-center gap-2">
-                {/* Notification Bell with Red Badge Dot */}
                 <button
                   onClick={() => setNotificationsOpen(true)}
                   type="button"
@@ -706,7 +932,6 @@ function HomeFlowContent() {
                   <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#070a29]" />
                 </button>
 
-                {/* Profile Avatar Button */}
                 <button
                   onClick={handleUserClick}
                   type="button"
@@ -731,10 +956,8 @@ function HomeFlowContent() {
                   alt="Comfortable Stays"
                   className="absolute inset-0 w-full h-full object-cover object-center select-none"
                 />
-                {/* Dark Vignette Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070a29]/95 via-[#070a29]/45 to-black/35 pointer-events-none" />
 
-                {/* Hero Text Content */}
                 <div className="relative z-10 h-full flex flex-col justify-start px-5 pt-4 pb-14 space-y-2">
                   <div className="self-start">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold shadow-xs">
@@ -759,7 +982,7 @@ function HomeFlowContent() {
 
               {/* 3. Floating Hotel Search Card */}
               <div className="relative z-20 mx-4 -mt-12 bg-white rounded-3xl p-3.5 sm:p-4 shadow-[0_14px_36px_rgba(7,10,41,0.14)] border border-slate-100">
-                {/* Destination Search Box */}
+                {/* Destination Search Box with GPS Quick-Locate Button */}
                 <div className="bg-slate-50/90 hover:bg-slate-50 border border-slate-200/70 rounded-2xl p-2.5 flex items-center justify-between transition-colors">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <MapPin className="w-5 h-5 text-indigo-600 shrink-0" strokeWidth={2.4} />
@@ -771,23 +994,42 @@ function HomeFlowContent() {
                         type="text"
                         value={searchDestination}
                         onChange={(e) => setSearchDestination(e.target.value)}
-                        placeholder="Search city, hotel, or area..."
+                        placeholder={
+                          locationStatus === 'granted'
+                            ? `📍 Near ${detectedLocationName || 'your location'}`
+                            : 'Search city, hostel, or area...'
+                        }
                         className="w-full text-xs text-slate-700 placeholder:text-slate-400 bg-transparent outline-none mt-0.5 font-medium"
                       />
                     </div>
                   </div>
-                  <button
-                    onClick={handleSearchHotels}
-                    type="button"
-                    className="p-1.5 text-indigo-600 hover:text-indigo-800 transition-colors"
-                  >
-                    <Search className="w-4 h-4" strokeWidth={2.4} />
-                  </button>
+
+                  {/* GPS Target Action Button */}
+                  <div className="flex items-center gap-1 shrink-0 ml-1">
+                    <button
+                      onClick={handleNearbyClick}
+                      type="button"
+                      title="Use Current Location to find nearest hostels"
+                      className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
+                        locationStatus === 'granted'
+                          ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                          : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                      }`}
+                    >
+                      <LocateFixed className="w-4 h-4" strokeWidth={2.2} />
+                    </button>
+                    <button
+                      onClick={handleSearchHotels}
+                      type="button"
+                      className="p-1.5 text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+                    >
+                      <Search className="w-4 h-4" strokeWidth={2.4} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* 3-Parameter Box Grid: Check In, Check Out, Guests */}
                 <div className="grid grid-cols-3 gap-2 mt-2.5">
-                  {/* Check In */}
                   <div className="bg-slate-50/90 border border-slate-200/60 rounded-xl p-2 flex flex-col justify-center text-left hover:border-indigo-300 transition-colors cursor-pointer">
                     <div className="flex items-center gap-1 text-indigo-600 mb-0.5">
                       <Calendar className="w-3.5 h-3.5" strokeWidth={2.2} />
@@ -798,7 +1040,6 @@ function HomeFlowContent() {
                     </span>
                   </div>
 
-                  {/* Check Out */}
                   <div className="bg-slate-50/90 border border-slate-200/60 rounded-xl p-2 flex flex-col justify-center text-left hover:border-indigo-300 transition-colors cursor-pointer">
                     <div className="flex items-center gap-1 text-indigo-600 mb-0.5">
                       <Calendar className="w-3.5 h-3.5" strokeWidth={2.2} />
@@ -809,7 +1050,6 @@ function HomeFlowContent() {
                     </span>
                   </div>
 
-                  {/* Guests */}
                   <div className="bg-slate-50/90 border border-slate-200/60 rounded-xl p-2 flex flex-col justify-center text-left hover:border-indigo-300 transition-colors cursor-pointer">
                     <div className="flex items-center gap-1 text-indigo-600 mb-0.5">
                       <User className="w-3.5 h-3.5" strokeWidth={2.2} />
@@ -850,30 +1090,41 @@ function HomeFlowContent() {
                 {/* Horizontal Scrolling Carousel of Cities */}
                 <div className="flex items-center gap-3 overflow-x-auto scrollbar-none pb-1.5 -mx-4 px-4">
                   {POPULAR_CITIES.map((city) => {
-                    const isSelected = selectedCity === city.id;
+                    const isSelected = selectedCity === city.id || (city.isNearby && activeQuickPick === 'nearest');
 
                     if (city.isNearby) {
                       return (
                         <div
                           key={city.id}
-                          onClick={() => handleCityClick(city.id)}
+                          onClick={handleNearbyClick}
                           className="w-[74px] shrink-0 flex flex-col items-center cursor-pointer group"
                         >
                           <div
                             className={`w-[74px] h-[74px] rounded-2xl bg-indigo-50/90 border flex flex-col items-center justify-center text-indigo-600 transition-all ${
                               isSelected
-                                ? 'border-indigo-600 ring-2 ring-indigo-500/30 shadow-md'
+                                ? 'border-emerald-600 ring-2 ring-emerald-500/30 shadow-md bg-emerald-50/70'
                                 : 'border-indigo-200/70 shadow-2xs group-hover:bg-indigo-100/70'
                             }`}
                           >
                             <div className="relative">
-                              <MapPin className="w-7 h-7 text-indigo-600" strokeWidth={2.2} />
-                              <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-indigo-500 ring-2 ring-white" />
+                              <MapPin
+                                className={`w-7 h-7 ${isSelected ? 'text-emerald-600' : 'text-indigo-600'}`}
+                                strokeWidth={2.2}
+                              />
+                              <div
+                                className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full ${
+                                  isSelected ? 'bg-emerald-500 animate-ping' : 'bg-indigo-500 ring-2 ring-white'
+                                }`}
+                              />
                             </div>
                           </div>
-                          <span className="mt-1.5 flex items-center gap-0.5 text-xs font-bold text-indigo-600">
-                            <MapPin className="w-3 h-3 text-indigo-600" />
-                            Nearby
+                          <span
+                            className={`mt-1.5 flex items-center gap-0.5 text-xs font-bold ${
+                              isSelected ? 'text-emerald-600' : 'text-indigo-600'
+                            }`}
+                          >
+                            <MapPin className="w-3 h-3" />
+                            {locationStatus === 'granted' ? 'Nearby' : 'Nearby'}
                           </span>
                         </div>
                       );
@@ -912,7 +1163,7 @@ function HomeFlowContent() {
                 </div>
               </div>
 
-              {/* 5. Quick Picks for You Section */}
+              {/* 5. Quick Picks for You Section with Nearest Hostels Tab */}
               <div className="px-4 pt-4 pb-2">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
@@ -928,12 +1179,13 @@ function HomeFlowContent() {
                   )}
                 </div>
 
-                {/* Filter Tabs */}
-                <div className="flex items-center gap-2 mb-3.5">
+                {/* Filter Tabs: Recommended | Nearest Hostels | Recently Viewed */}
+                <div className="flex items-center gap-2 mb-3.5 overflow-x-auto scrollbar-none pb-1">
+                  {/* 1. Recommended Tab */}
                   <button
                     type="button"
                     onClick={() => setActiveQuickPick('recommended')}
-                    className={`py-2 px-4 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`py-2 px-3.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
                       activeQuickPick === 'recommended'
                         ? 'bg-[#4338ca] text-white shadow-xs'
                         : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200'
@@ -941,18 +1193,45 @@ function HomeFlowContent() {
                   >
                     <Star
                       className={`w-3.5 h-3.5 ${
-                        activeQuickPick === 'recommended'
-                          ? 'fill-white text-white'
-                          : 'text-slate-400'
+                        activeQuickPick === 'recommended' ? 'fill-white text-white' : 'text-slate-400'
                       }`}
                     />
                     <span>Recommended</span>
                   </button>
 
+                  {/* 2. Nearest Hostels Tab (GPS Powered) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (locationStatus !== 'granted') {
+                        setShowLocationModal(true);
+                      } else {
+                        setActiveQuickPick('nearest');
+                      }
+                    }}
+                    className={`py-2 px-3.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
+                      activeQuickPick === 'nearest'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <div className="relative">
+                      <MapPin
+                        className={`w-3.5 h-3.5 ${activeQuickPick === 'nearest' ? 'text-white' : 'text-emerald-600'}`}
+                        strokeWidth={2.4}
+                      />
+                      {locationStatus === 'granted' && (
+                        <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      )}
+                    </div>
+                    <span>Nearest Hostels</span>
+                  </button>
+
+                  {/* 3. Recently Viewed */}
                   <button
                     type="button"
                     onClick={() => setActiveQuickPick('recent')}
-                    className={`py-2 px-4 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`py-2 px-3.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
                       activeQuickPick === 'recent'
                         ? 'bg-[#4338ca] text-white shadow-xs'
                         : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200'
@@ -962,144 +1241,279 @@ function HomeFlowContent() {
                     <span>Recently Viewed</span>
                   </button>
                 </div>
-              </div>
 
-              {/* 6. Hotel Listings (Cards matching screenshot) */}
-              <div className="px-4 space-y-3 pb-8">
-                {displayedHotels.length === 0 ? (
-                  <div className="py-10 text-center bg-white rounded-2xl border border-slate-100 p-6">
-                    <p className="text-sm font-semibold text-slate-600">
-                      No hotels found in {selectedCity || searchDestination}.
-                    </p>
+                {/* Live GPS Active Status Bar */}
+                {activeQuickPick === 'nearest' && (
+                  <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-indigo-50 border border-emerald-200/80 rounded-2xl p-2.5 flex items-center justify-between mb-3 text-xs shadow-2xs animate-fade-in">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                      <span className="font-bold text-slate-800 text-[11px] truncate">
+                        Nearest Hostels to{' '}
+                        <span className="text-emerald-700 font-extrabold">{detectedLocationName || 'Current Location'}</span>
+                      </span>
+                    </div>
                     <button
-                      onClick={() => {
-                        setSelectedCity(null);
-                        setSearchDestination('');
-                      }}
-                      className="mt-3 text-xs font-bold text-indigo-600 hover:underline"
+                      onClick={() => setShowLocationModal(true)}
+                      className="text-[11px] font-bold text-indigo-600 hover:underline shrink-0 ml-2 cursor-pointer"
                     >
-                      Reset filters & show all stays
+                      Change
                     </button>
                   </div>
-                ) : (
-                  displayedHotels.map((hotel) => (
-                    <div
-                      key={hotel.id}
-                      onClick={() => handleBookHotel(hotel.id)}
-                      className="bg-white rounded-2xl p-2.5 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex gap-3 hover:shadow-md transition-shadow relative overflow-hidden group cursor-pointer"
-                    >
-                      {/* Left: Image Container with Badge & Counter */}
-                      <div className="relative w-[122px] sm:w-[136px] h-[118px] shrink-0 rounded-xl overflow-hidden bg-slate-900">
-                        <img
-                          src={hotel.image}
-                          alt={hotel.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        {/* Top-Left Pill Badge */}
-                        <div
-                          className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-white shadow-xs flex items-center gap-1 ${hotel.badge.bg}`}
-                        >
-                          <span>{hotel.badge.emoji}</span>
-                          <span>{hotel.badge.text}</span>
-                        </div>
+                )}
+              </div>
 
-                        {/* Bottom-Left Photo Counter Badge */}
-                        <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9px] font-semibold text-white tracking-wider">
-                          1/5
-                        </div>
-                      </div>
-
-                      {/* Right: Hotel Details */}
-                      <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
-                        {/* Title & Heart Wishlist */}
-                        <div className="flex items-start justify-between gap-1">
-                          <h3 className="font-bold text-[14px] sm:text-[15px] text-slate-900 truncate leading-snug">
-                            {hotel.title}
-                          </h3>
-                          <button
-                            type="button"
-                            onClick={(e) => toggleWishlist(hotel.id, e)}
-                            className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ml-1 text-slate-400 hover:text-rose-500 transition-colors"
-                            aria-label="Save to Wishlist"
+              {/* 6. Accommodations Listings */}
+              <div className="px-4 space-y-3 pb-8">
+                {/* A: NEAREST HOSTELS VIEW */}
+                {activeQuickPick === 'nearest' ? (
+                  computedNearestHostels.length === 0 ? (
+                    <div className="py-10 text-center bg-white rounded-2xl border border-slate-100 p-6">
+                      <p className="text-sm font-semibold text-slate-600">No student hostels found in this area.</p>
+                      <button
+                        onClick={() => requestUserLocation('Jaunpur')}
+                        className="mt-3 text-xs font-bold text-indigo-600 hover:underline cursor-pointer"
+                      >
+                        Show Jaunpur &amp; Varanasi Hostels
+                      </button>
+                    </div>
+                  ) : (
+                    computedNearestHostels.map((hostel) => (
+                      <div
+                        key={hostel.id}
+                        onClick={() => handleBookHotel(hostel.id)}
+                        className="bg-white rounded-2xl p-2.5 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex gap-3 hover:shadow-md transition-shadow relative overflow-hidden group cursor-pointer"
+                      >
+                        {/* Left: Image Container with Badge & Counter */}
+                        <div className="relative w-[122px] sm:w-[136px] h-[118px] shrink-0 rounded-xl overflow-hidden bg-slate-900">
+                          <img
+                            src={hostel.image}
+                            alt={hostel.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          {/* Badge */}
+                          <div
+                            className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-white shadow-xs flex items-center gap-1 ${hostel.badge.bg}`}
                           >
-                            <Heart
-                              className={`w-4 h-4 transition-transform active:scale-125 ${
-                                wishlist.has(hotel.id)
-                                  ? 'fill-rose-500 text-rose-500'
-                                  : 'text-slate-400'
-                              }`}
-                            />
-                          </button>
-                        </div>
-
-                        {/* Rating & Reviews */}
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
-                          <Star className="w-3.5 h-3.5 fill-[#f59e0b] text-[#f59e0b] shrink-0" />
-                          <span className="font-bold text-slate-900 text-xs">{hotel.rating}</span>
-                          <span className="text-slate-400 text-[11px]">
-                            ({hotel.reviewsCount})
-                          </span>
-                        </div>
-
-                        {/* Location */}
-                        <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5 truncate">
-                          <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
-                          <span className="truncate">{hotel.location}</span>
-                        </div>
-
-                        {/* Amenities Icons */}
-                        <div className="flex items-center gap-2 text-[10px] text-slate-500 my-1 truncate">
-                          {hotel.amenities.map((amenity, idx) => {
-                            const Icon = amenity.icon;
-                            return (
-                              <div key={idx} className="flex items-center gap-1 shrink-0">
-                                <Icon className="w-3 h-3 text-slate-400" />
-                                <span>{amenity.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* Price & Book Now CTA Button */}
-                        <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/70">
-                          <div className="flex items-baseline gap-1.5 min-w-0">
-                            <span className="text-base sm:text-lg font-black text-slate-900 leading-none">
-                              ₹{hotel.price.toLocaleString()}
-                            </span>
-                            <span className="text-xs text-slate-400 line-through leading-none">
-                              ₹{hotel.originalPrice.toLocaleString()}
-                            </span>
-                            <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 leading-none">
-                              {hotel.discountBadge}
-                            </span>
+                            <span>{hostel.badge.emoji}</span>
+                            <span>{hostel.badge.text}</span>
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleBookHotel(hotel.id);
-                            }}
-                            className="px-3 py-1.5 rounded-xl bg-[#4f46e5] hover:bg-[#4338ca] active:scale-95 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all ml-auto shrink-0 cursor-pointer"
-                          >
-                            <span>Book Now</span>
-                            <ArrowRight className="w-3 h-3 text-white" strokeWidth={2.4} />
-                          </button>
+                          <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9px] font-semibold text-white tracking-wider">
+                            1/5
+                          </div>
+                        </div>
+
+                        {/* Right: Hostel Details */}
+                        <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                          {/* Title & Heart Wishlist */}
+                          <div className="flex items-start justify-between gap-1">
+                            <h3 className="font-bold text-[14px] sm:text-[15px] text-slate-900 truncate leading-snug">
+                              {hostel.title}
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={(e) => toggleWishlist(hostel.id, e)}
+                              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ml-1 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                              aria-label="Save to Wishlist"
+                            >
+                              <Heart
+                                className={`w-4 h-4 transition-transform active:scale-125 ${
+                                  wishlist.has(hostel.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
+                                }`}
+                              />
+                            </button>
+                          </div>
+
+                          {/* Distance Tag & Rating */}
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {/* Proximity Distance Badge */}
+                            <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 shadow-2xs">
+                              <MapPin className="w-2.5 h-2.5 text-emerald-600" />
+                              {hostel.distanceKm !== undefined ? `${hostel.distanceKm} km away` : 'Nearby'}
+                            </span>
+
+                            <div className="flex items-center gap-1 text-xs text-slate-500">
+                              <Star className="w-3 h-3 fill-[#f59e0b] text-[#f59e0b] shrink-0" />
+                              <span className="font-bold text-slate-900 text-xs">{hostel.rating}</span>
+                              <span className="text-slate-400 text-[10px]">({hostel.reviewsCount})</span>
+                            </div>
+                          </div>
+
+                          {/* Location */}
+                          <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5 truncate">
+                            <Compass className="w-3 h-3 text-indigo-500 shrink-0" />
+                            <span className="truncate">{hostel.location}</span>
+                          </div>
+
+                          {/* Amenities */}
+                          <div className="flex items-center gap-2 text-[10px] text-slate-500 my-1 truncate">
+                            {hostel.amenities.map((amenity, idx) => {
+                              const Icon = amenity.icon;
+                              return (
+                                <div key={idx} className="flex items-center gap-1 shrink-0">
+                                  <Icon className="w-3 h-3 text-slate-400" />
+                                  <span>{amenity.label}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Pricing & CTA */}
+                          <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/70">
+                            <div className="flex items-baseline gap-1.5 min-w-0">
+                              <span className="text-base sm:text-lg font-black text-slate-900 leading-none">
+                                ₹{hostel.monthlyRent.toLocaleString()}
+                                <span className="text-[10px] font-normal text-slate-500">/mo</span>
+                              </span>
+                              <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 leading-none">
+                                {hostel.discountBadge}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleBookHotel(hostel.id);
+                              }}
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all ml-auto shrink-0 cursor-pointer"
+                            >
+                              <span>Book Hostel</span>
+                              <ArrowRight className="w-3 h-3 text-white" strokeWidth={2.4} />
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  )
+                ) : (
+                  /* B: DEFAULT RECOMMENDED HOTELS VIEW */
+                  displayedHotels.length === 0 ? (
+                    <div className="py-10 text-center bg-white rounded-2xl border border-slate-100 p-6">
+                      <p className="text-sm font-semibold text-slate-600">
+                        No hotels found in {selectedCity || searchDestination}.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setSelectedCity(null);
+                          setSearchDestination('');
+                        }}
+                        className="mt-3 text-xs font-bold text-indigo-600 hover:underline cursor-pointer"
+                      >
+                        Reset filters &amp; show all stays
+                      </button>
                     </div>
-                  ))
+                  ) : (
+                    displayedHotels.map((hotel) => (
+                      <div
+                        key={hotel.id}
+                        onClick={() => handleBookHotel(hotel.id)}
+                        className="bg-white rounded-2xl p-2.5 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex gap-3 hover:shadow-md transition-shadow relative overflow-hidden group cursor-pointer"
+                      >
+                        {/* Left: Image Container with Badge & Counter */}
+                        <div className="relative w-[122px] sm:w-[136px] h-[118px] shrink-0 rounded-xl overflow-hidden bg-slate-900">
+                          <img
+                            src={hotel.image}
+                            alt={hotel.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div
+                            className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-white shadow-xs flex items-center gap-1 ${hotel.badge.bg}`}
+                          >
+                            <span>{hotel.badge.emoji}</span>
+                            <span>{hotel.badge.text}</span>
+                          </div>
+
+                          <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9px] font-semibold text-white tracking-wider">
+                            1/5
+                          </div>
+                        </div>
+
+                        {/* Right: Hotel Details */}
+                        <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                          <div className="flex items-start justify-between gap-1">
+                            <h3 className="font-bold text-[14px] sm:text-[15px] text-slate-900 truncate leading-snug">
+                              {hotel.title}
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={(e) => toggleWishlist(hotel.id, e)}
+                              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ml-1 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                              aria-label="Save to Wishlist"
+                            >
+                              <Heart
+                                className={`w-4 h-4 transition-transform active:scale-125 ${
+                                  wishlist.has(hotel.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
+                                }`}
+                              />
+                            </button>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
+                            <Star className="w-3.5 h-3.5 fill-[#f59e0b] text-[#f59e0b] shrink-0" />
+                            <span className="font-bold text-slate-900 text-xs">{hotel.rating}</span>
+                            <span className="text-slate-400 text-[11px]">({hotel.reviewsCount})</span>
+                          </div>
+
+                          <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5 truncate">
+                            <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
+                            <span className="truncate">{hotel.location}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-[10px] text-slate-500 my-1 truncate">
+                            {hotel.amenities.map((amenity, idx) => {
+                              const Icon = amenity.icon;
+                              return (
+                                <div key={idx} className="flex items-center gap-1 shrink-0">
+                                  <Icon className="w-3 h-3 text-slate-400" />
+                                  <span>{amenity.label}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/70">
+                            <div className="flex items-baseline gap-1.5 min-w-0">
+                              <span className="text-base sm:text-lg font-black text-slate-900 leading-none">
+                                ₹{hotel.price.toLocaleString()}
+                              </span>
+                              <span className="text-xs text-slate-400 line-through leading-none">
+                                ₹{hotel.originalPrice.toLocaleString()}
+                              </span>
+                              <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 leading-none">
+                                {hotel.discountBadge}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleBookHotel(hotel.id);
+                              }}
+                              className="px-3 py-1.5 rounded-xl bg-[#4f46e5] hover:bg-[#4338ca] active:scale-95 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all ml-auto shrink-0 cursor-pointer"
+                            >
+                              <span>Book Now</span>
+                              <ArrowRight className="w-3 h-3 text-white" strokeWidth={2.4} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )
                 )}
               </div>
             </div>
 
-            {/* 7. Fixed Bottom Navigation Bar (5 Tab Icons) */}
+            {/* 7. Fixed Bottom Navigation Bar */}
             <nav className="sticky bottom-0 z-30 w-full bg-white/95 backdrop-blur-md border-t border-slate-100 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
               <div className="grid grid-cols-5 items-center text-center">
-                {/* 1. Home (Active) */}
                 <button
                   type="button"
-                  onClick={() => setActiveTab('home')}
+                  onClick={() => {
+                    setActiveTab('home');
+                    setActiveQuickPick('recommended');
+                  }}
                   className={`flex flex-col items-center justify-center transition-colors cursor-pointer ${
                     activeTab === 'home' ? 'text-indigo-600 font-bold' : 'text-slate-400 hover:text-slate-700'
                   }`}
@@ -1108,7 +1522,6 @@ function HomeFlowContent() {
                   <span className="text-[10px] mt-0.5 block leading-tight">Home</span>
                 </button>
 
-                {/* 2. Bookings */}
                 <button
                   type="button"
                   onClick={() => router.push('/account?tab=bookings')}
@@ -1120,7 +1533,6 @@ function HomeFlowContent() {
                   <span className="text-[10px] mt-0.5 block leading-tight">Bookings</span>
                 </button>
 
-                {/* 3. Search */}
                 <button
                   type="button"
                   onClick={() => router.push('/hotels')}
@@ -1132,7 +1544,6 @@ function HomeFlowContent() {
                   <span className="text-[10px] mt-0.5 block leading-tight">Search</span>
                 </button>
 
-                {/* 4. Wishlist */}
                 <button
                   type="button"
                   onClick={() => setActiveTab('wishlist')}
@@ -1144,7 +1555,6 @@ function HomeFlowContent() {
                   <span className="text-[10px] mt-0.5 block leading-tight">Wishlist</span>
                 </button>
 
-                {/* 5. Profile */}
                 <button
                   type="button"
                   onClick={handleUserClick}
@@ -1168,7 +1578,6 @@ function HomeFlowContent() {
 
                 <div className="relative w-4/5 max-w-xs bg-slate-900 text-white p-5 flex flex-col justify-between shadow-2xl z-10 animate-slide-right">
                   <div>
-                    {/* Drawer Header */}
                     <div className="flex items-center justify-between pb-5 border-b border-white/10">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white">
@@ -1186,8 +1595,19 @@ function HomeFlowContent() {
                       </button>
                     </div>
 
-                    {/* Navigation Links */}
                     <div className="space-y-1.5 py-4">
+                      {/* Nearest Hostels Drawer Action */}
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          handleNearbyClick();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 text-sm font-bold transition-colors cursor-pointer"
+                      >
+                        <LocateFixed className="w-4 h-4 text-emerald-400" />
+                        Nearest Hostels to Me
+                      </button>
+
                       <Link
                         href="/hotels"
                         onClick={() => setMobileMenuOpen(false)}
@@ -1255,7 +1675,6 @@ function HomeFlowContent() {
                     </div>
                   </div>
 
-                  {/* Drawer Footer */}
                   <div className="pt-4 border-t border-white/10">
                     <button
                       onClick={() => {
@@ -1272,7 +1691,77 @@ function HomeFlowContent() {
               </div>
             )}
 
-            {/* 9. Notifications Modal */}
+            {/* 9. LOCATION PERMISSION & CITY SELECTOR MODAL */}
+            {showLocationModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div
+                  className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+                  onClick={() => setShowLocationModal(false)}
+                />
+                <div className="relative bg-white rounded-[2rem] p-6 w-full max-w-sm shadow-2xl z-10 animate-scale-up text-center">
+                  <button
+                    onClick={() => setShowLocationModal(false)}
+                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+
+                  {/* Pulsing Location Pin Animation */}
+                  <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-100 shadow-xs relative">
+                    <MapPin className="w-8 h-8 text-emerald-600 animate-bounce" strokeWidth={2.4} />
+                    <div className="absolute inset-0 rounded-3xl border-2 border-emerald-400 animate-ping opacity-30" />
+                  </div>
+
+                  <h3 className="text-lg font-black text-slate-900 tracking-tight">Find Hostels Near You</h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1.5 leading-relaxed px-2">
+                    Rentify uses your device location to show verified student hostels, PGs, and study accommodations closest
+                    to you.
+                  </p>
+
+                  {/* Primary Location Permission Button */}
+                  <div className="mt-5 space-y-2.5">
+                    <button
+                      onClick={() => requestUserLocation()}
+                      type="button"
+                      disabled={locationStatus === 'requesting'}
+                      className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-md shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <LocateFixed className="w-4 h-4 text-white" strokeWidth={2.4} />
+                      <span>{locationStatus === 'requesting' ? 'Detecting GPS...' : 'Allow Location & Find Hostels'}</span>
+                    </button>
+
+                    {/* Manual City Fallbacks */}
+                    <div className="pt-3 border-t border-slate-100">
+                      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                        Or Pick Nearby City
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['Jaunpur', 'Varanasi', 'Lucknow', 'Mariyahu'].map((cityName) => (
+                          <button
+                            key={cityName}
+                            onClick={() => requestUserLocation(cityName)}
+                            type="button"
+                            className="py-2 px-3 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 text-xs font-bold border border-slate-200 hover:border-indigo-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <MapPin className="w-3.5 h-3.5 text-indigo-500" />
+                            <span>{cityName}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 10. Floating Toast Notification */}
+            {locationToast && (
+              <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-2xl border border-white/15 backdrop-blur-md flex items-center gap-2 animate-fade-in pointer-events-none select-none max-w-[90%] text-center">
+                <span>{locationToast}</span>
+              </div>
+            )}
+
+            {/* 11. Notifications Modal */}
             {notificationsOpen && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
@@ -1296,6 +1785,15 @@ function HomeFlowContent() {
                   </div>
 
                   <div className="py-3 space-y-2.5">
+                    <div className="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100/70">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                        <span>🎓 Student Hostel Special Discount</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 mt-1 leading-snug">
+                        Book verified student hostels near BHU and Purvanchal University with up to 27% OFF.
+                      </p>
+                    </div>
+
                     <div className="p-3 bg-indigo-50/70 rounded-2xl border border-indigo-100/70">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700">
                         <span>🔥 40% OFF Special Deal</span>
@@ -1304,20 +1802,11 @@ function HomeFlowContent() {
                         Use promo code <strong>RENTIFY40</strong> on your first booking in Jaunpur &amp; Varanasi!
                       </p>
                     </div>
-
-                    <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                        <span>🛡️ Best Price Guarantee</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-snug">
-                        Verified student PGs and hourly rooms now available with instant check-in.
-                      </p>
-                    </div>
                   </div>
 
                   <button
                     onClick={() => setNotificationsOpen(false)}
-                    className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl mt-1"
+                    className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl mt-1 cursor-pointer"
                   >
                     Got it
                   </button>

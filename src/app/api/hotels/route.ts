@@ -14,6 +14,8 @@ export async function GET(req: NextRequest) {
     const ownerId = searchParams.get('ownerId');
     const approvalStatus = searchParams.get('approvalStatus') as ApprovalStatus | null;
     const includeAll = searchParams.get('includeAll') === 'true';
+    const lat = searchParams.get('lat') ? Number(searchParams.get('lat')) : undefined;
+    const lng = searchParams.get('lng') ? Number(searchParams.get('lng')) : undefined;
 
     const filterOptions: any = {};
     if (category) filterOptions.category = category;
@@ -23,6 +25,10 @@ export async function GET(req: NextRequest) {
     if (minPrice !== undefined) filterOptions.minPrice = minPrice;
     if (maxPrice !== undefined) filterOptions.maxPrice = maxPrice;
     if (ownerId) filterOptions.ownerId = ownerId;
+    if (lat !== undefined && lng !== undefined && !isNaN(lat) && !isNaN(lng)) {
+      filterOptions.lat = lat;
+      filterOptions.lng = lng;
+    }
 
     if (!includeAll && !approvalStatus) {
       filterOptions.approvalStatus = 'approved';

@@ -54,6 +54,8 @@ export interface Hotel {
   state: string;
   country: string;
   postalCode: string;
+  latitude?: number;
+  longitude?: number;
   amenities: string[];
   rules: string[];
   nearbyLandmarks?: string[];
