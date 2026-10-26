@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Hotel, StayCategory } from '@/types';
 import { HotelCard } from '@/components/HotelCard';
@@ -15,7 +15,8 @@ import {
   Compass,
   X,
   SlidersHorizontal,
-  BedDouble
+  BedDouble,
+  ChevronLeft
 } from 'lucide-react';
 
 function HotelsSearchContent() {
@@ -33,42 +34,80 @@ function HotelsSearchContent() {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [maxPrice, setMaxPrice] = useState<number>(30000);
 
+  // Debounced values for lag-free search & price filtering
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const [debouncedPrice, setDebouncedPrice] = useState<number>(30000);
+
+  // In-memory cache to make category switching instant with 0 lag
+  const cacheRef = useRef<Record<string, Hotel[]>>({});
+
   // Hotels State
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 250);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Debounce price slider
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedPrice(maxPrice), 150);
+    return () => clearTimeout(timer);
+  }, [maxPrice]);
+
   // Sync state with URL when search params change
   useEffect(() => {
     const cat = searchParams.get('category') as StayCategory;
-    if (cat) setCategory(cat);
+    if (cat && cat !== category) setCategory(cat);
     const c = searchParams.get('city');
-    if (c) setCity(c);
+    if (c !== null && c !== city) setCity(c);
   }, [searchParams]);
 
   useEffect(() => {
+    const cacheKey = `${category}_${city}_${debouncedSearch}_${debouncedPrice}`;
+
+    // 1. Instant Cache Hit: Show cached hotels immediately (0ms lag!)
+    if (cacheRef.current[cacheKey]) {
+      setHotels(cacheRef.current[cacheKey]);
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
     async function fetchHotels() {
-      setLoading(true);
+      // Only show full loading spinner if we don't have hotels yet
+      if (hotels.length === 0) {
+        setLoading(true);
+      }
       try {
         const params = new URLSearchParams();
         if (category !== 'all') params.append('category', category);
         if (city) params.append('city', city);
-        if (searchQuery) params.append('search', searchQuery);
-        params.append('maxPrice', maxPrice.toString());
+        if (debouncedSearch) params.append('search', debouncedSearch);
+        params.append('maxPrice', debouncedPrice.toString());
 
         const res = await fetch(`/api/hotels?${params.toString()}`);
         const data = await res.json();
-        if (data.success) {
+        if (data.success && isMounted) {
+          cacheRef.current[cacheKey] = data.hotels;
           setHotels(data.hotels);
         }
       } catch (err) {
         console.error('Fetch hotels error:', err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
 
     fetchHotels();
-  }, [category, city, searchQuery, maxPrice]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [category, city, debouncedSearch, debouncedPrice]);
 
   const handleCategoryChange = (newCat: StayCategory | 'all') => {
     setCategory(newCat);
@@ -78,7 +117,8 @@ function HotelsSearchContent() {
     } else {
       params.set('category', newCat);
     }
-    router.push(`/hotels?${params.toString()}`);
+    // Update URL shallowly without blocking UI
+    window.history.replaceState(null, '', `/hotels?${params.toString()}`);
   };
 
   const categoryTitle =
@@ -101,9 +141,25 @@ function HotelsSearchContent() {
         <div className="bg-gradient-to-br from-[#0c0836] via-[#1c0f64] to-[#3a1396] text-white pt-7 pb-6 px-5 sm:px-6 rounded-b-[2.5rem] shadow-xl space-y-4 select-none">
           {/* Top Brand Bar */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] text-white flex items-center justify-center shadow-md shadow-indigo-950/40">
-                <BedDouble className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2">
+              {/* In-app Back button so user can step back to previous screen */}
+              <button
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    router.push('/?step=choose');
+                  }
+                }}
+                type="button"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 flex items-center justify-center text-white border border-white/15 transition-all cursor-pointer mr-0.5"
+                aria-label="Go back"
+              >
+                <ChevronLeft className="w-4 h-4 text-white" />
+              </button>
+
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] text-white flex items-center justify-center shadow-md shadow-indigo-950/40">
+                <BedDouble className="w-4 h-4 text-white" />
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-black text-xl tracking-tight text-white select-none">

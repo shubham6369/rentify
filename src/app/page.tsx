@@ -14,7 +14,8 @@ import {
   Clock,
   Calendar,
   Sparkles,
-  Compass
+  Compass,
+  ChevronLeft
 } from 'lucide-react';
 
 interface OptionItem {
@@ -74,6 +75,50 @@ function HomeFlowContent() {
     setMounted(true);
   }, []);
 
+  // Step navigation with history push so going back doesn't close the app
+  const goToStep = (step: 'onboarding' | 'choose') => {
+    setCurrentStep(step);
+    if (typeof window !== 'undefined') {
+      const url = step === 'choose' ? '/?step=choose' : '/?step=onboarding';
+      window.history.pushState({ step }, '', url);
+    }
+  };
+
+  const handleStepBack = () => {
+    if (currentStep === 'choose') {
+      if (typeof window !== 'undefined' && window.history.length > 1) {
+        window.history.back();
+      } else {
+        goToStep('onboarding');
+      }
+    }
+  };
+
+  // Listen to popstate (browser back, Android hardware back, swipe gestures)
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const params = new URLSearchParams(window.location.search);
+      const step = (e.state?.step || params.get('step') || 'onboarding') as 'splash' | 'onboarding' | 'choose';
+      if (step === 'onboarding' || step === 'choose') {
+        setCurrentStep(step);
+      }
+    };
+
+    const handleCustomNav = (e: Event) => {
+      const customEvent = e as CustomEvent<'onboarding' | 'choose'>;
+      if (customEvent.detail) {
+        setCurrentStep(customEvent.detail);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('rentify:navigate-step', handleCustomNav);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('rentify:navigate-step', handleCustomNav);
+    };
+  }, []);
+
   // 1. Splash Screen Auto-Transition: Show for exactly 2 seconds then transition to Onboarding
   useEffect(() => {
     if (currentStep === 'splash' && !initialStepParam) {
@@ -84,7 +129,7 @@ function HomeFlowContent() {
     }
   }, [currentStep, initialStepParam]);
 
-  // 2. Onboarding Carousel Auto-Slide: Automatically advances to the next slide every 3.5 seconds
+  // 2. Onboarding Carousel Auto-Slide: Smooth auto-advance every 3.5 seconds
   useEffect(() => {
     if (currentStep !== 'onboarding') return;
 
@@ -93,7 +138,7 @@ function HomeFlowContent() {
     }, 3500);
 
     return () => clearInterval(interval);
-  }, [currentStep, activeSlide]);
+  }, [currentStep]);
 
 
   const stayOptions: OptionItem[] = [
@@ -249,7 +294,7 @@ function HomeFlowContent() {
                 </div>
               </div>
               <button
-                onClick={() => setCurrentStep('choose')}
+                onClick={() => goToStep('choose')}
                 className="text-xs font-semibold text-slate-400 hover:text-slate-700 py-1 px-2.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 Skip
@@ -258,19 +303,20 @@ function HomeFlowContent() {
 
             {/* Illustration & Headline */}
             <div className="my-auto flex flex-col items-center text-center space-y-6 pt-2 pb-4">
-              {/* Sliding Image Carousel */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden flex items-center justify-center bg-slate-100 shadow-md ring-1 ring-slate-200/60">
+              {/* Sliding Image Carousel with GPU Acceleration */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden flex items-center justify-center bg-slate-100 shadow-md ring-1 ring-slate-200/60 transform-gpu">
                 <div
-                  className="flex transition-transform duration-700 ease-in-out h-full w-full"
-                  style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+                  className="flex transition-transform duration-700 ease-in-out h-full w-full will-change-transform transform-gpu"
+                  style={{ transform: `translate3d(-${activeSlide * 100}%, 0, 0)` }}
                 >
                   {ONBOARDING_SLIDES.map((slide, idx) => (
                     <div key={idx} className="w-full h-full shrink-0 flex items-center justify-center">
                       <img
                         src={slide.image}
                         alt={slide.title.replace('\n', ' ')}
-                        className="w-full h-full object-cover select-none pointer-events-none"
+                        className="w-full h-full object-cover select-none pointer-events-none transform-gpu"
                         loading={idx === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
                       />
                     </div>
                   ))}
@@ -309,7 +355,7 @@ function HomeFlowContent() {
             <div className="space-y-4 pt-4 pb-2">
               {/* Big Blue "Get Started" Pill Button -> Opens Choose Stay Screen */}
               <button
-                onClick={() => setCurrentStep('choose')}
+                onClick={() => goToStep('choose')}
                 type="button"
                 className="w-full py-4 rounded-full bg-[#1877f2] hover:bg-[#1565c0] active:scale-[0.99] text-white font-bold text-sm sm:text-base tracking-wide transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center text-center cursor-pointer"
               >
@@ -341,10 +387,19 @@ function HomeFlowContent() {
               <div className="absolute -top-12 -left-12 w-44 h-44 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute top-1/4 right-0 w-52 h-52 bg-purple-600/30 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Top Bar: Brand */}
+              {/* Top Bar: Brand with In-App Back Button */}
               <div className="relative z-10 flex items-center justify-between mb-5">
-                {/* Logo + Brand (Rentify in big & first, Find Your Stay in small) */}
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
+                  {/* In-app Back button so user can step back without closing app */}
+                  <button
+                    onClick={handleStepBack}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 flex items-center justify-center text-white border border-white/15 transition-all cursor-pointer mr-0.5"
+                    aria-label="Back to onboarding"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-white" />
+                  </button>
+
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center shadow-md shadow-indigo-950/40 text-white">
                     <BedDouble className="w-4 h-4 text-white" strokeWidth={2.4} />
                   </div>

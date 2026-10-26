@@ -22,7 +22,8 @@ import {
   MessageSquare,
   Sparkles,
   Info,
-  GraduationCap
+  GraduationCap,
+  ChevronLeft
 } from 'lucide-react';
 
 export default function HotelDetailPage() {
@@ -134,15 +135,33 @@ export default function HotelDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link href="/" className="hover:text-slate-900">Home</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <Link href={`/hotels?category=${hotel.category}`} className="hover:text-slate-900 capitalize">
-          {hotel.category} Stay
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-900 truncate max-w-[200px] sm:max-w-xs">{hotel.name}</span>
+      {/* Breadcrumb Navigation with Back Button */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              window.history.back();
+            } else {
+              router.push(`/hotels?category=${hotel.category}`);
+            }
+          }}
+          type="button"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+          aria-label="Go back"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          <span>Back</span>
+        </button>
+
+        <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 overflow-hidden">
+          <Link href="/" className="hover:text-slate-900 hidden sm:inline">Home</Link>
+          <ChevronRight className="w-3.5 h-3.5 hidden sm:inline" />
+          <Link href={`/hotels?category=${hotel.category}`} className="hover:text-slate-900 capitalize">
+            {hotel.category} Stay
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="text-slate-900 truncate max-w-[150px] sm:max-w-xs">{hotel.name}</span>
+        </div>
       </div>
 
       {/* Title & Badges Header */}

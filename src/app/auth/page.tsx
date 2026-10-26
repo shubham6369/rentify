@@ -238,7 +238,13 @@ function AuthContent() {
               {/* Top Row: Back button & Category Pill */}
               <div className="flex items-center justify-between mb-3 relative z-10">
                 <button
-                  onClick={() => router.push('/')}
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.history.length > 1) {
+                      window.history.back();
+                    } else {
+                      router.push('/?step=choose');
+                    }
+                  }}
                   type="button"
                   className="flex items-center gap-1.5 text-xs text-indigo-200 hover:text-white font-semibold transition-colors cursor-pointer"
                 >

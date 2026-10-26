@@ -5,6 +5,8 @@ import { AuthProvider } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AuthModal } from '@/components/AuthModal';
+import { NativeBackButtonHandler } from '@/components/NativeBackButtonHandler';
+
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -38,6 +40,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <AuthModal />
+          <NativeBackButtonHandler />
         </AuthProvider>
       </body>
     </html>
