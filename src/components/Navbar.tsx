@@ -57,7 +57,7 @@ export function Navbar() {
     }
   ];
 
-  if (pathname === '/' || pathname.startsWith('/auth')) {
+  if (pathname === '/' || pathname.startsWith('/auth') || pathname === '/hotels') {
     return null;
   }
 

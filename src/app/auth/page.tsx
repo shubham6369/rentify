@@ -197,11 +197,11 @@ function AuthContent() {
     setLoading(false);
 
     if (res.success) {
-      // Proceed to selected stay catalog
+      // Proceed to hotels discovery page
       if (redirectParam) {
         router.push(redirectParam);
       } else {
-        router.push(`/hotels?category=${categoryParam}`);
+        router.push('/hotels');
       }
     } else {
       setErrorMsg(res.message || 'Failed to update profile');
