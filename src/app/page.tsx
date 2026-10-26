@@ -315,7 +315,7 @@ function HomeFlowContent() {
               <div className="absolute -top-12 -left-12 w-44 h-44 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute top-1/4 right-0 w-52 h-52 bg-purple-600/30 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Top Bar: Brand & User Button */}
+              {/* Top Bar: Brand */}
               <div className="relative z-10 flex items-center justify-between mb-5">
                 {/* Logo + Brand (Rentify / Find Your Stay) */}
                 <div className="flex items-center gap-2.5">
@@ -331,21 +331,6 @@ function HomeFlowContent() {
                     </span>
                   </div>
                 </div>
-
-                {/* User Pill Button */}
-                <button
-                  onClick={handleUserClick}
-                  type="button"
-                  className="group flex items-center gap-2 bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-medium text-white transition-all cursor-pointer"
-                >
-                  <User className="w-3.5 h-3.5 text-white/90" />
-                  <span className="text-xs font-medium tracking-tight">
-                    {mounted && user
-                      ? (user.fullName || `User ${user.uid.slice(-4)}`)
-                      : 'User 6994'}
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-white/80 group-hover:translate-x-0.5 transition-transform" />
-                </button>
               </div>
 
               {/* Hero Content: Title & 3D Bedroom Illustration */}
