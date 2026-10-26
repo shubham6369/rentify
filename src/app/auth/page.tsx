@@ -83,8 +83,6 @@ function AuthFlowContent() {
       if (user.collegeName) setCollegeName(user.collegeName);
       if (user.studentIdNumber) setStudentIdNumber(user.studentIdNumber);
       if (user.emergencyContact) setEmergencyContact(user.emergencyContact);
-      // If user exists, advance to profile verification stage
-      setStage('profile');
     }
   }, [user]);
 
@@ -314,6 +312,22 @@ function AuthFlowContent() {
                 <strong className="text-slate-700 capitalize">{categoryParam} Stay</strong> reservation.
               </p>
             </div>
+
+            {user && (
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between shadow-2xs">
+                <div>
+                  <span className="text-[11px] text-emerald-800 font-medium">Currently active account:</span>
+                  <p className="text-xs font-bold text-emerald-950">{user.fullName || user.phone || user.email}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStage('profile')}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Continue &rarr;
+                </button>
+              </div>
+            )}
 
             {/* Master Bypass OTP Card */}
             <div className="p-4 bg-gradient-to-r from-amber-50 via-indigo-50 to-emerald-50 border-2 border-indigo-200 rounded-2xl flex items-center justify-between shadow-xs">

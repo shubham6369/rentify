@@ -109,12 +109,7 @@ function HomeFlowContent() {
   ];
 
   const handleContinue = () => {
-    const cat = selectedCategory;
-    if (!user) {
-      router.push(`/auth?category=${cat}`);
-    } else {
-      router.push(`/hotels?category=${cat}`);
-    }
+    router.push(`/auth?category=${selectedCategory}`);
   };
 
   const handleUserClick = () => {
