@@ -28,26 +28,32 @@ interface OptionItem {
 interface OnboardingSlide {
   title: string;
   subtitle: string;
+  image: string;
 }
 
 const ONBOARDING_SLIDES: OnboardingSlide[] = [
   {
     title: 'Find Best\nStudent Bookings',
-    subtitle: 'Hostel, PG, College Stay & More'
+    subtitle: 'Hostel, PG, College Stay & More',
+    image: '/images/student-onboarding.jpg'
   },
   {
     title: 'Comfortable\nFamily Stays',
-    subtitle: 'Villas, Suites & Private Getaways'
+    subtitle: 'Villas, Suites & Private Getaways',
+    image: '/images/family-onboarding.jpg'
   },
   {
     title: 'Flexible\nHourly Stays',
-    subtitle: 'Book by the hour, not the whole day'
+    subtitle: 'Book by the hour, not the whole day',
+    image: '/images/hourly-onboarding.jpg'
   },
   {
     title: 'Handpicked\nRegular Hotels',
-    subtitle: 'Verified resorts and premium stays'
+    subtitle: 'Verified resorts and premium stays',
+    image: '/images/regular-onboarding.jpg'
   }
 ];
+
 
 function HomeFlowContent() {
   const router = useRouter();
@@ -77,6 +83,18 @@ function HomeFlowContent() {
       return () => clearTimeout(timer);
     }
   }, [currentStep, initialStepParam]);
+
+  // 2. Onboarding Carousel Auto-Slide: Automatically advances to the next slide every 3.5 seconds
+  useEffect(() => {
+    if (currentStep !== 'onboarding') return;
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % ONBOARDING_SLIDES.length);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [currentStep, activeSlide]);
+
 
   const stayOptions: OptionItem[] = [
     {
@@ -235,27 +253,37 @@ function HomeFlowContent() {
 
             {/* Illustration & Headline */}
             <div className="my-auto flex flex-col items-center text-center space-y-6 pt-2 pb-4">
-              {/* Illustration in thought cloud / arched soft container */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden flex items-center justify-center">
-                <img
-                  src="/images/student-onboarding.jpg"
-                  alt="Find Best Student Bookings"
-                  className="w-full h-full object-cover rounded-3xl shadow-sm"
-                />
+              {/* Sliding Image Carousel */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden flex items-center justify-center bg-slate-100 shadow-md ring-1 ring-slate-200/60">
+                <div
+                  className="flex transition-transform duration-700 ease-in-out h-full w-full"
+                  style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+                >
+                  {ONBOARDING_SLIDES.map((slide, idx) => (
+                    <div key={idx} className="w-full h-full shrink-0 flex items-center justify-center">
+                      <img
+                        src={slide.image}
+                        alt={slide.title.replace('\n', ' ')}
+                        className="w-full h-full object-cover select-none pointer-events-none"
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Title & Subtitle */}
-              <div className="space-y-2 px-2">
-                <h2 className="text-2xl sm:text-[26px] font-extrabold text-slate-900 tracking-tight leading-snug whitespace-pre-line">
+              <div className="space-y-2 px-2 min-h-[5.5rem] flex flex-col justify-center">
+                <h2 className="text-2xl sm:text-[26px] font-extrabold text-slate-900 tracking-tight leading-snug whitespace-pre-line transition-all duration-300">
                   {ONBOARDING_SLIDES[activeSlide].title}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                <p className="text-xs sm:text-sm text-slate-500 font-medium transition-all duration-300">
                   {ONBOARDING_SLIDES[activeSlide].subtitle}
                 </p>
               </div>
 
               {/* Carousel Indicator Dots */}
-              <div className="flex items-center justify-center gap-2 pt-2">
+              <div className="flex items-center justify-center gap-2 pt-1">
                 {ONBOARDING_SLIDES.map((_, idx) => (
                   <button
                     key={idx}
@@ -263,7 +291,7 @@ function HomeFlowContent() {
                     onClick={() => setActiveSlide(idx)}
                     className={`transition-all duration-300 rounded-full cursor-pointer ${
                       activeSlide === idx
-                        ? 'w-6 h-2 bg-[#1877f2]'
+                        ? 'w-7 h-2 bg-gradient-to-r from-[#1877f2] to-[#3b49df]'
                         : 'w-2 h-2 bg-blue-200 hover:bg-blue-300'
                     }`}
                     aria-label={`Slide ${idx + 1}`}
