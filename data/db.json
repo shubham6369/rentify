@@ -689,6 +689,60 @@
         "razorpaySignature": "simulated_sig",
         "method": "UPI / NetBanking (Razorpay Verified)"
       }
+    },
+    {
+      "bookingReference": "FYS-STU-8784",
+      "userId": "usr_1792700280091_p4p0",
+      "hotelId": "stu_hostel_blr_1",
+      "hotelName": "Oxford Scholars Luxury Hostel & Co-Living",
+      "roomId": "room_stu_oxf_1",
+      "roomTypeName": "Single Private Scholar Room",
+      "stayCategory": "student",
+      "checkIn": "2026-10-29",
+      "numberOfNights": 180,
+      "stayDurationMonths": 6,
+      "numberOfGuests": {
+        "adults": 1,
+        "children": 0
+      },
+      "roomQuantity": 1,
+      "guestDetails": {
+        "fullName": "User 3210",
+        "email": "9876543210@phone.findyourstay.in",
+        "phone": "+919876543210",
+        "specialRequests": ""
+      },
+      "studentDetails": {
+        "collegeOrUniversity": "Christ University",
+        "studentIdNumber": "CU2026-ENG-492",
+        "course": "B. Tech Computer Science",
+        "guardianName": "Rajesh Sharma",
+        "guardianPhone": "+91 98111 22334",
+        "durationMonths": 6,
+        "moveInDate": "2026-10-29",
+        "mealPlanOpted": true
+      },
+      "totalAmount": 88830,
+      "advanceAmount": 15000,
+      "paidAmount": 15000,
+      "remainingBalance": 73830,
+      "bookingStatus": "confirmed",
+      "paymentStatus": "advance_paid",
+      "balanceDueDate": "2026-10-29",
+      "holdExpiresAt": "2026-10-26T09:27:49.326Z",
+      "internalNotes": [
+        "Reserved at 26/10/2026, 2:42:49 pm",
+        "Payment verified on 26/10/2026, 2:42:50 pm (Ref: pay_mvp1gkgwwsz3, ₹15000)"
+      ],
+      "bookingId": "bk_1793005969331_8ukg",
+      "createdAt": "2026-10-26T09:12:49.331Z",
+      "updatedAt": "2026-10-26T09:12:50.397Z",
+      "paymentDetails": {
+        "razorpayOrderId": "order_sim_1793005969463",
+        "razorpayPaymentId": "pay_mvp1gkgwwsz3",
+        "razorpaySignature": "simulated_sig",
+        "method": "UPI / NetBanking (Razorpay Verified)"
+      }
     }
   ],
   "reviews": [],
@@ -741,7 +795,7 @@
       "emailVerified": true,
       "role": "customer",
       "createdAt": "2026-10-22T20:18:00.091Z",
-      "updatedAt": "2026-10-26T08:22:12.382Z",
+      "updatedAt": "2026-10-26T09:11:51.993Z",
       "aadhaarNumber": "542189012345",
       "collegeName": "Christ University",
       "studentIdNumber": "CU2026-ENG-492",
@@ -783,7 +837,7 @@
     {
       "phone": "9876543210",
       "otp": "5556",
-      "expiresAt": 1793006471003
+      "expiresAt": 1793009486307
     }
   ]
 }

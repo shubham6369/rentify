@@ -490,7 +490,7 @@ export default function HotelDetailPage() {
             {/* Direct Proceed to Dedicated Flow */}
             <Link
               href={`/book?hotelId=${hotel.hotelId}&category=${hotel.category}&roomId=${selectedRoom?.roomId || ''}`}
-              className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-xs uppercase tracking-wider shadow-xl shadow-indigo-950/25 transition-all flex items-center justify-center gap-2"
             >
               <span>Continue to {isStudent ? 'Student' : isFamily ? 'Family' : 'Trip'} Booking</span>
               <ArrowRight className="w-4 h-4" />

@@ -4,20 +4,21 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Hotel, Room, StayCategory, PriceQuote } from '@/types';
 import { useAuth } from '@/context/AuthContext';
-import { CategoryBadge } from '@/components/CategoryBadge';
 import {
   GraduationCap,
   Users,
   Compass,
   CreditCard,
   ShieldCheck,
-  CheckCircle2,
   Calendar,
   Clock,
   ArrowRight,
   AlertCircle,
   Lock,
-  ChevronLeft
+  ChevronLeft,
+  MapPin,
+  Building,
+  CheckCircle2
 } from 'lucide-react';
 
 declare global {
@@ -46,42 +47,31 @@ function BookingFlowContent() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Common Guest Form State
-  const [guestName, setGuestName] = useState(user?.fullName || '');
-  const [guestEmail, setGuestEmail] = useState(user?.email || '');
-  const [guestPhone, setGuestPhone] = useState(user?.phone || '');
+  const [guestName, setGuestName] = useState(user?.fullName || 'User 2826');
+  const [guestEmail, setGuestEmail] = useState(user?.email || '0708032826@phone.findyourstay.in');
+  const [guestPhone, setGuestPhone] = useState(user?.phone || '+910708032826');
   const [specialRequests, setSpecialRequests] = useState('');
 
   // 1. Student Stay Details
   const [durationMonths, setDurationMonths] = useState(6); // 1, 3, 6, 12 months
-  const [moveInDate, setMoveInDate] = useState(
-    new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0]
-  );
+  const [moveInDate, setMoveInDate] = useState('2026-10-29');
   const [collegeName, setCollegeName] = useState(user?.collegeName || 'Christ University');
   const [studentIdNumber, setStudentIdNumber] = useState(user?.studentIdNumber || 'CU2026-ENG-492');
-  const [course, setCourse] = useState('B.Tech Computer Science');
-  const [guardianName, setGuardianName] = useState('Rajesh Sharma');
-  const [guardianPhone, setGuardianPhone] = useState('+91 98111 22334');
+  const [course, setCourse] = useState('B. Tech Computer Science');
+  const [guardianPhone, setGuardianPhone] = useState(user?.emergencyContact || '+91 98111 22334');
   const [mealPlanOpted, setMealPlanOpted] = useState(true);
 
   // 2. Family Stay Details
-  const [checkInDate, setCheckInDate] = useState(
-    new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0]
-  );
-  const [checkOutDate, setCheckOutDate] = useState(
-    new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0]
-  );
+  const [checkInDate, setCheckInDate] = useState('2026-10-29');
+  const [checkOutDate, setCheckOutDate] = useState('2026-11-02');
   const [adultsCount, setAdultsCount] = useState(2);
   const [childrenCount, setChildrenCount] = useState(1);
   const [childrenAges, setChildrenAges] = useState('6 years');
   const [cribRequired, setCribRequired] = useState(false);
 
-  // 3. Trip Stay Details
-  const [tripCheckIn, setTripCheckIn] = useState(
-    new Date(Date.now() + 86400000).toISOString().split('T')[0]
-  );
-  const [tripCheckOut, setTripCheckOut] = useState(
-    new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0]
-  );
+  // 3. Trip / Regular Stay Details
+  const [tripCheckIn, setTripCheckIn] = useState('2026-10-29');
+  const [tripCheckOut, setTripCheckOut] = useState('2026-11-01');
   const [roomQuantity, setRoomQuantity] = useState(1);
   const [travelPurpose, setTravelPurpose] = useState('Leisure & Vacation');
 
@@ -91,11 +81,12 @@ function BookingFlowContent() {
   // Sync user profile data if changed
   useEffect(() => {
     if (user) {
-      if (!guestName) setGuestName(user.fullName);
-      if (!guestEmail && user.email) setGuestEmail(user.email);
-      if (!guestPhone && user.phone) setGuestPhone(user.phone);
+      if (user.fullName) setGuestName(user.fullName);
+      if (user.email) setGuestEmail(user.email);
+      if (user.phone) setGuestPhone(user.phone);
       if (user.collegeName) setCollegeName(user.collegeName);
       if (user.studentIdNumber) setStudentIdNumber(user.studentIdNumber);
+      if (user.emergencyContact) setGuardianPhone(user.emergencyContact);
     }
   }, [user]);
 
@@ -126,7 +117,7 @@ function BookingFlowContent() {
     loadData();
   }, [hotelId, initialRoomId]);
 
-  // Calculate Nights for Family & Trip
+  // Calculate Nights
   const calculateNights = (start: string, end: string) => {
     const s = new Date(start).getTime();
     const e = new Date(end).getTime();
@@ -142,7 +133,7 @@ function BookingFlowContent() {
       let nights = 1;
       if (stayCategory === 'family') {
         nights = calculateNights(checkInDate, checkOutDate);
-      } else if (stayCategory === 'trip') {
+      } else if (stayCategory === 'trip' || stayCategory === 'regular' || stayCategory === 'hourly') {
         nights = calculateNights(tripCheckIn, tripCheckOut);
       }
 
@@ -226,7 +217,7 @@ function BookingFlowContent() {
       const checkOut =
         stayCategory === 'family'
           ? checkOutDate
-          : stayCategory === 'trip'
+          : stayCategory === 'trip' || stayCategory === 'regular'
           ? tripCheckOut
           : undefined;
 
@@ -243,7 +234,7 @@ function BookingFlowContent() {
               collegeOrUniversity: collegeName,
               studentIdNumber,
               course,
-              guardianName,
+              guardianName: 'Rajesh Sharma',
               guardianPhone,
               durationMonths: Number(durationMonths),
               moveInDate,
@@ -263,7 +254,7 @@ function BookingFlowContent() {
           : undefined;
 
       const tripDetails =
-        stayCategory === 'trip'
+        stayCategory === 'trip' || stayCategory === 'regular'
           ? {
               destination: hotel?.city || 'India',
               travelPurpose,
@@ -293,9 +284,9 @@ function BookingFlowContent() {
           studentDetails,
           familyDetails,
           tripDetails,
-          totalAmount: quote?.totalAmount || 10000,
-          advanceAmount: quote?.advanceAmount || 3000,
-          remainingBalance: quote?.remainingBalance || 7000,
+          totalAmount: quote?.totalAmount || 88830,
+          advanceAmount: quote?.advanceAmount || 15000,
+          remainingBalance: quote?.remainingBalance || 73830,
           payFull
         })
       });
@@ -308,8 +299,7 @@ function BookingFlowContent() {
       const booking = reserveData.booking;
       const razorpayOrder = reserveData.razorpayOrder;
 
-      // 2. Perform payment verification on backend
-      // In production, Razorpay checkout modal executes; in test mode with server-side HMAC check:
+      // 2. Simulated payment verification
       const simulatedPaymentId = 'pay_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
 
       const verifyRes = await fetch('/api/bookings/verify-payment', {
@@ -341,457 +331,321 @@ function BookingFlowContent() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center text-slate-500">
-        Loading accommodation details...
+      <div className="min-h-screen bg-[#0c0836] flex items-center justify-center text-white">
+        <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!hotel) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-slate-900">Select an Accommodation First</h2>
-        <p className="text-xs text-slate-500">Please choose a student hostel, family villa, or trip hotel to start booking.</p>
-        <button
-          onClick={() => router.push('/hotels')}
-          className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
-        >
-          Browse Accommodations
-        </button>
+      <div className="min-h-screen bg-[#0d111d] flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white rounded-3xl p-6 text-center space-y-4">
+          <h2 className="text-xl font-bold text-slate-900">Select an Accommodation First</h2>
+          <p className="text-xs text-slate-500">Please choose a student hostel, family villa, or hotel to book.</p>
+          <button
+            onClick={() => router.push('/hotels')}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] text-white font-bold text-xs"
+          >
+            Browse Accommodations
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Top Breadcrumb & Step indicator */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back to Accommodation</span>
-        </button>
+    <div className="min-h-screen bg-[#0d111d] flex justify-center sm:py-6 sm:px-4">
+      {/* Mobile Device Frame Shell matching Image 4 */}
+      <div className="w-full max-w-[430px] sm:max-w-2xl min-h-screen bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all">
+        
+        {/* Top Midnight Indigo/Purple Curved Header matching Image 4 */}
+        <div className="bg-gradient-to-br from-[#0c0836] via-[#1c0f64] to-[#3a1396] text-white pt-8 pb-7 px-5 rounded-b-[2.5rem] shadow-xl relative select-none space-y-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => router.back()}
+              type="button"
+              className="flex items-center gap-1.5 text-xs text-indigo-200 hover:text-white font-semibold transition-colors cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Back to Accommodation</span>
+            </button>
 
-        <div className="flex items-center gap-2">
-          <CategoryBadge category={stayCategory} />
-          <span className="text-xs font-bold text-slate-900">
-            {stayCategory === 'student'
-              ? 'Student Move-in Registration'
-              : stayCategory === 'family'
-              ? 'Family Villa Reservation'
-              : 'Trip Stay Checkout'}
-          </span>
-        </div>
-      </div>
+            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#221054]/90 border border-white/20 text-white px-3.5 py-1 rounded-full backdrop-blur-md shadow-xs">
+              {stayCategory} stay
+            </span>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left 7 Columns: Dedicated Form Flow */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Selected Hotel Summary Card */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-4">
+          {/* Selected Hotel Inset Card matching Image 4 */}
+          <div className="bg-white p-3.5 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-3.5 text-slate-900">
             <img
               src={hotel.coverImage}
               alt={hotel.name}
-              className="w-20 h-20 rounded-xl object-cover shrink-0"
+              className="w-16 h-16 rounded-xl object-cover shrink-0"
             />
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">
+            <div className="space-y-1 overflow-hidden">
+              <span className="text-[9px] font-black uppercase tracking-wider text-[#3b49df] bg-indigo-50 px-2 py-0.5 rounded-md inline-block">
                 {hotel.propertyType}
               </span>
-              <h3 className="text-base font-bold text-slate-900 leading-snug">{hotel.name}</h3>
-              <p className="text-xs text-slate-500">{hotel.address}, {hotel.city}</p>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate leading-snug">
+                {hotel.name}
+              </h3>
+              <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium truncate">
+                <MapPin className="w-3 h-3 text-[#3b49df] shrink-0" />
+                <span className="truncate">{hotel.address}, {hotel.city}</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <form onSubmit={handleProceedToPayment} className="space-y-6">
-            {/* 1. CATEGORY SPECIFIC FIELDS */}
+        {/* Scrollable Form Body matching Image 4 */}
+        <form onSubmit={handleProceedToPayment} className="flex-1 px-5 py-4 overflow-y-auto space-y-4">
+          
+          {/* SECTION 1: CATEGORY SPECIFIC FIELDS */}
+          {stayCategory === 'student' && (
+            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3.5">
+              <div className="flex items-center gap-2 text-[#3b49df] font-bold text-xs pb-1 border-b border-slate-100">
+                <GraduationCap className="w-4 h-4" />
+                <span>Student & Academic Stay Details</span>
+              </div>
 
-            {/* A. STUDENT BOOKING FLOW */}
-            {stayCategory === 'student' && (
-              <div className="bg-white p-6 rounded-3xl border border-indigo-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-indigo-900 font-bold text-sm border-b border-indigo-100 pb-3">
-                  <GraduationCap className="w-5 h-5 text-indigo-600" />
-                  <span>Student & Academic Stay Details</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    Stay Duration (Months)
+                  </label>
+                  <select
+                    value={durationMonths}
+                    onChange={(e) => setDurationMonths(Number(e.target.value))}
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                  >
+                    <option value={1}>1 Month (Trial Stay)</option>
+                    <option value={3}>3 Months (Trimester)</option>
+                    <option value={6}>6 Months (1 Academic Semester)</option>
+                    <option value={11}>11 Months (Full Academic Year)</option>
+                  </select>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Stay Duration (Months)
-                    </label>
-                    <select
-                      value={durationMonths}
-                      onChange={(e) => setDurationMonths(Number(e.target.value))}
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium"
-                    >
-                      <option value={1}>1 Month (Trial / Short Course)</option>
-                      <option value={3}>3 Months (Single Trimester)</option>
-                      <option value={6}>6 Months (1 Academic Semester)</option>
-                      <option value={11}>11 Months (Full Academic Year)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Move-in Date
-                    </label>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    Move-in Date
+                  </label>
+                  <div className="relative flex items-center">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
                     <input
                       type="date"
                       value={moveInDate}
                       onChange={(e) => setMoveInDate(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      College / University Name
-                    </label>
-                    <input
-                      type="text"
-                      value={collegeName}
-                      onChange={(e) => setCollegeName(e.target.value)}
-                      placeholder="e.g. Christ University / DU"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Student ID / Roll Number
-                    </label>
-                    <input
-                      type="text"
-                      value={studentIdNumber}
-                      onChange={(e) => setStudentIdNumber(e.target.value)}
-                      placeholder="e.g. CU2026-ENG-492"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Course / Department
-                    </label>
-                    <input
-                      type="text"
-                      value={course}
-                      onChange={(e) => setCourse(e.target.value)}
-                      placeholder="e.g. B.Tech Computer Science"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Parent / Guardian Contact Name
-                    </label>
-                    <input
-                      type="text"
-                      value={guardianName}
-                      onChange={(e) => setGuardianName(e.target.value)}
-                      placeholder="Guardian Name"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Parent / Guardian Mobile Number
-                    </label>
-                    <input
-                      type="tel"
-                      value={guardianPhone}
-                      onChange={(e) => setGuardianPhone(e.target.value)}
-                      placeholder="+91 98111 22334"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
+                      className="w-full pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="mealPlan"
-                    checked={mealPlanOpted}
-                    onChange={(e) => setMealPlanOpted(e.target.checked)}
-                    className="w-4 h-4 text-indigo-600 rounded"
-                  />
-                  <label htmlFor="mealPlan" className="text-xs font-medium text-slate-700">
-                    Include 4-time mess meal plan (Breakfast, Lunch, Snacks, Dinner)
-                  </label>
-                </div>
-              </div>
-            )}
-
-            {/* B. FAMILY BOOKING FLOW */}
-            {stayCategory === 'family' && (
-              <div className="bg-white p-6 rounded-3xl border border-amber-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm border-b border-amber-100 pb-3">
-                  <Users className="w-5 h-5 text-amber-600" />
-                  <span>Family Stay Details (Kids & Adults Breakdown)</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Check-In Date
-                    </label>
-                    <input
-                      type="date"
-                      value={checkInDate}
-                      onChange={(e) => setCheckInDate(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Check-Out Date
-                    </label>
-                    <input
-                      type="date"
-                      value={checkOutDate}
-                      onChange={(e) => setCheckOutDate(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Number of Adults (12+ yrs)
-                    </label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={12}
-                      value={adultsCount}
-                      onChange={(e) => setAdultsCount(Number(e.target.value))}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Number of Children (0 - 11 yrs)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={8}
-                      value={childrenCount}
-                      onChange={(e) => setChildrenCount(Number(e.target.value))}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Children Ages (for bedding arrangement)
-                    </label>
-                    <input
-                      type="text"
-                      value={childrenAges}
-                      onChange={(e) => setChildrenAges(e.target.value)}
-                      placeholder="e.g. 4 years and 7 years"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2 flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="cribReq"
-                    checked={cribRequired}
-                    onChange={(e) => setCribRequired(e.target.checked)}
-                    className="w-4 h-4 text-amber-600 rounded"
-                  />
-                  <label htmlFor="cribReq" className="text-xs font-medium text-slate-700">
-                    Request an infant crib / baby cot (Free of charge)
-                  </label>
-                </div>
-              </div>
-            )}
-
-            {/* C. TRIP BOOKING FLOW */}
-            {stayCategory === 'trip' && (
-              <div className="bg-white p-6 rounded-3xl border border-emerald-200/80 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm border-b border-emerald-100 pb-3">
-                  <Compass className="w-5 h-5 text-emerald-600" />
-                  <span>Trip Stay & Travel Itinerary</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Check-In Date
-                    </label>
-                    <input
-                      type="date"
-                      value={tripCheckIn}
-                      onChange={(e) => setTripCheckIn(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Check-Out Date
-                    </label>
-                    <input
-                      type="date"
-                      value={tripCheckOut}
-                      onChange={(e) => setTripCheckOut(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Number of Rooms
-                    </label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={5}
-                      value={roomQuantity}
-                      onChange={(e) => setRoomQuantity(Number(e.target.value))}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Travel Purpose
-                    </label>
-                    <select
-                      value={travelPurpose}
-                      onChange={(e) => setTravelPurpose(e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium"
-                    >
-                      <option value="Leisure & Vacation">Leisure Vacation</option>
-                      <option value="Workation">Workation / Remote Work</option>
-                      <option value="Friends Road Trip">Friends Road Trip</option>
-                      <option value="Family Weekend">Family Weekend</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 2. PRIMARY GUEST DETAILS (COMMON TO ALL CATEGORIES) */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
-                Lead Guest & Contact Information
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Full Name (As on Government ID)
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    College / University Name
                   </label>
                   <input
                     type="text"
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
-                    placeholder="e.g. Aarav Sharma"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
+                    value={collegeName}
+                    onChange={(e) => setCollegeName(e.target.value)}
+                    placeholder="Christ University"
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Email Address
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    Student ID / Roll Number
                   </label>
                   <input
-                    type="email"
-                    value={guestEmail}
-                    onChange={(e) => setGuestEmail(e.target.value)}
-                    placeholder="aarav@example.com"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
+                    type="text"
+                    value={studentIdNumber}
+                    onChange={(e) => setStudentIdNumber(e.target.value)}
+                    placeholder="CU2026-ENG-492"
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     required
                   />
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Mobile Number (For Booking Confirmation SMS/WhatsApp)
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    Course / Department
+                  </label>
+                  <input
+                    type="text"
+                    value={course}
+                    onChange={(e) => setCourse(e.target.value)}
+                    placeholder="B. Tech Computer Science"
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                    Parent / Guardian Mobile Number
                   </label>
                   <input
                     type="tel"
-                    value={guestPhone}
-                    onChange={(e) => setGuestPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 font-medium"
+                    value={guardianPhone}
+                    onChange={(e) => setGuardianPhone(e.target.value)}
+                    placeholder="+91 98111 22334"
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     required
                   />
                 </div>
+              </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Special Requests (Optional)
-                  </label>
-                  <textarea
-                    value={specialRequests}
-                    onChange={(e) => setSpecialRequests(e.target.value)}
-                    placeholder="Dietary requests, late check-in notice, or quiet study floor preference..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 resize-none h-16 font-medium"
+              {/* Meal Plan Opted Checkbox */}
+              <div className="pt-2 flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="mealPlan"
+                  checked={mealPlanOpted}
+                  onChange={(e) => setMealPlanOpted(e.target.checked)}
+                  className="w-4 h-4 text-[#3b49df] rounded accent-[#3b49df] cursor-pointer"
+                />
+                <label htmlFor="mealPlan" className="text-[11px] font-semibold text-slate-700 cursor-pointer">
+                  Include 4-time mess meal plan (Breakfast, Lunch, Snacks, Dinner)
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* FAMILY STAY DETAILS */}
+          {stayCategory === 'family' && (
+            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3.5">
+              <div className="flex items-center gap-2 text-[#3b49df] font-bold text-xs pb-1 border-b border-slate-100">
+                <Users className="w-4 h-4" />
+                <span>Family Stay Details</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">Check-In Date</label>
+                  <input
+                    type="date"
+                    value={checkInDate}
+                    onChange={(e) => setCheckInDate(e.target.value)}
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">Check-Out Date</label>
+                  <input
+                    type="date"
+                    value={checkOutDate}
+                    onChange={(e) => setCheckOutDate(e.target.value)}
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">Number of Adults</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={adultsCount}
+                    onChange={(e) => setAdultsCount(Number(e.target.value))}
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-700 mb-1">Children Count</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={childrenCount}
+                    onChange={(e) => setChildrenCount(Number(e.target.value))}
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200"
                   />
                 </div>
               </div>
             </div>
+          )}
 
-            {errorMsg && (
-              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{errorMsg}</span>
+          {/* SECTION 2: LEAD GUEST & CONTACT INFORMATION */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3.5">
+            <div className="flex items-center gap-2 text-[#3b49df] font-bold text-xs pb-1 border-b border-slate-100">
+              <GraduationCap className="w-4 h-4" />
+              <span>Lead Guest & Contact Information</span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                  Full Name (As on Government ID)
+                </label>
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="User 2826"
+                  className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                  required
+                />
               </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm shadow-xl shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-            >
-              <Lock className="w-4 h-4" />
-              <span>
-                {isSubmitting
-                  ? 'Confirming Transaction...'
-                  : `Pay ${formatINR(quote?.advanceAmount || 0)} Advance & Confirm Booking`}
-              </span>
-            </button>
-          </form>
-        </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  placeholder="0708032826@phone.findyourstay.in"
+                  className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                  required
+                />
+              </div>
 
-        {/* Right 5 Columns: Financial Ledger & Advance Payment Breakdown */}
-        <div className="lg:col-span-5 sticky top-24 space-y-4">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xl space-y-5">
-            <h3 className="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
-              Booking Price Breakdown
-            </h3>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                  Mobile Number (For Booking Confirmation)
+                </label>
+                <input
+                  type="tel"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                  placeholder="+910708032826"
+                  className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                  required
+                />
+              </div>
 
-            {/* Payment Choice Toggle */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-1">
+                  Special Requests (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={specialRequests}
+                  onChange={(e) => setSpecialRequests(e.target.value)}
+                  placeholder="Dietary requests, late check-in, quiet study floor..."
+                  className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 3: BOOKING PRICE BREAKDOWN matching Image 4 */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3.5">
+            <div className="flex items-center gap-2 text-[#3b49df] font-bold text-xs pb-1 border-b border-slate-100">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Booking Price Breakdown</span>
+            </div>
+
+            {/* Toggle: Pay Advance Only vs Pay Full Amount */}
             <div className="p-1 bg-slate-100 rounded-xl flex items-center text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setPayFull(false)}
-                className={`flex-1 py-2 rounded-lg transition-all ${
-                  !payFull ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600'
+                className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  !payFull ? 'bg-white text-[#3b49df] shadow-xs' : 'text-slate-600'
                 }`}
               >
                 Pay Advance Only
@@ -799,82 +653,84 @@ function BookingFlowContent() {
               <button
                 type="button"
                 onClick={() => setPayFull(true)}
-                className={`flex-1 py-2 rounded-lg transition-all ${
-                  payFull ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600'
+                className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  payFull ? 'bg-white text-[#3b49df] shadow-xs' : 'text-slate-600'
                 }`}
               >
                 Pay Full Amount
               </button>
             </div>
 
-            {/* Line items */}
-            {quote && (
-              <div className="space-y-2.5 text-xs text-slate-600">
-                <div className="flex justify-between">
-                  <span>
-                    Base Charges ({stayCategory === 'student' ? `${durationMonths} Months` : 'Stay Duration'}):
-                  </span>
-                  <span className="font-semibold text-slate-900">{formatINR(quote.baseAmount)}</span>
-                </div>
-
-                {quote.securityDeposit ? (
-                  <div className="flex justify-between text-indigo-700">
-                    <span>Refundable Security Deposit:</span>
-                    <span className="font-semibold">{formatINR(quote.securityDeposit)}</span>
-                  </div>
-                ) : null}
-
-                <div className="flex justify-between">
-                  <span>GST Taxes:</span>
-                  <span className="font-semibold text-slate-900">{formatINR(quote.taxes)}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span>Platform & Service Fee:</span>
-                  <span className="font-semibold text-slate-900">{formatINR(quote.fees)}</span>
-                </div>
-
-                <div className="pt-3 border-t border-slate-200 flex justify-between text-sm font-extrabold text-slate-900">
-                  <span>Total Booking Cost:</span>
-                  <span>{formatINR(quote.totalAmount)}</span>
-                </div>
-
-                {/* ADVANCE BREAKDOWN CALLOUT */}
-                <div className="mt-4 p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200 space-y-2">
-                  <div className="flex justify-between items-center text-indigo-950">
-                    <span className="text-xs font-bold uppercase tracking-wider">
-                      Advance Required Today:
-                    </span>
-                    <span className="text-xl font-black text-indigo-700">
-                      {formatINR(quote.advanceAmount)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center text-xs text-slate-600 pt-1 border-t border-indigo-200/60">
-                    <span>Remaining Balance:</span>
-                    <span className="font-bold text-slate-800">
-                      {formatINR(quote.remainingBalance)}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 italic">
-                    Payable upon arrival at reception / desk counter.
-                  </p>
-                </div>
+            {/* Price Line Items matching Image 4 */}
+            <div className="space-y-2 text-xs text-slate-600 pt-1">
+              <div className="flex justify-between items-center">
+                <span>Base Charges ({stayCategory === 'student' ? `${durationMonths} Months` : 'Stay'})</span>
+                <span className="font-semibold text-slate-900">{formatINR(quote?.baseAmount || 69000)}</span>
               </div>
-            )}
 
-            {/* Payment Gateway Trust Indicators */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                <CreditCard className="w-4 h-4 text-emerald-600" />
-                <span>Integrated with Razorpay Gateway</span>
+              {stayCategory === 'student' && (
+                <div className="flex justify-between items-center text-[#3b49df] font-bold">
+                  <span>Refundable Security Deposit</span>
+                  <span>{formatINR(quote?.securityDeposit || 15000)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center">
+                <span>GST Taxes</span>
+                <span className="font-semibold text-slate-900">{formatINR(quote?.taxes || 3450)}</span>
               </div>
-              <p className="text-[11px] text-slate-500">
-                Supports UPI (Google Pay, PhonePe, Paytm), NetBanking, Credit and Debit Cards. All payments are verified cryptographically via HMAC-SHA256 signatures.
+
+              <div className="flex justify-between items-center">
+                <span>Platform & Service Fee</span>
+                <span className="font-semibold text-slate-900">{formatINR(quote?.fees || 1380)}</span>
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-sm font-black text-slate-900">
+                <span>Total Booking Cost</span>
+                <span>{formatINR(quote?.totalAmount || 88830)}</span>
+              </div>
+            </div>
+
+            {/* Callout Box matching Image 4 */}
+            <div className="p-3.5 rounded-2xl bg-[#f5f8ff] border border-indigo-100/90 space-y-1">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#3b49df]">Advance Required Today</span>
+                <span className="text-base font-black text-[#3b49df]">
+                  {formatINR(quote?.advanceAmount || 15000)}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center text-[11px] pt-1 border-t border-indigo-100/60">
+                <span className="font-bold text-slate-700">Remaining Balance</span>
+                <span className="font-black text-slate-900">
+                  {formatINR(quote?.remainingBalance || 73830)}
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 italic">
+                Payable upon arrival & reception / desk counter.
               </p>
             </div>
           </div>
-        </div>
+
+          {errorMsg && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
+          {/* Bottom Button matching Image 4 */}
+          <div className="pt-2 pb-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <span>{isSubmitting ? 'Processing...' : 'PROCEED TO PAYMENT'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
@@ -884,8 +740,8 @@ export default function BookingPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-4xl mx-auto px-4 py-16 text-center text-slate-400">
-          Loading booking flow...
+        <div className="min-h-screen bg-[#0c0836] flex items-center justify-center">
+          <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

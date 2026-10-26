@@ -433,11 +433,11 @@ function HomeFlowContent() {
 
               {/* Bottom Action Area: CONTINUE & Legal Links */}
               <div className="pt-6 sm:pt-7 space-y-3">
-                {/* Gradient CONTINUE Button */}
+                {/* Gradient CONTINUE Button matching Image 1 */}
                 <button
                   onClick={handleContinue}
                   type="button"
-                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#0d1645] via-[#1d2275] to-[#6d28d9] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all shadow-lg shadow-indigo-950/25 flex items-center justify-center gap-2 text-center cursor-pointer"
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 text-center cursor-pointer"
                 >
                   <span>CONTINUE</span>
                   <ArrowRight className="w-5 h-5 text-white" strokeWidth={2.5} />

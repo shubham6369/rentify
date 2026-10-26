@@ -16,7 +16,8 @@ import {
   Users,
   Clock,
   Compass,
-  ArrowRight
+  ArrowRight,
+  Phone
 } from 'lucide-react';
 
 function AuthContent() {
@@ -35,20 +36,22 @@ function AuthContent() {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
 
   // Authentication Fields
-  const [phone, setPhone] = useState(user?.phone?.replace('+91', '') || '9876543210');
+  const [phone, setPhone] = useState(user?.phone?.replace('+91', '') || '0708032826');
   const [otpCode, setOtpCode] = useState('5556');
-  const [otpTimer, setOtpTimer] = useState(60);
+  const [otpTimer, setOtpTimer] = useState(30);
 
   // Customer Profile & Booking Details Fields
   const [fullName, setFullName] = useState(user?.fullName || 'User ' + (phone.slice(-4) || '2826'));
-  const [aadhaarNumber, setAadhaarNumber] = useState(user?.aadhaarNumber ? formatAadhaar(user.aadhaarNumber) : '5421 8901 2345');
-  
+  const [aadhaarNumber, setAadhaarNumber] = useState(
+    user?.aadhaarNumber ? formatAadhaar(user.aadhaarNumber) : '5421 8901 2345'
+  );
+
   // Category specific fields
   const [collegeName, setCollegeName] = useState(user?.collegeName || 'Christ University');
   const [studentId, setStudentId] = useState(user?.studentIdNumber || 'CU2026-ENG-492');
   const [course, setCourse] = useState('B. Tech Computer Science');
   const [guardianPhone, setGuardianPhone] = useState(user?.emergencyContact || '+91 98111 22334');
-  
+
   const [familyMembersCount, setFamilyMembersCount] = useState(4);
   const [hourlyStayHours, setHourlyStayHours] = useState('3 Hours');
   const [stayPurpose, setStayPurpose] = useState('Transit & Day Refresh');
@@ -110,7 +113,7 @@ function AuthContent() {
     // STEP 1: MOBILE NUMBER
     if (currentStep === 1) {
       const cleanPhone = phone.replace(/\D/g, '');
-      if (cleanPhone.length !== 10) {
+      if (cleanPhone.length < 10) {
         setErrorMsg('Please enter a valid 10-digit mobile number');
         return;
       }
@@ -118,7 +121,7 @@ function AuthContent() {
       setLoading(true);
       try {
         await sendOtp(cleanPhone);
-        setOtpTimer(60);
+        setOtpTimer(30);
         setCurrentStep(2);
       } catch (err: any) {
         // Fallback to next step for master OTP bypass
@@ -207,234 +210,199 @@ function AuthContent() {
 
   const categoryName = categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1);
 
+  // Split OTP into 6 boxes display
+  const otpDigits = [
+    otpCode[0] || '5',
+    otpCode[1] || '5',
+    otpCode[2] || '5',
+    otpCode[3] || '6',
+    otpCode[4] || '',
+    otpCode[5] || ''
+  ];
+
   return (
     <div
-      className="min-h-screen bg-slate-900/95 flex items-center justify-center sm:py-6 sm:px-4"
+      className="min-h-screen bg-[#0d111d] flex items-center justify-center sm:py-6 sm:px-4"
       suppressHydrationWarning
     >
       {/* Mobile Device Frame Container */}
-      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[870px] bg-slate-50 sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all relative">
+      <div className="w-full max-w-[430px] min-h-screen sm:min-h-[890px] bg-[#f8faff] sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all relative">
         
         {/* ========================================================================= */}
-        {/* VIEW 1: AUTHENTICATION & VERIFICATION (STYLE TYPE MATCHING 2ND IMAGE) */}
+        {/* VIEW 1: AUTHENTICATION & VERIFICATION (EXACT MATCH TO IMAGE 1)            */}
         {/* ========================================================================= */}
         {stage === 'auth' ? (
           <>
-            {/* Top Teal Header Banner */}
-            <div className="bg-[#0a7381] text-white pt-9 pb-8 px-6 rounded-b-[2rem] shadow-sm relative select-none">
-              {/* Back button */}
-              <button
-                onClick={() => router.push('/')}
-                type="button"
-                className="flex items-center gap-1.5 text-xs text-[#a5e0e8] hover:text-white font-semibold mb-4 transition-colors cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Choose Stay</span>
-              </button>
+            {/* Top Midnight Indigo/Purple Curved Header */}
+            <div className="bg-gradient-to-br from-[#0c0836] via-[#1c0f64] to-[#3a1396] text-white pt-8 pb-7 px-6 rounded-b-[2.5rem] shadow-xl relative select-none overflow-hidden">
+              {/* Top Row: Back button & Category Pill */}
+              <div className="flex items-center justify-between mb-3 relative z-10">
+                <button
+                  onClick={() => router.push('/')}
+                  type="button"
+                  className="flex items-center gap-1.5 text-xs text-indigo-200 hover:text-white font-semibold transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Back</span>
+                </button>
 
-              {/* Heading & Subheading */}
-              <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
-                Welcome
-              </h1>
-              <p className="text-sm text-[#c2eff5] font-normal mt-1.5">
-                Sign in to continue
-              </p>
-
-              {/* Category Pill Tag */}
-              <div className="absolute top-9 right-6">
-                <span className="text-[11px] font-bold uppercase tracking-wider bg-white/15 border border-white/20 text-white px-2.5 py-1 rounded-full backdrop-blur-xs">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#221054]/90 border border-white/20 text-white px-3.5 py-1 rounded-full backdrop-blur-md shadow-xs">
                   {categoryParam} stay
                 </span>
               </div>
+
+              {/* Headline & Bedroom Photo Cutout Inset Row */}
+              <div className="flex items-center justify-between gap-3 pt-2 relative z-10">
+                <div className="space-y-1">
+                  <h1 className="text-3xl font-black tracking-tight text-white leading-tight">
+                    Welcome
+                  </h1>
+                  <p className="text-xs text-indigo-200/90 font-medium">
+                    Sign in to continue
+                  </p>
+                </div>
+
+                {/* Cozy Inset Hotel Bed Image with Curved Glass Mask matching Image 1 */}
+                <div className="w-28 h-20 rounded-2xl overflow-hidden border border-white/20 shadow-lg shrink-0 relative bg-indigo-950">
+                  <img
+                    src="/images/hero-bed.jpg"
+                    alt="Cozy room"
+                    className="w-full h-full object-cover brightness-95"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c0836]/60 via-transparent to-transparent pointer-events-none" />
+                </div>
+              </div>
             </div>
 
-            {/* Middle 3 Cards Section */}
-            <div className="flex-1 px-5 sm:px-6 py-6 flex flex-col justify-between bg-white">
-              <div className="space-y-4">
+            {/* Middle 3 Cards Section matching Image 1 */}
+            <div className="flex-1 px-5 py-5 flex flex-col justify-between bg-[#f8faff]">
+              <div className="space-y-3.5">
                 
                 {/* CARD 1: MOBILE NUMBER */}
-                <div
-                  className={`rounded-2xl border transition-all overflow-hidden ${
-                    currentStep === 1
-                      ? 'bg-[#e6f3f5] border-[#a5dbe2] shadow-sm ring-1 ring-[#0a7381]/20'
-                      : 'bg-[#e6f3f5]/70 border-[#c6e4e8]'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep(1)}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-6 h-6 rounded-full bg-[#0a7381] text-white flex items-center justify-center shrink-0">
-                        {currentStep > 1 ? (
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                        ) : (
-                          <div className="w-2 h-2 rounded-full bg-white" />
-                        )}
-                      </div>
-                      <span className="text-base font-bold text-slate-900 tracking-tight">
-                        Mobile number
-                      </span>
+                <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
+                      <Phone className="w-4 h-4 fill-white" />
                     </div>
+                    <span className="text-sm font-bold text-slate-900 tracking-tight">
+                      Mobile number
+                    </span>
+                  </div>
 
-                    {currentStep > 1 && phone && (
-                      <span className="text-xs font-semibold text-[#0a7381] bg-white/80 px-2.5 py-0.5 rounded-full border border-[#0a7381]/20">
-                        +91 {phone}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Expanded Input for Step 1 */}
-                  {currentStep === 1 && (
-                    <div className="px-4 sm:px-5 pb-5 pt-1 space-y-3 animate-fade-in border-t border-[#cde8ec]">
-                      <div className="flex items-center rounded-xl border border-slate-300 bg-white shadow-2xs overflow-hidden focus-within:border-[#0a7381] focus-within:ring-2 focus-within:ring-[#0a7381]/20 transition-all">
-                        <div className="flex items-center gap-1.5 px-3 py-3 bg-slate-50 border-r border-slate-200 text-xs font-bold text-slate-700 select-none shrink-0">
-                          <span>🇮🇳</span>
-                          <span>+91</span>
-                        </div>
-                        <input
-                          type="tel"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={phone}
-                          onChange={(e) => handlePhoneChange(e.target.value)}
-                          placeholder="98765 43210"
-                          className="flex-1 px-3.5 py-3 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:outline-none tracking-wider bg-transparent"
-                          autoFocus
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-                        <span>Enter your 10-digit mobile number</span>
-                        <span className="font-mono text-[#0a7381] font-bold bg-white px-1.5 py-0.5 rounded border border-[#0a7381]/30">
-                          OTP: 5556
-                        </span>
-                      </div>
+                  {/* Input container with +91 selector */}
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600/15 transition-all">
+                    <div className="flex items-center gap-1 px-3 py-2.5 bg-slate-50/70 border-r border-slate-200 text-xs font-bold text-slate-700 select-none shrink-0">
+                      <span>+91</span>
+                      <ChevronLeft className="w-3 h-3 -rotate-90 text-slate-400" />
                     </div>
-                  )}
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={phone}
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      placeholder="0708032826"
+                      className="flex-1 px-3.5 py-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none tracking-wider bg-transparent"
+                      autoFocus={currentStep === 1}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                    <span>Enter your 10-digit mobile number</span>
+                    <button
+                      type="button"
+                      onClick={() => setPhone('0708032826')}
+                      className="font-mono text-indigo-600 font-bold bg-indigo-50/90 px-2 py-0.5 rounded-md border border-indigo-100 text-[10px]"
+                    >
+                      OTP: 5556
+                    </button>
+                  </div>
                 </div>
 
                 {/* CARD 2: OTP VERIFICATION */}
-                <div
-                  className={`rounded-2xl border transition-all overflow-hidden ${
-                    currentStep === 2
-                      ? 'bg-[#e6f3f5] border-[#a5dbe2] shadow-sm ring-1 ring-[#0a7381]/20'
-                      : 'bg-[#e6f3f5]/70 border-[#c6e4e8]'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (phone.length === 10) setCurrentStep(2);
-                    }}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-6 h-6 rounded-full bg-[#0a7381] text-white flex items-center justify-center shrink-0">
-                        {currentStep > 2 ? (
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                        ) : (
-                          <div className="w-2 h-2 rounded-full bg-white" />
-                        )}
+                <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
+                        <ShieldCheck className="w-4 h-4" />
                       </div>
-                      <span className="text-base font-bold text-slate-900 tracking-tight">
+                      <span className="text-sm font-bold text-slate-900 tracking-tight">
                         OTP verification
                       </span>
                     </div>
 
                     {currentStep > 2 && (
-                      <span className="text-xs font-semibold text-emerald-700 bg-white/80 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                        Verified ✓
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        ✓ Verified
                       </span>
                     )}
-                  </button>
+                  </div>
 
-                  {/* Expanded Input for Step 2 */}
-                  {currentStep === 2 && (
-                    <div className="px-4 sm:px-5 pb-5 pt-1 space-y-3 animate-fade-in border-t border-[#cde8ec]">
-                      <p className="text-xs text-slate-600">
-                        Enter the 4-digit verification code sent to{' '}
-                        <strong className="text-slate-900">+91 {phone}</strong>
-                      </p>
+                  {/* 6 Digit Input Boxes matching Image 1 */}
+                  <div className="grid grid-cols-6 gap-1.5 sm:gap-2 pt-1">
+                    {otpDigits.map((digit, idx) => (
+                      <input
+                        key={idx}
+                        type="text"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          const newOtp = otpCode.split('');
+                          newOtp[idx] = val;
+                          setOtpCode(newOtp.join('').slice(0, 4));
+                        }}
+                        className={`w-full h-11 text-center font-bold text-base rounded-xl border transition-all ${
+                          digit
+                            ? 'border-indigo-400/80 bg-indigo-50/20 text-slate-900 shadow-2xs'
+                            : 'border-slate-200 bg-slate-50/50 text-slate-400'
+                        } focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600`}
+                      />
+                    ))}
+                  </div>
 
-                      <div className="flex items-center rounded-xl border border-slate-300 bg-white shadow-2xs overflow-hidden focus-within:border-[#0a7381] focus-within:ring-2 focus-within:ring-[#0a7381]/20 transition-all">
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={4}
-                          value={otpCode}
-                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                          placeholder="5556"
-                          className="w-full px-4 py-3 text-center text-lg font-mono font-bold text-slate-900 tracking-[0.4em] placeholder:text-slate-300 focus:outline-none"
-                          autoFocus
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
-                        <span>
-                          {otpTimer > 0 ? (
-                            <>Resend in <strong className="text-[#0a7381]">{otpTimer}s</strong></>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setOtpTimer(60);
-                                sendOtp(phone);
-                              }}
-                              className="font-bold text-[#0a7381] hover:underline"
-                            >
-                              Resend OTP
-                            </button>
-                          )}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setOtpCode('5556')}
-                          className="text-[11px] font-bold text-[#0a7381] bg-white px-2 py-0.5 rounded border border-[#0a7381]/30 hover:bg-[#0a7381]/10"
-                        >
-                          Fill 5556
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                    <span>Enter the 4-digit OTP sent to +91 {phone || '0708032826'}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOtpTimer(30);
+                        sendOtp(phone);
+                      }}
+                      className="font-bold text-[#3b49df] hover:underline cursor-pointer"
+                    >
+                      Resend OTP ({otpTimer > 0 ? `00:${otpTimer.toString().padStart(2, '0')}` : 'Now'})
+                    </button>
+                  </div>
                 </div>
 
                 {/* CARD 3: CREATE PROFILE */}
-                <div
-                  className={`rounded-2xl border transition-all overflow-hidden ${
-                    currentStep === 3
-                      ? 'bg-[#e6f3f5] border-[#a5dbe2] shadow-sm ring-1 ring-[#0a7381]/20'
-                      : 'bg-[#e6f3f5]/70 border-[#c6e4e8]'
-                  }`}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (currentStep >= 2 || user) {
+                      setStage('profile');
+                    } else {
+                      setCurrentStep(3);
+                    }
+                  }}
+                  className="w-full bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-xs flex items-center justify-between text-left cursor-pointer hover:border-indigo-200 transition-all"
                 >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (currentStep >= 2 || user) {
-                        setStage('profile');
-                      } else {
-                        setCurrentStep(3);
-                      }
-                    }}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-6 h-6 rounded-full bg-[#0a7381] text-white flex items-center justify-center shrink-0">
-                        <div className="w-2 h-2 rounded-full bg-white" />
-                      </div>
-                      <div>
-                        <span className="text-base font-bold text-slate-900 tracking-tight block">
-                          Create profile
-                        </span>
-                        <span className="text-[11px] text-slate-500 font-medium">
-                          ID, academic & guest details
-                        </span>
-                      </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3b49df] to-[#6366f1] text-white flex items-center justify-center shrink-0 shadow-xs shadow-indigo-300">
+                      <User className="w-4 h-4" />
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#0a7381]" />
-                  </button>
-                </div>
+                    <div>
+                      <span className="text-sm font-bold text-slate-900 tracking-tight block">
+                        Create profile
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        ID, academic & guest details
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                </button>
 
                 {/* Error Message Alert */}
                 {errorMsg && (
@@ -445,58 +413,55 @@ function AuthContent() {
                 )}
               </div>
 
-              {/* Bottom Action Area: CONTINUE Button matching Image 2 */}
-              <div className="pt-6 pb-2 space-y-3">
+              {/* Bottom Action Area: Glowing Gradient Button matching Image 1 */}
+              <div className="pt-6 pb-2 space-y-2">
                 <button
                   onClick={handleAuthContinue}
                   disabled={loading}
                   type="button"
-                  className="w-full py-4 rounded-full bg-[#0a7381] hover:bg-[#08636f] active:scale-[0.99] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all shadow-md shadow-teal-900/20 flex items-center justify-center text-center cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-sm tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <span>{loading ? 'Processing...' : 'CONTINUE'}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
-
-                <p className="text-center text-[11px] text-slate-400">
-                  Step 1 of 2 &nbsp;•&nbsp; Rentify Secure Verification
-                </p>
               </div>
             </div>
           </>
         ) : (
           /* ========================================================================= */
-          /* VIEW 2: CUSTOMER PROFILE & DETAILS PAGE (REDESIGNED IN NEW TEAL THEME) */
+          /* VIEW 2: CUSTOMER PROFILE & DETAILS PAGE (EXACT MATCH TO IMAGE 2)          */
           /* ========================================================================= */
           <form
             onSubmit={handleSaveProfileAndProceed}
-            className="flex-1 flex flex-col justify-between bg-slate-50"
+            className="flex-1 flex flex-col justify-between bg-[#f8faff]"
           >
-            {/* Top Teal Curved Header matching previous pages */}
-            <div className="bg-[#0a7381] text-white pt-7 pb-6 px-6 rounded-b-[2rem] shadow-sm relative select-none">
+            {/* Top Midnight Indigo/Purple Curved Header */}
+            <div className="bg-gradient-to-br from-[#0c0836] via-[#1c0f64] to-[#3a1396] text-white pt-8 pb-7 px-6 rounded-b-[2.5rem] shadow-xl relative select-none">
               <div className="flex items-center justify-between mb-3">
                 <button
                   type="button"
                   onClick={() => setStage('auth')}
-                  className="flex items-center gap-1.5 text-xs text-[#a5e0e8] hover:text-white font-semibold transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs text-indigo-200 hover:text-white font-semibold transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>Back to Sign In</span>
                 </button>
 
-                <span className="text-[11px] font-bold uppercase tracking-wider bg-white/15 border border-white/20 text-white px-2.5 py-1 rounded-full backdrop-blur-xs">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#221054]/90 border border-white/20 text-white px-3.5 py-1 rounded-full backdrop-blur-md shadow-xs">
                   {categoryParam} stay
                 </span>
               </div>
 
-              {/* Icon & Title */}
+              {/* User Avatar Card & Title matching Image 2 */}
               <div className="flex items-center gap-3.5 mt-2">
-                <div className="w-12 h-12 rounded-2xl bg-white text-[#0a7381] flex items-center justify-center shadow-md shadow-teal-900/10 shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-white text-[#3b49df] flex items-center justify-center shadow-lg shadow-indigo-950/20 shrink-0">
                   <User className="w-6 h-6 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-tight">
+                  <h1 className="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">
                     Customer Profile & Booking Details
                   </h1>
-                  <p className="text-xs text-[#c2eff5] font-normal mt-0.5">
+                  <p className="text-xs text-indigo-200/90 font-normal mt-0.5">
                     Complete your profile to finalize reservations for <strong className="text-white capitalize">{categoryName} Stay</strong>.
                   </p>
                 </div>
@@ -504,38 +469,41 @@ function AuthContent() {
             </div>
 
             {/* Scrollable Form Body */}
-            <div className="flex-1 px-5 sm:px-6 py-5 overflow-y-auto space-y-4">
+            <div className="flex-1 px-5 py-4 overflow-y-auto space-y-3.5">
               
               {/* FULL NAME */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Full Name (As on Government ID) <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-[#3b49df]">
+                    <User className="w-4 h-4" />
+                  </div>
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. User 2826"
-                    className="w-full px-3.5 py-2.5 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white shadow-2xs focus:outline-none focus:border-[#0a7381] focus:ring-2 focus:ring-[#0a7381]/20 transition-all"
+                    placeholder="User 2826"
+                    className="w-full pl-9 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-white shadow-2xs focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/15 transition-all"
                     required
                   />
                 </div>
               </div>
 
               {/* CONTACT NUMBER & EMAIL ROW */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* Contact Mobile Number */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Contact Mobile Number
                   </label>
-                  <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#e6f3f5] border border-[#a5dbe2] text-xs">
+                  <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs text-xs">
                     <span className="flex items-center gap-1.5 font-semibold text-slate-800 font-mono text-[11px]">
-                      <Smartphone className="w-3.5 h-3.5 text-[#0a7381] shrink-0" />
+                      <Smartphone className="w-3.5 h-3.5 text-[#3b49df] shrink-0" />
                       +91 {phone}
                     </span>
-                    <span className="text-[10px] font-bold text-[#0a7381] bg-white/80 px-2 py-0.5 rounded-full border border-[#0a7381]/20 flex items-center gap-0.5">
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-0.5">
                       ✓ Verified
                     </span>
                   </div>
@@ -543,33 +511,33 @@ function AuthContent() {
 
                 {/* Verified Email */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Verified Email
                   </label>
-                  <div className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#e6f3f5] border border-[#a5dbe2] text-xs">
-                    <Mail className="w-3.5 h-3.5 text-[#0a7381] shrink-0" />
+                  <div className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs text-xs">
+                    <Mail className="w-3.5 h-3.5 text-[#3b49df] shrink-0" />
                     <span className="font-medium text-slate-700 truncate text-[11px]">
-                      {user?.email || `${phone}@phone.rentify.in`}
+                      {user?.email || `${phone}@phone.findyourstay.in`}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* AADHAAR CARD NUMBER (MANDATORY) */}
+              {/* AADHAAR CARD NUMBER (MANDATORY WITH ORANGE PILL) */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
                     <span>Aadhaar Card Number</span>
                     <span className="text-red-500 font-bold">*</span>
                   </label>
-                  <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
                     Mandatory
                   </span>
                 </div>
 
                 <div className="relative flex items-center">
-                  <div className="absolute left-3 text-slate-400">
-                    <ShieldCheck className="w-4 h-4 text-[#0a7381]" />
+                  <div className="absolute left-3 text-[#3b49df]">
+                    <ShieldCheck className="w-4 h-4" />
                   </div>
                   <input
                     type="text"
@@ -577,12 +545,12 @@ function AuthContent() {
                     maxLength={14}
                     value={aadhaarNumber}
                     onChange={(e) => handleAadhaarChange(e.target.value)}
-                    placeholder="xxxx xxxx xxxx"
-                    className="w-full pl-9 pr-24 py-2.5 text-xs font-mono font-bold tracking-wider text-slate-900 rounded-xl border border-slate-300 bg-white shadow-2xs focus:outline-none focus:border-[#0a7381] focus:ring-2 focus:ring-[#0a7381]/20 transition-all"
+                    placeholder="5421 8901 2345"
+                    className="w-full pl-9 pr-24 py-2.5 text-xs font-mono font-bold tracking-wider text-slate-900 rounded-xl border border-slate-200 bg-white shadow-2xs focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/15 transition-all"
                     required
                   />
                   {aadhaarNumber.replace(/\D/g, '').length === 12 && (
-                    <span className="absolute right-2.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-0.5">
+                    <span className="absolute right-2.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-0.5">
                       ✓ Valid
                     </span>
                   )}
@@ -594,9 +562,9 @@ function AuthContent() {
 
               {/* CATEGORY SPECIFIC CREDENTIALS CARD */}
               {categoryParam === 'student' && (
-                <div className="p-4 bg-[#e6f3f5] border border-[#a5dbe2] rounded-2xl space-y-3 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#085a65] font-bold text-xs">
-                    <GraduationCap className="w-4 h-4 text-[#0a7381]" />
+                <div className="p-4 bg-white border border-indigo-100 rounded-2xl space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-indigo-950 font-bold text-xs">
+                    <GraduationCap className="w-4 h-4 text-[#3b49df]" />
                     <span>Student Academic Credentials</span>
                   </div>
 
@@ -610,7 +578,7 @@ function AuthContent() {
                         value={collegeName}
                         onChange={(e) => setCollegeName(e.target.value)}
                         placeholder="Christ University"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                         required
                       />
                     </div>
@@ -624,7 +592,7 @@ function AuthContent() {
                         value={studentId}
                         onChange={(e) => setStudentId(e.target.value)}
                         placeholder="CU2026-ENG-492"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                         required
                       />
                     </div>
@@ -638,7 +606,7 @@ function AuthContent() {
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
                         placeholder="B. Tech Computer Science"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
 
@@ -651,7 +619,7 @@ function AuthContent() {
                         value={guardianPhone}
                         onChange={(e) => setGuardianPhone(e.target.value)}
                         placeholder="+91 98111 22334"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                         required
                       />
                     </div>
@@ -660,9 +628,9 @@ function AuthContent() {
               )}
 
               {categoryParam === 'family' && (
-                <div className="p-4 bg-[#e6f3f5] border border-[#a5dbe2] rounded-2xl space-y-3 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#085a65] font-bold text-xs">
-                    <Users className="w-4 h-4 text-[#0a7381]" />
+                <div className="p-4 bg-white border border-indigo-100 rounded-2xl space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-indigo-950 font-bold text-xs">
+                    <Users className="w-4 h-4 text-[#3b49df]" />
                     <span>Family Stay Details</span>
                   </div>
 
@@ -677,7 +645,7 @@ function AuthContent() {
                         max={15}
                         value={familyMembersCount}
                         onChange={(e) => setFamilyMembersCount(Number(e.target.value))}
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
 
@@ -690,7 +658,7 @@ function AuthContent() {
                         value={emergencyPhone}
                         onChange={(e) => setEmergencyPhone(e.target.value)}
                         placeholder="+91 98111 22334"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
                   </div>
@@ -698,9 +666,9 @@ function AuthContent() {
               )}
 
               {categoryParam === 'hourly' && (
-                <div className="p-4 bg-[#e6f3f5] border border-[#a5dbe2] rounded-2xl space-y-3 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#085a65] font-bold text-xs">
-                    <Clock className="w-4 h-4 text-[#0a7381]" />
+                <div className="p-4 bg-white border border-indigo-100 rounded-2xl space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-indigo-950 font-bold text-xs">
+                    <Clock className="w-4 h-4 text-[#3b49df]" />
                     <span>Hourly Booking Details</span>
                   </div>
 
@@ -712,7 +680,7 @@ function AuthContent() {
                       <select
                         value={hourlyStayHours}
                         onChange={(e) => setHourlyStayHours(e.target.value)}
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       >
                         <option value="3 Hours">3 Hours (Day Rest)</option>
                         <option value="6 Hours">6 Hours (Work / Transit)</option>
@@ -729,7 +697,7 @@ function AuthContent() {
                         value={stayPurpose}
                         onChange={(e) => setStayPurpose(e.target.value)}
                         placeholder="Transit & Refresh"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
                   </div>
@@ -737,9 +705,9 @@ function AuthContent() {
               )}
 
               {(categoryParam === 'regular' || categoryParam === 'trip') && (
-                <div className="p-4 bg-[#e6f3f5] border border-[#a5dbe2] rounded-2xl space-y-3 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#085a65] font-bold text-xs">
-                    <Compass className="w-4 h-4 text-[#0a7381]" />
+                <div className="p-4 bg-white border border-indigo-100 rounded-2xl space-y-3 shadow-xs">
+                  <div className="flex items-center gap-2 text-indigo-950 font-bold text-xs">
+                    <Compass className="w-4 h-4 text-[#3b49df]" />
                     <span>Trip & General Stay Details</span>
                   </div>
 
@@ -753,7 +721,7 @@ function AuthContent() {
                         value={stayPurpose}
                         onChange={(e) => setStayPurpose(e.target.value)}
                         placeholder="Vacation / Business"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
 
@@ -766,7 +734,7 @@ function AuthContent() {
                         value={emergencyPhone}
                         onChange={(e) => setEmergencyPhone(e.target.value)}
                         placeholder="+91 98111 22334"
-                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-[#0a7381] focus:ring-1 focus:ring-[#0a7381]"
+                        className="w-full px-3 py-2 text-xs font-semibold text-slate-900 rounded-xl border border-slate-200 bg-[#f8faff] focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                       />
                     </div>
                   </div>
@@ -782,20 +750,16 @@ function AuthContent() {
               )}
             </div>
 
-            {/* Bottom Sticky Action Area */}
-            <div className="px-5 sm:px-6 py-4 bg-white border-t border-slate-200 space-y-2">
+            {/* Bottom Sticky Action Area with Signature Gradient Button */}
+            <div className="px-5 py-4 bg-white border-t border-slate-100 space-y-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-full bg-[#0a7381] hover:bg-[#08636f] active:scale-[0.99] text-white font-black text-xs sm:text-sm tracking-wider uppercase transition-all shadow-md shadow-teal-900/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <span>{loading ? 'Saving Profile...' : `Confirm Profile & Proceed to ${categoryParam.toUpperCase()} Stay`}</span>
+                <span>{loading ? 'Saving Profile...' : `CONFIRM PROFILE & PROCEED TO ${categoryParam.toUpperCase()} STAY`}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              <p className="text-center text-[10px] text-slate-400">
-                Step 2 of 2 &nbsp;•&nbsp; Rentify Verified Guest Protection
-              </p>
             </div>
           </form>
         )}
@@ -808,7 +772,7 @@ export default function AuthPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0a7381] flex items-center justify-center">
+        <div className="min-h-screen bg-[#0c0836] flex items-center justify-center">
           <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
         </div>
       }
