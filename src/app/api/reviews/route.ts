@@ -41,3 +41,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const reviewId = searchParams.get('reviewId') || searchParams.get('id');
+
+    if (!reviewId) {
+      return NextResponse.json({ success: false, message: 'Review ID is required' }, { status: 400 });
+    }
+
+    const deleted = db.deleteReview(reviewId);
+    if (!deleted) {
+      return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Review deleted successfully'
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
+  }
+}
+

@@ -4,6 +4,18 @@ import { Hotel, Room, Booking, Review, UserProfile, StayCategory, ApprovalStatus
 import { getAdminFirestore } from './firebase-admin';
 import { calculateDistanceKm } from './geo';
 
+export interface PlatformSettings {
+  platformFeePercentage: number;
+  minAdvanceDepositPercentage: number;
+  announcementBanner: {
+    enabled: boolean;
+    message: string;
+    type: 'offer' | 'info' | 'alert';
+  };
+  maintenanceMode: boolean;
+  supportedCities: string[];
+}
+
 interface DatabaseSchema {
   hotels: Hotel[];
   rooms: Room[];
@@ -11,7 +23,20 @@ interface DatabaseSchema {
   reviews: Review[];
   users: UserProfile[];
   otps: { phone: string; otp: string; expiresAt: number }[];
+  settings?: PlatformSettings;
 }
+
+const DEFAULT_SETTINGS: PlatformSettings = {
+  platformFeePercentage: 5,
+  minAdvanceDepositPercentage: 25,
+  announcementBanner: {
+    enabled: true,
+    message: 'Welcome to Rentify! Verified students get up to ₹2,000 off on semester bookings.',
+    type: 'offer'
+  },
+  maintenanceMode: false,
+  supportedCities: ['Bangalore', 'Mumbai', 'Delhi', 'Jaunpur', 'Varanasi', 'Kota', 'Pune', 'Hyderabad', 'Jaipur', 'Dehradun']
+};
 
 const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
 
@@ -864,7 +889,8 @@ class DatabaseService {
       bookings: [],
       reviews: [],
       users: INITIAL_USERS,
-      otps: []
+      otps: [],
+      settings: DEFAULT_SETTINGS
     };
     this.saveDatabase(initial);
     this.syncFirestoreInit(initial);
@@ -1159,6 +1185,16 @@ class DatabaseService {
     return this.data.bookings[index];
   }
 
+  deleteBooking(id: string): boolean {
+    const index = this.data.bookings.findIndex((b) => b.bookingId === id || b.bookingReference === id);
+    if (index === -1) return false;
+    const booking = this.data.bookings[index];
+    this.data.bookings.splice(index, 1);
+    this.saveDatabase();
+    this.deleteFirestoreDoc('bookings', booking.bookingId);
+    return true;
+  }
+
   // REVIEWS
   getReviews(hotelId?: string) {
     if (hotelId) return this.data.reviews.filter((r) => r.hotelId === hotelId);
@@ -1185,6 +1221,33 @@ class DatabaseService {
     this.saveDatabase();
     this.syncFirestoreDoc('reviews', reviewId, newReview);
     return newReview;
+  }
+
+  deleteReview(reviewId: string): boolean {
+    const index = this.data.reviews.findIndex((r) => r.reviewId === reviewId);
+    if (index === -1) return false;
+    const review = this.data.reviews[index];
+    const hotelId = review.hotelId;
+    this.data.reviews.splice(index, 1);
+
+    // Update hotel average rating & review count
+    const hotelReviews = this.data.reviews.filter((r) => r.hotelId === hotelId);
+    if (hotelReviews.length > 0) {
+      const avg = hotelReviews.reduce((sum, r) => sum + r.rating, 0) / hotelReviews.length;
+      this.updateHotel(hotelId, {
+        rating: Number(avg.toFixed(1)),
+        reviewCount: hotelReviews.length
+      });
+    } else {
+      this.updateHotel(hotelId, {
+        rating: 0,
+        reviewCount: 0
+      });
+    }
+
+    this.saveDatabase();
+    this.deleteFirestoreDoc('reviews', reviewId);
+    return true;
   }
 
   // USERS
@@ -1218,6 +1281,52 @@ class DatabaseService {
     this.saveDatabase();
     this.syncFirestoreDoc('users', user.uid, saved);
     return saved;
+  }
+
+  updateUser(uid: string, updates: Partial<UserProfile>): UserProfile | null {
+    const index = this.data.users.findIndex((u) => u.uid === uid);
+    if (index === -1) return null;
+    this.data.users[index] = {
+      ...this.data.users[index],
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    this.saveDatabase();
+    this.syncFirestoreDoc('users', uid, this.data.users[index]);
+    return this.data.users[index];
+  }
+
+  deleteUser(uid: string): boolean {
+    const index = this.data.users.findIndex((u) => u.uid === uid);
+    if (index === -1) return false;
+    this.data.users.splice(index, 1);
+    this.saveDatabase();
+    this.deleteFirestoreDoc('users', uid);
+    return true;
+  }
+
+  // PLATFORM SETTINGS
+  getSettings(): PlatformSettings {
+    if (!this.data.settings) {
+      this.data.settings = { ...DEFAULT_SETTINGS };
+      this.saveDatabase();
+    }
+    return this.data.settings;
+  }
+
+  updateSettings(updates: Partial<PlatformSettings>): PlatformSettings {
+    const current = this.getSettings();
+    this.data.settings = {
+      ...current,
+      ...updates,
+      announcementBanner: {
+        ...current.announcementBanner,
+        ...(updates.announcementBanner || {})
+      }
+    };
+    this.saveDatabase();
+    this.syncFirestoreDoc('settings', 'platform_settings', this.data.settings);
+    return this.data.settings;
   }
 
   // OTP MANAGEMENT

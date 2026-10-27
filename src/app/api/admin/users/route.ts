@@ -21,28 +21,29 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { uid, role } = body;
+    const { uid, role, ...otherUpdates } = body;
 
-    if (!uid || !role) {
+    if (!uid) {
       return NextResponse.json(
-        { success: false, message: 'User ID and Role are required' },
+        { success: false, message: 'User ID is required' },
         { status: 400 }
       );
     }
 
-    const user = db.getUserById(uid);
-    if (!user) {
+    const updates: any = { ...otherUpdates };
+    if (role) {
+      updates.role = role as UserRole;
+    }
+
+    const updated = db.updateUser(uid, updates);
+    if (!updated) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }
 
-    user.role = role as UserRole;
-    user.updatedAt = new Date().toISOString();
-    db.saveUser(user);
-
     return NextResponse.json({
       success: true,
-      message: `User role updated to ${role} successfully`,
-      user
+      message: 'User updated successfully',
+      user: updated
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -51,3 +52,30 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const uid = searchParams.get('uid');
+
+    if (!uid) {
+      return NextResponse.json({ success: false, message: 'User ID is required' }, { status: 400 });
+    }
+
+    const deleted = db.deleteUser(uid);
+    if (!deleted) {
+      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'User deleted successfully'
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error?.message || 'Server error deleting user' },
+      { status: 500 }
+    );
+  }
+}
+

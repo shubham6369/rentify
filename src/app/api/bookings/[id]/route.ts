@@ -90,3 +90,25 @@ export async function PUT(
     return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const deleted = db.deleteBooking(id);
+
+    if (!deleted) {
+      return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Booking deleted successfully'
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
+  }
+}
+
