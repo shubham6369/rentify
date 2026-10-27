@@ -238,6 +238,10 @@ export default function AdminDashboardPage() {
   };
 
   useEffect(() => {
+    document.title = 'Rentify Operations Portal | Master Control Desk';
+  }, []);
+
+  useEffect(() => {
     if (user && (isAdmin || isOwner)) {
       loadData();
     } else {
