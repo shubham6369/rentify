@@ -57,7 +57,13 @@ export function Navbar() {
     }
   ];
 
-  if (pathname === '/' || pathname.startsWith('/auth') || pathname === '/hotels') {
+  if (
+    pathname === '/' ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/hotels') ||
+    pathname.startsWith('/account') ||
+    pathname.startsWith('/book')
+  ) {
     return null;
   }
 

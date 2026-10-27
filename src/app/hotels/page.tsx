@@ -440,7 +440,7 @@ function HotelsPageContent() {
               <button
                 onClick={() => {
                   if (user) {
-                    router.push('/account');
+                    router.push('/account?tab=profile');
                   } else {
                     openAuthModal('otp');
                   }
@@ -750,10 +750,10 @@ function HotelsPageContent() {
                   <div
                     key={h.id}
                     onClick={() => router.push(`/hotels/${h.id}`)}
-                    className="bg-white rounded-3xl p-3 shadow-xs border border-slate-100 flex gap-3 hover:shadow-md transition-shadow cursor-pointer relative"
+                    className="bg-white rounded-3xl p-3 shadow-xs border border-slate-100 flex gap-2.5 sm:gap-3 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden"
                   >
                     {/* Left: Hotel Image with Badges */}
-                    <div className="relative w-32 h-28 sm:w-36 sm:h-30 rounded-2xl overflow-hidden shrink-0 bg-slate-100">
+                    <div className="relative w-28 h-28 sm:w-34 sm:h-30 rounded-2xl overflow-hidden shrink-0 bg-slate-100">
                       <img
                         src={h.coverImage}
                         alt={h.name}
@@ -784,7 +784,7 @@ function HotelsPageContent() {
                           <button
                             type="button"
                             onClick={(e) => toggleWishlist(h.id, e)}
-                            className="p-1 text-slate-400 hover:text-rose-500 active:scale-90 transition-transform cursor-pointer"
+                            className="p-1 text-slate-400 hover:text-rose-500 active:scale-90 transition-transform cursor-pointer shrink-0"
                             aria-label="Save to wishlist"
                           >
                             <Heart
@@ -797,9 +797,9 @@ function HotelsPageContent() {
 
                         {/* Rating Row */}
                         <div className="flex items-center gap-1 text-[11px] font-bold text-amber-500 mt-0.5">
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
                           <span>{h.rating}</span>
-                          <span className="text-slate-400 font-normal">
+                          <span className="text-slate-400 font-normal truncate">
                             ({h.reviewCount >= 1000 ? `${(h.reviewCount / 1000).toFixed(1)}k` : h.reviewCount} reviews)
                           </span>
                         </div>
@@ -807,9 +807,9 @@ function HotelsPageContent() {
                         {/* Location */}
                         <p className="text-[10px] text-slate-500 truncate mt-0.5 flex items-center gap-0.5">
                           <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                          <span>{h.location}</span>
+                          <span className="truncate">{h.location}</span>
                           {h.distanceKm !== undefined && (
-                            <span className="text-emerald-600 font-bold ml-1">
+                            <span className="text-emerald-600 font-bold ml-1 shrink-0">
                               &middot; {h.distanceKm.toFixed(1)} km away
                             </span>
                           )}
@@ -830,20 +830,24 @@ function HotelsPageContent() {
                       </div>
 
                       {/* Pricing & CTA */}
-                      <div className="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/80">
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-sm font-black text-slate-900">
-                            ₹{h.currentPrice.toLocaleString('en-IN')}
-                          </span>
-                          <span className="text-[10px] text-slate-400 line-through">
-                            ₹{h.originalPrice.toLocaleString('en-IN')}
-                          </span>
-                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">
-                            {h.discountPercentage}% OFF
-                          </span>
-                          {h.isMonthRental && (
-                            <span className="text-[9px] text-slate-400 font-medium">/mo</span>
-                          )}
+                      <div className="flex items-end justify-between mt-2 pt-1.5 border-t border-slate-100/80 gap-1.5">
+                        <div className="flex flex-col min-w-0">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-none">
+                              ₹{h.currentPrice.toLocaleString('en-IN')}
+                            </span>
+                            {h.isMonthRental && (
+                              <span className="text-[9.5px] text-slate-400 font-medium">/mo</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <span className="text-[10px] text-slate-400 line-through leading-none">
+                              ₹{h.originalPrice.toLocaleString('en-IN')}
+                            </span>
+                            <span className="text-[8.5px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded leading-none">
+                              {h.discountPercentage}% OFF
+                            </span>
+                          </div>
                         </div>
 
                         <button
@@ -852,7 +856,7 @@ function HotelsPageContent() {
                             e.stopPropagation();
                             router.push(`/hotels/${h.id}`);
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-[#3b49df] hover:bg-[#313ec9] active:scale-95 text-white text-[11px] font-bold transition-all shadow-xs flex items-center gap-0.5 cursor-pointer"
+                          className="shrink-0 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#3b49df] hover:bg-[#313ec9] active:scale-95 text-white text-[11px] font-bold transition-all shadow-xs flex items-center gap-0.5 cursor-pointer"
                         >
                           <span>Book Now</span>
                           <ChevronRight className="w-3 h-3 stroke-[3]" />
@@ -888,7 +892,7 @@ function HotelsPageContent() {
           <button
             onClick={() => {
               setBottomNavTab('bookings');
-              router.push('/account');
+              router.push('/account?tab=bookings');
             }}
             type="button"
             className={`flex flex-col items-center gap-0.5 transition-colors cursor-pointer ${
@@ -931,7 +935,7 @@ function HotelsPageContent() {
             onClick={() => {
               setBottomNavTab('profile');
               if (user) {
-                router.push('/account');
+                router.push('/account?tab=profile');
               } else {
                 openAuthModal('otp');
               }

@@ -8,7 +8,13 @@ import { Compass } from 'lucide-react';
 export function Footer() {
   const pathname = usePathname();
 
-  if (pathname.startsWith('/auth') || pathname === '/' || pathname === '/hotels') {
+  if (
+    pathname === '/' ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/hotels') ||
+    pathname.startsWith('/account') ||
+    pathname.startsWith('/book')
+  ) {
     return null;
   }
 
