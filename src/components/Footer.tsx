@@ -13,7 +13,9 @@ export function Footer() {
     pathname.startsWith('/auth') ||
     pathname.startsWith('/hotels') ||
     pathname.startsWith('/account') ||
-    pathname.startsWith('/book')
+    pathname.startsWith('/book') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/portal')
   ) {
     return null;
   }

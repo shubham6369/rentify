@@ -141,17 +141,6 @@ export function AuthModal() {
             <Mail className="w-4 h-4" />
             Email Login
           </button>
-          <button
-            onClick={() => setActiveTab('roles')}
-            className={`flex-1 py-3 text-xs font-semibold flex items-center justify-center gap-1.5 border-b-2 transition-colors ${
-              activeTab === 'roles'
-                ? 'border-indigo-600 text-indigo-600 bg-white'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Shield className="w-4 h-4" />
-            Switch Demo Role
-          </button>
         </div>
 
         {/* Tab Body */}

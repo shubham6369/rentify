@@ -62,7 +62,9 @@ export function Navbar() {
     pathname.startsWith('/auth') ||
     pathname.startsWith('/hotels') ||
     pathname.startsWith('/account') ||
-    pathname.startsWith('/book')
+    pathname.startsWith('/book') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/portal')
   ) {
     return null;
   }
@@ -153,28 +155,6 @@ export function Navbar() {
                         <Calendar className="w-4 h-4 text-slate-400" />
                         My Bookings & Profile
                       </Link>
-
-                      {(user.role === 'admin' || user.role === 'property_owner') && (
-                        <Link
-                          href="/admin"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors"
-                        >
-                          <Building className="w-4 h-4 text-slate-400" />
-                          {user.role === 'admin' ? 'Admin Center' : 'Owner Dashboard'}
-                        </Link>
-                      )}
-
-                      <button
-                        onClick={() => {
-                          setUserDropdownOpen(false);
-                          openAuthModal('roles');
-                        }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors text-left"
-                      >
-                        <Shield className="w-4 h-4 text-slate-400" />
-                        Switch Role / Account
-                      </button>
                     </div>
 
                     <div className="pt-1 border-t border-slate-100">
@@ -243,36 +223,15 @@ export function Navbar() {
             </Link>
 
             {user && (
-              <>
-                <Link
-                  href="/account"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-2"
-                >
-                  <Calendar className="w-4 h-4 text-indigo-600" />
-                  My Bookings
-                </Link>
-
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-2"
-                >
-                  <Building className="w-4 h-4 text-emerald-600" />
-                  Property & Admin Center
-                </Link>
-              </>
+              <Link
+                href="/account"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4 text-indigo-600" />
+                My Bookings
+              </Link>
             )}
-
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openAuthModal('roles');
-              }}
-              className="p-3 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-xl text-center"
-            >
-              Switch Role (Current: {user?.role || 'Guest'})
-            </button>
           </div>
         </div>
       )}

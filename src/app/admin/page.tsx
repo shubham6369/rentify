@@ -920,16 +920,6 @@ export default function AdminDashboardPage() {
               <span>Property Host Mode</span>
             </button>
           </div>
-
-          <div className="text-center pt-2">
-            <Link
-              href="/hotels"
-              className="text-[11px] text-slate-400 hover:text-white transition-colors inline-flex items-center gap-1"
-            >
-              <span>Return to Public Stays Directory</span>
-              <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
         </div>
       </div>
     );
@@ -979,14 +969,6 @@ export default function AdminDashboardPage() {
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
             </button>
-
-            <Link
-              href="/hotels"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-colors"
-            >
-              <span>View Public App</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
 
             <button
               onClick={() => switchRole(isAdmin ? 'property_owner' : 'admin')}
