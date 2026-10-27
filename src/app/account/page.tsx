@@ -35,7 +35,7 @@ import {
 function AccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, openAuthModal, updateProfile, logout, switchRole } = useAuth();
+  const { user, openAuthModal, updateProfile, logout } = useAuth();
 
   const tabParam = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<'bookings' | 'profile'>(
@@ -617,24 +617,18 @@ function AccountContent() {
                     )}
                   </button>
 
-                  {/* Quick Role Switch or Account options */}
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                    <button
-                      type="button"
-                      onClick={() => openAuthModal('roles')}
-                      className="text-[#3b49df] hover:underline font-bold cursor-pointer"
-                    >
-                      Switch Role / Account
-                    </button>
+                  {/* Sign Out option */}
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-center text-[11px]">
                     <button
                       type="button"
                       onClick={() => {
                         logout();
                         router.push('/hotels');
                       }}
-                      className="text-rose-600 hover:underline font-bold cursor-pointer"
+                      className="text-rose-600 hover:underline font-bold cursor-pointer flex items-center gap-1"
                     >
-                      Sign Out
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </form>

@@ -1040,17 +1040,6 @@ function HotelsPageContent() {
                     <User className="w-4 h-4 text-indigo-400" />
                     My Bookings & Profile
                   </Link>
-
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      openAuthModal('roles');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-indigo-300 transition-colors cursor-pointer text-left"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-purple-400" />
-                    Switch Role / Account
-                  </button>
                 </div>
               </div>
 
