@@ -7,7 +7,6 @@ import { useAuth } from '@/context/AuthContext';
 import { StayCategory } from '@/types';
 import { calculateDistanceKm, KNOWN_CITIES, findClosestCity } from '@/lib/geo';
 import {
-  Menu,
   BedDouble,
   Bell,
   User,
@@ -400,16 +399,6 @@ function HotelsPageContent() {
           {/* 1. TOP MIDNIGHT HEADER BAR (#070a29) MATCHING IMAGE 2                     */}
           {/* ========================================================================= */}
           <header className="sticky top-0 z-30 bg-[#070a29] border-b border-white/5 px-4 pt-3.5 pb-3 flex items-center justify-between">
-            {/* Left: Hamburger Menu Icon */}
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              type="button"
-              className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 flex items-center justify-center text-white border border-white/10 transition-all cursor-pointer"
-              aria-label="Open Navigation Menu"
-            >
-              <Menu className="w-5 h-5 text-white" strokeWidth={2.2} />
-            </button>
-
             {/* Center: Rentify Brand Identity */}
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-md shadow-indigo-950/60">
