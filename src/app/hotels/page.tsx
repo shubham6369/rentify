@@ -4,7 +4,11 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { StayCategory } from '@/types';
+import { StayCategory, Hotel } from '@/types';
+import { PlatformSettings } from '@/lib/db';
+import { onSnapshot, collection } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
+import { subscribeToDataChanges } from '@/lib/sync';
 import { calculateDistanceKm, KNOWN_CITIES, findClosestCity } from '@/lib/geo';
 import {
   BedDouble,
@@ -227,6 +231,81 @@ const DEFAULT_HOTELS: DisplayHotel[] = [
   }
 ];
 
+const KNOWN_CITY_IMAGES: Record<string, string> = {
+  mariyahu: '/images/city-mariyahu.jpg',
+  jaunpur: '/images/city-jaunpur.jpg',
+  varanasi: '/images/city-varanasi.jpg',
+  lucknow: '/images/city-lucknow.jpg'
+};
+
+function hotelToDisplayHotel(h: Hotel): DisplayHotel {
+  const isMonth = h.category === 'student' || Boolean(h.monthlyRent && h.monthlyRent > 0);
+  const currentPrice = isMonth && h.monthlyRent ? h.monthlyRent : (h.startingPrice || 1499);
+  const originalPrice = Math.round(currentPrice * 1.35);
+  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+
+  let badge = '🛡️ Verified';
+  let badgeColor = 'bg-blue-600';
+  if (h.featured) {
+    badge = '⭐ Featured';
+    badgeColor = 'bg-amber-600';
+  } else if (h.category === 'student') {
+    badge = '🎓 Student Hub';
+    badgeColor = 'bg-purple-600';
+  } else if ((h.rating || 4.5) >= 4.7) {
+    badge = '🔥 Top Rated';
+    badgeColor = 'bg-indigo-600';
+  } else if (h.category === 'family') {
+    badge = '👨‍👩‍👧 Family Choice';
+    badgeColor = 'bg-emerald-600';
+  }
+
+  const rawAmenities = h.amenities || [];
+  const amList: { icon: React.ElementType; label: string }[] = [];
+  if (rawAmenities.some((a) => a.toLowerCase().includes('wifi'))) {
+    amList.push({ icon: Wifi, label: 'Free WiFi' });
+  }
+  if (rawAmenities.some((a) => a.toLowerCase().includes('car') || a.toLowerCase().includes('parking'))) {
+    amList.push({ icon: Car, label: 'Parking' });
+  }
+  if (rawAmenities.some((a) => a.toLowerCase().includes('food') || a.toLowerCase().includes('restaurant') || a.toLowerCase().includes('mess') || a.toLowerCase().includes('meal'))) {
+    amList.push({ icon: Utensils, label: 'Meals' });
+  }
+  if (rawAmenities.some((a) => a.toLowerCase().includes('ac') || a.toLowerCase().includes('air conditioner') || a.toLowerCase().includes('cooling'))) {
+    amList.push({ icon: Snowflake, label: 'AC Rooms' });
+  }
+  if (rawAmenities.some((a) => a.toLowerCase().includes('pool') || a.toLowerCase().includes('swim'))) {
+    amList.push({ icon: Waves, label: 'Pool' });
+  }
+  if (amList.length === 0) {
+    amList.push(
+      { icon: Wifi, label: 'Free WiFi' },
+      { icon: ShieldCheck, label: 'Verified Safe' },
+      { icon: Sparkles, label: 'Cleaned Daily' }
+    );
+  }
+
+  return {
+    id: h.hotelId,
+    name: h.name,
+    city: h.city,
+    location: h.address || `${h.city}, India`,
+    category: h.category,
+    rating: h.rating || 4.5,
+    reviewCount: h.reviewCount || 35,
+    badge,
+    badgeColor,
+    currentPrice,
+    originalPrice,
+    discountPercentage: Math.max(15, Math.min(55, discountPercentage)),
+    coverImage: h.coverImage || '/images/hotel-grand-vista.jpg',
+    amenities: amList,
+    isMonthRental: isMonth,
+    latitude: h.latitude || 25.7464,
+    longitude: h.longitude || 82.6837
+  };
+}
+
 function HotelsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -234,6 +313,12 @@ function HotelsPageContent() {
 
   const initialCat = (searchParams.get('category') as StayCategory) || null;
   const initialCity = searchParams.get('city') || null;
+
+  // Real-Time Synchronized Data States
+  const [hotelsList, setHotelsList] = useState<DisplayHotel[]>(DEFAULT_HOTELS);
+  const [loadingHotels, setLoadingHotels] = useState<boolean>(true);
+  const [platformSettings, setPlatformSettings] = useState<PlatformSettings | null>(null);
+  const [citiesList, setCitiesList] = useState(POPULAR_CITIES);
 
   // Filter States
   const [selectedCity, setSelectedCity] = useState<string | null>(initialCity);
@@ -259,6 +344,101 @@ function HotelsPageContent() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
+
+  // Live Data Synchronizers
+  const loadLiveHotels = async () => {
+    try {
+      const res = await fetch('/api/hotels?includeAll=false&approvalStatus=approved', {
+        cache: 'no-store'
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.hotels) && data.hotels.length > 0) {
+        setHotelsList(data.hotels.map(hotelToDisplayHotel));
+      }
+    } catch (err) {
+      console.warn('Could not fetch live hotels from API:', err);
+    } finally {
+      setLoadingHotels(false);
+    }
+  };
+
+  const loadLiveSettings = async () => {
+    try {
+      const res = await fetch('/api/admin/settings', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && data.settings) {
+        setPlatformSettings(data.settings);
+        if (Array.isArray(data.settings.supportedCities) && data.settings.supportedCities.length > 0) {
+          const builtCities = data.settings.supportedCities.map((cityName: string) => {
+            const lower = cityName.toLowerCase().trim();
+            const existingImage = KNOWN_CITY_IMAGES[lower] || '/images/hero-panoramic.jpg';
+            return {
+              id: lower,
+              name: cityName,
+              image: existingImage
+            };
+          });
+          builtCities.push({ id: 'nearby', name: 'Nearby', isNearbyAction: true });
+          setCitiesList(builtCities);
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch live settings from API:', err);
+    }
+  };
+
+  // Real-Time Listeners & Cross-Tab Broadcast Subscription
+  useEffect(() => {
+    loadLiveHotels();
+    loadLiveSettings();
+
+    // 1. Cross-tab and in-window instant sync
+    const unsubscribeSync = subscribeToDataChanges((event) => {
+      console.log('HotelsPage received real-time sync event:', event);
+      loadLiveHotels();
+      if (event.type === 'settings_updated') {
+        loadLiveSettings();
+      }
+    });
+
+    // 2. Real-time Firestore onSnapshot for instantaneous multi-device updates
+    let unsubscribeFirestoreHotels: (() => void) | undefined;
+    if (firestore) {
+      try {
+        const hotelsCollection = collection(firestore, 'hotels');
+        unsubscribeFirestoreHotels = onSnapshot(
+          hotelsCollection,
+          (snapshot) => {
+            if (!snapshot.empty) {
+              const liveHotels: Hotel[] = [];
+              snapshot.forEach((doc) => {
+                const data = doc.data() as Hotel;
+                if (data.approvalStatus === 'approved' && data.status !== 'archived') {
+                  liveHotels.push(data);
+                }
+              });
+              if (liveHotels.length > 0) {
+                setHotelsList(liveHotels.map(hotelToDisplayHotel));
+                setLoadingHotels(false);
+              }
+            }
+          },
+          (error) => {
+            console.warn('Firestore onSnapshot listener notice:', error);
+          }
+        );
+      } catch (err) {
+        console.warn('Failed to initialize Firestore hotels listener:', err);
+      }
+    }
+
+    return () => {
+      unsubscribeSync();
+      if (unsubscribeFirestoreHotels) {
+        unsubscribeFirestoreHotels();
+      }
+    };
+  }, []);
 
   const toggleWishlist = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -325,7 +505,7 @@ function HotelsPageContent() {
 
   // Filtered & Computed Hotels
   const displayedHotels = useMemo(() => {
-    let list = [...DEFAULT_HOTELS];
+    let list = [...hotelsList];
 
     // Compute distance if coords exist
     if (userCoords) {
@@ -370,6 +550,7 @@ function HotelsPageContent() {
 
     return list;
   }, [
+    hotelsList,
     selectedCity,
     searchDestination,
     activeCategory,
@@ -446,6 +627,24 @@ function HotelsPageContent() {
               </button>
             </div>
           </header>
+
+          {/* Announcement Banner from Admin Platform Settings */}
+          {platformSettings?.announcementBanner?.enabled && platformSettings.announcementBanner.message && (
+            <div
+              className={`mx-4 mt-2.5 mb-1 p-2.5 rounded-2xl flex items-center gap-2 text-xs shadow-md transition-all ${
+                platformSettings.announcementBanner.type === 'offer'
+                  ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white'
+                  : platformSettings.announcementBanner.type === 'alert'
+                  ? 'bg-rose-600 text-white'
+                  : 'bg-indigo-600 text-white'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 shrink-0 text-yellow-200 animate-pulse" />
+              <span className="flex-1 text-[11px] font-bold leading-tight">
+                {platformSettings.announcementBanner.message}
+              </span>
+            </div>
+          )}
 
           {/* ========================================================================= */}
           {/* 2. HERO BANNER: PANORAMIC CITY SKYLINE & BEDROOM MATCHING IMAGE 2        */}
@@ -591,7 +790,7 @@ function HotelsPageContent() {
 
             {/* Horizontal Snap Carousel */}
             <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
-              {POPULAR_CITIES.map((c) => {
+              {citiesList.map((c) => {
                 const isSelected = selectedCity?.toLowerCase() === c.id.toLowerCase();
 
                 if (c.isNearbyAction) {

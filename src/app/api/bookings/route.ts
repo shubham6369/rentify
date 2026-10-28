@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { StayCategory, BookingStatus } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -11,7 +14,7 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category') as StayCategory | null;
     const status = searchParams.get('status') as BookingStatus | null;
 
-    let bookings = db.getBookings({
+    let bookings = await db.getBookings({
       userId: role === 'admin' ? undefined : (userId || undefined),
       hotelId: hotelId || undefined
     });
@@ -27,11 +30,18 @@ export async function GET(req: NextRequest) {
     // Sort newest first
     bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    return NextResponse.json({
-      success: true,
-      count: bookings.length,
-      bookings
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        count: bookings.length,
+        bookings
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error?.message || 'Server error' },

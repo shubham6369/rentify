@@ -18,6 +18,7 @@ import {
 } from '@/types';
 import { PlatformSettings } from '@/lib/db';
 import { CategoryBadge } from '@/components/CategoryBadge';
+import { broadcastDataChange } from '@/lib/sync';
 import {
   Building,
   Shield,
@@ -296,6 +297,7 @@ export default function AdminDashboardPage() {
           prev.map((h) => (h.hotelId === hotelId ? { ...h, approvalStatus } : h))
         );
         showToast(`Property marked as ${approvalStatus}`);
+        broadcastDataChange('hotel_approved', { hotelId, approvalStatus });
       }
     } catch (err) {
       console.error('Approval error:', err);
@@ -316,6 +318,7 @@ export default function AdminDashboardPage() {
           prev.map((h) => (h.hotelId === hotel.hotelId ? { ...h, featured: nextFeatured } : h))
         );
         showToast(nextFeatured ? 'Property featured on showcase!' : 'Property removed from featured');
+        broadcastDataChange('hotel_featured', { hotelId: hotel.hotelId, featured: nextFeatured });
       }
     } catch (err) {
       alert('Failed to update featured status');
@@ -330,6 +333,7 @@ export default function AdminDashboardPage() {
       if (data.success) {
         setHotels((prev) => prev.filter((h) => h.hotelId !== hotelId));
         showToast('Property permanently deleted');
+        broadcastDataChange('hotel_deleted', { hotelId });
       } else {
         alert(data.message || 'Failed to delete property');
       }
@@ -384,6 +388,7 @@ export default function AdminDashboardPage() {
         );
         setEditingHotel(null);
         showToast('Property details & prices updated successfully!');
+        broadcastDataChange('hotel_updated', data.hotel);
       } else {
         alert(data.message || 'Failed to update property');
       }
@@ -436,6 +441,7 @@ export default function AdminDashboardPage() {
         setHotelRooms((prev) => [...prev, data.room]);
         setNewRoomType('');
         showToast('New room type created and added to inventory!');
+        broadcastDataChange('room_added', data.room);
       } else {
         alert(data.message || 'Failed to create room');
       }
@@ -462,6 +468,7 @@ export default function AdminDashboardPage() {
           prev.map((r) => (r.roomId === roomId ? { ...r, ...payload } : r))
         );
         showToast('Room pricing updated');
+        broadcastDataChange('room_updated', { roomId, ...payload });
       }
     } catch (err) {
       alert('Failed to update room price');
@@ -476,6 +483,7 @@ export default function AdminDashboardPage() {
       if (data.success) {
         setHotelRooms((prev) => prev.filter((r) => r.roomId !== roomId));
         showToast('Room removed from inventory');
+        broadcastDataChange('room_deleted', { roomId });
       }
     } catch (err) {
       alert('Failed to delete room');
@@ -498,6 +506,7 @@ export default function AdminDashboardPage() {
           prev.map((b) => (b.bookingId === bookingId ? { ...b, bookingStatus } : b))
         );
         showToast(`Booking marked as ${bookingStatus}`);
+        broadcastDataChange('booking_updated', { bookingId, bookingStatus });
       }
     } catch (err) {
       alert('Error updating booking status');
@@ -523,6 +532,7 @@ export default function AdminDashboardPage() {
         );
         setCancellingBooking(null);
         showToast(`Booking cancelled. Refund of ₹${data.refundAmount || 0} processed.`);
+        broadcastDataChange('booking_cancelled', { bookingId: cancellingBooking.bookingId });
         loadData();
       } else {
         alert(data.message || 'Failed to cancel booking');
@@ -542,6 +552,7 @@ export default function AdminDashboardPage() {
       if (data.success) {
         setBookings((prev) => prev.filter((b) => b.bookingId !== bookingId));
         showToast('Booking record deleted');
+        broadcastDataChange('booking_deleted', { bookingId });
       } else {
         alert(data.message || 'Failed to delete booking');
       }
@@ -570,6 +581,7 @@ export default function AdminDashboardPage() {
         );
         setCounterPaymentBooking(null);
         showToast(`Counter payment of ₹${counterAmount} recorded. Balance settled!`);
+        broadcastDataChange('payment_recorded', data.booking);
         loadData();
       } else {
         alert(data.message || 'Failed to record desk payment');
@@ -597,6 +609,7 @@ export default function AdminDashboardPage() {
           prev.map((u) => (u.uid === uid ? { ...u, role: newRole } : u))
         );
         showToast(`User role updated to ${newRole}`);
+        broadcastDataChange('user_updated', { uid, role: newRole });
       } else {
         alert(data.message || 'Failed to update user role');
       }
@@ -624,6 +637,7 @@ export default function AdminDashboardPage() {
           prev.map((user) => (user.uid === u.uid ? { ...user, studentIdNumber: nextStatus } : user))
         );
         showToast(nextStatus ? 'Student verified badge granted!' : 'Student verification removed');
+        broadcastDataChange('user_updated', { uid: u.uid, studentIdNumber: nextStatus });
       }
     } catch (err) {
       alert('Error updating verification');
@@ -638,6 +652,7 @@ export default function AdminDashboardPage() {
       if (data.success) {
         setUsersList((prev) => prev.filter((u) => u.uid !== uid));
         showToast('User profile removed');
+        broadcastDataChange('user_deleted', { uid });
       } else {
         alert(data.message || 'Failed to delete user');
       }
@@ -657,6 +672,7 @@ export default function AdminDashboardPage() {
       if (data.success) {
         setReviewsList((prev) => prev.filter((r) => r.reviewId !== reviewId));
         showToast('Review deleted and hotel rating recalculated');
+        broadcastDataChange('review_deleted', { reviewId });
         loadData();
       } else {
         alert(data.message || 'Failed to delete review');
@@ -692,6 +708,7 @@ export default function AdminDashboardPage() {
       if (data.success && data.settings) {
         setPlatformSettings(data.settings);
         showToast('Platform settings saved and applied globally!');
+        broadcastDataChange('settings_updated', data.settings);
       } else {
         alert(data.message || 'Failed to update settings');
       }
@@ -750,6 +767,7 @@ export default function AdminDashboardPage() {
         setHotels((prev) => [data.hotel, ...prev]);
         setFormMsg('Accommodation published live successfully!');
         showToast('Accommodation created & published!');
+        broadcastDataChange('hotel_created', data.hotel);
         setName('');
         setAddress('');
         setDescription('');

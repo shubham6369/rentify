@@ -1,29 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const hotel = db.getHotelById(id);
+    const hotel = await db.getHotelById(id);
 
     if (!hotel) {
       return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
     }
 
-    const rooms = db.getRoomsByHotel(hotel.hotelId);
-    const reviews = db.getReviews(hotel.hotelId);
+    const rooms = await db.getRoomsByHotel(hotel.hotelId);
+    const reviews = await db.getReviews(hotel.hotelId);
 
-    return NextResponse.json({
-      success: true,
-      hotel: {
-        ...hotel,
-        rooms,
-        reviews
+    return NextResponse.json(
+      {
+        success: true,
+        hotel: {
+          ...hotel,
+          rooms,
+          reviews
+        }
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
       }
-    });
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error?.message || 'Server error' },
@@ -40,7 +50,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    const updated = db.updateHotel(id, body);
+    const updated = await db.updateHotel(id, body);
     if (!updated) {
       return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
     }
@@ -64,7 +74,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const deleted = db.deleteHotel(id);
+    const deleted = await db.deleteHotel(id);
 
     if (!deleted) {
       return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });

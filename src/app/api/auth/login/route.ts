@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const user = db.getUserByEmail(cleanEmail);
+    const user = await db.getUserByEmail(cleanEmail);
 
     if (!user) {
       return NextResponse.json(

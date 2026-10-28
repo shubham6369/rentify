@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(req: NextRequest) {
   try {
     const {
@@ -19,7 +22,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const booking = db.getBookingById(bookingId);
+    const booking = await db.getBookingById(bookingId);
     if (!booking) {
       return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });
     }
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest) {
     const paidAmount = booking.advanceAmount;
     const remainingBalance = Math.max(0, booking.totalAmount - paidAmount);
 
-    const updatedBooking = db.updateBooking(bookingId, {
+    const updatedBooking = await db.updateBooking(bookingId, {
       bookingStatus: 'confirmed',
       paymentStatus: isFullyPaid ? 'fully_paid' : 'advance_paid',
       paidAmount,

@@ -1,25 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const booking = db.getBookingById(id);
+    const booking = await db.getBookingById(id);
 
     if (!booking) {
       return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });
     }
 
-    const hotel = db.getHotelById(booking.hotelId);
+    const hotel = await db.getHotelById(booking.hotelId);
 
-    return NextResponse.json({
-      success: true,
-      booking,
-      hotel
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        booking,
+        hotel
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
   }
@@ -32,15 +42,15 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { action, reason, cancelNotes } = body;
+    const { action, reason } = body;
 
-    const booking = db.getBookingById(id);
+    const booking = await db.getBookingById(id);
     if (!booking) {
       return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });
     }
 
     if (action === 'cancel') {
-      const hotel = db.getHotelById(booking.hotelId);
+      const hotel = await db.getHotelById(booking.hotelId);
       const freeHours = hotel?.freeCancellationHours || 48;
       const feePct = hotel?.cancellationFeePercentage || 10;
 
@@ -58,7 +68,7 @@ export async function PUT(
         refundAmount = Math.max(0, booking.paidAmount - fee);
       }
 
-      const updated = db.updateBooking(booking.bookingId, {
+      const updated = await db.updateBooking(booking.bookingId, {
         bookingStatus: 'cancelled',
         paymentStatus: refundAmount > 0 ? 'refunded' : booking.paymentStatus,
         cancellationDetails: {
@@ -81,7 +91,7 @@ export async function PUT(
     }
 
     // Generic updates
-    const updated = db.updateBooking(id, body);
+    const updated = await db.updateBooking(id, body);
     return NextResponse.json({
       success: true,
       booking: updated
@@ -97,7 +107,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const deleted = db.deleteBooking(id);
+    const deleted = await db.deleteBooking(id);
 
     if (!deleted) {
       return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });

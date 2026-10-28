@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -9,7 +12,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    const updated = db.updateRoom(id, body);
+    const updated = await db.updateRoom(id, body);
     if (!updated) {
       return NextResponse.json({ success: false, message: 'Room not found' }, { status: 404 });
     }
@@ -30,7 +33,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const deleted = db.deleteRoom(id);
+    const deleted = await db.deleteRoom(id);
 
     if (!deleted) {
       return NextResponse.json({ success: false, message: 'Room not found' }, { status: 404 });

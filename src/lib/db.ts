@@ -865,13 +865,25 @@ const INITIAL_USERS: UserProfile[] = [
 
 class DatabaseService {
   private data: DatabaseSchema;
+  private lastFirestoreSync = 0;
+  private isSyncing = false;
 
   constructor() {
     this.data = this.loadDatabase();
+    // Eagerly trigger Firestore synchronization in the background
+    this.syncFromFirestore(true).catch((err) => {
+      console.warn('Initial Firestore sync scheduled:', err);
+    });
   }
 
   private loadDatabase(): DatabaseSchema {
     try {
+      // First try /tmp in serverless if exists
+      if (process.platform !== 'win32' && fs.existsSync('/tmp/db.json')) {
+        const raw = fs.readFileSync('/tmp/db.json', 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (parsed.hotels && parsed.hotels.length > 0) return parsed;
+      }
       if (fs.existsSync(DB_FILE)) {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const parsed = JSON.parse(raw);
@@ -893,30 +905,7 @@ class DatabaseService {
       settings: DEFAULT_SETTINGS
     };
     this.saveDatabase(initial);
-    this.syncFirestoreInit(initial);
     return initial;
-  }
-
-  private async syncFirestoreInit(initial: DatabaseSchema) {
-    try {
-      const firestore = getAdminFirestore();
-      if (!firestore) return;
-      const snapshot = await firestore.collection('hotels').limit(1).get();
-      if (snapshot.empty) {
-        console.log('Seeding initial hotels and rooms to Cloud Firestore...');
-        for (const h of initial.hotels) {
-          await firestore.collection('hotels').doc(h.hotelId).set(h, { merge: true });
-        }
-        for (const r of initial.rooms) {
-          await firestore.collection('rooms').doc(r.roomId).set(r, { merge: true });
-        }
-        for (const u of initial.users) {
-          await firestore.collection('users').doc(u.uid).set(u, { merge: true });
-        }
-      }
-    } catch (err) {
-      console.warn('Firestore initial sync skipped:', err);
-    }
   }
 
   private saveDatabase(dataToSave?: DatabaseSchema) {
@@ -928,7 +917,122 @@ class DatabaseService {
       }
       fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
     } catch (err) {
-      console.error('Failed to write database file:', err);
+      // In serverless / read-only filesystem environments (Vercel Lambda), write to /tmp
+      try {
+        if (process.platform !== 'win32') {
+          fs.writeFileSync('/tmp/db.json', JSON.stringify(data, null, 2), 'utf-8');
+        }
+      } catch (_) {}
+    }
+  }
+
+  public async syncFromFirestore(force = false): Promise<void> {
+    const firestore = getAdminFirestore();
+    if (!firestore) return;
+
+    const now = Date.now();
+    // Cache for 2 seconds unless forced
+    if (!force && now - this.lastFirestoreSync < 2000) {
+      return;
+    }
+    if (this.isSyncing) return;
+    this.isSyncing = true;
+
+    try {
+      const [hSnap, rSnap, bSnap, revSnap, uSnap, sSnap] = await Promise.all([
+        firestore.collection('hotels').get(),
+        firestore.collection('rooms').get(),
+        firestore.collection('bookings').get(),
+        firestore.collection('reviews').get(),
+        firestore.collection('users').get(),
+        firestore.collection('settings').doc('platform_settings').get()
+      ]);
+
+      // Seed if Firestore has 0 hotels
+      if (hSnap.empty) {
+        console.log('Seeding initial dataset to Cloud Firestore...');
+        for (const h of INITIAL_HOTELS) {
+          await firestore.collection('hotels').doc(h.hotelId).set(h, { merge: true });
+        }
+        for (const r of INITIAL_ROOMS) {
+          await firestore.collection('rooms').doc(r.roomId).set(r, { merge: true });
+        }
+        for (const u of INITIAL_USERS) {
+          await firestore.collection('users').doc(u.uid).set(u, { merge: true });
+        }
+        await firestore.collection('settings').doc('platform_settings').set(DEFAULT_SETTINGS, { merge: true });
+      } else {
+        // Read hotels from Firestore
+        const firestoreHotels: Hotel[] = [];
+        hSnap.forEach((doc) => {
+          firestoreHotels.push(doc.data() as Hotel);
+        });
+
+        // Ensure all INITIAL_HOTELS are also available in Firestore
+        const existingIds = new Set(firestoreHotels.map((h) => h.hotelId));
+        for (const initH of INITIAL_HOTELS) {
+          if (!existingIds.has(initH.hotelId)) {
+            firestoreHotels.push(initH);
+            firestore.collection('hotels').doc(initH.hotelId).set(initH, { merge: true }).catch(() => {});
+          }
+        }
+        this.data.hotels = firestoreHotels;
+      }
+
+      if (!rSnap.empty) {
+        const firestoreRooms: Room[] = [];
+        rSnap.forEach((doc) => {
+          firestoreRooms.push(doc.data() as Room);
+        });
+        const existingRoomIds = new Set(firestoreRooms.map((r) => r.roomId));
+        for (const initR of INITIAL_ROOMS) {
+          if (!existingRoomIds.has(initR.roomId)) {
+            firestoreRooms.push(initR);
+            firestore.collection('rooms').doc(initR.roomId).set(initR, { merge: true }).catch(() => {});
+          }
+        }
+        this.data.rooms = firestoreRooms;
+      }
+
+      if (!bSnap.empty) {
+        const firestoreBookings: Booking[] = [];
+        bSnap.forEach((doc) => {
+          firestoreBookings.push(doc.data() as Booking);
+        });
+        this.data.bookings = firestoreBookings;
+      }
+
+      if (!revSnap.empty) {
+        const firestoreReviews: Review[] = [];
+        revSnap.forEach((doc) => {
+          firestoreReviews.push(doc.data() as Review);
+        });
+        this.data.reviews = firestoreReviews;
+      }
+
+      if (!uSnap.empty) {
+        const firestoreUsers: UserProfile[] = [];
+        uSnap.forEach((doc) => {
+          firestoreUsers.push(doc.data() as UserProfile);
+        });
+        this.data.users = firestoreUsers;
+      }
+
+      if (sSnap.exists) {
+        this.data.settings = sSnap.data() as PlatformSettings;
+      } else {
+        await firestore.collection('settings').doc('platform_settings').set(DEFAULT_SETTINGS, { merge: true }).catch(() => {});
+        if (!this.data.settings) {
+          this.data.settings = DEFAULT_SETTINGS;
+        }
+      }
+
+      this.lastFirestoreSync = Date.now();
+      this.saveDatabase();
+    } catch (err) {
+      console.warn('Firestore live sync note:', err);
+    } finally {
+      this.isSyncing = false;
     }
   }
 
@@ -953,7 +1057,7 @@ class DatabaseService {
   }
 
   // HOTELS
-  getHotels(filter?: {
+  async getHotels(filter?: {
     category?: string;
     city?: string;
     propertyType?: string;
@@ -966,7 +1070,8 @@ class DatabaseService {
     includeAll?: boolean;
     lat?: number;
     lng?: number;
-  }) {
+  }): Promise<Hotel[]> {
+    await this.syncFromFirestore();
     let result = [...this.data.hotels];
     if (filter?.category && filter.category !== 'all') {
       if (filter.category === 'hourly') {
@@ -1026,14 +1131,15 @@ class DatabaseService {
     return result;
   }
 
-  getHotelById(id: string): Hotel | null {
+  async getHotelById(id: string): Promise<Hotel | null> {
+    await this.syncFromFirestore();
     const hotel = this.data.hotels.find((h) => h.hotelId === id || h.slug === id);
     if (!hotel) return null;
     const rooms = this.data.rooms.filter((r) => r.hotelId === hotel.hotelId);
     return { ...hotel, rooms };
   }
 
-  createHotel(hotel: Omit<Hotel, 'hotelId' | 'slug' | 'createdAt' | 'updatedAt' | 'rating' | 'reviewCount'>): Hotel {
+  async createHotel(hotel: Omit<Hotel, 'hotelId' | 'slug' | 'createdAt' | 'updatedAt' | 'rating' | 'reviewCount'>): Promise<Hotel> {
     const hotelId = 'hotel_' + Date.now();
     const slug = hotel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(1000 + Math.random() * 9000);
     const newHotel: Hotel = {
@@ -1047,11 +1153,12 @@ class DatabaseService {
     };
     this.data.hotels.push(newHotel);
     this.saveDatabase();
-    this.syncFirestoreDoc('hotels', hotelId, newHotel);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('hotels', hotelId, newHotel);
     return newHotel;
   }
 
-  updateHotel(id: string, updates: Partial<Hotel>): Hotel | null {
+  async updateHotel(id: string, updates: Partial<Hotel>): Promise<Hotel | null> {
     const index = this.data.hotels.findIndex((h) => h.hotelId === id);
     if (index === -1) return null;
     this.data.hotels[index] = {
@@ -1060,35 +1167,39 @@ class DatabaseService {
       updatedAt: new Date().toISOString()
     };
     this.saveDatabase();
-    this.syncFirestoreDoc('hotels', id, this.data.hotels[index]);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('hotels', id, this.data.hotels[index]);
     return this.data.hotels[index];
   }
 
-  deleteHotel(id: string): boolean {
+  async deleteHotel(id: string): Promise<boolean> {
     const initialLen = this.data.hotels.length;
     this.data.hotels = this.data.hotels.filter((h) => h.hotelId !== id);
     if (this.data.hotels.length !== initialLen) {
       this.saveDatabase();
-      this.deleteFirestoreDoc('hotels', id);
+      this.lastFirestoreSync = Date.now();
+      await this.deleteFirestoreDoc('hotels', id);
       return true;
     }
     return false;
   }
 
   // ROOMS
-  getRooms(hotelId: string): Room[] {
+  async getRooms(hotelId: string): Promise<Room[]> {
+    await this.syncFromFirestore();
     return this.data.rooms.filter((r) => r.hotelId === hotelId);
   }
 
-  getRoomsByHotel(hotelId: string): Room[] {
+  async getRoomsByHotel(hotelId: string): Promise<Room[]> {
     return this.getRooms(hotelId);
   }
 
-  getRoomById(roomId: string): Room | null {
+  async getRoomById(roomId: string): Promise<Room | null> {
+    await this.syncFromFirestore();
     return this.data.rooms.find((r) => r.roomId === roomId) || null;
   }
 
-  createRoom(room: Omit<Room, 'roomId'>): Room {
+  async createRoom(room: Omit<Room, 'roomId'>): Promise<Room> {
     const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
     const newRoom: Room = {
       ...room,
@@ -1096,11 +1207,12 @@ class DatabaseService {
     };
     this.data.rooms.push(newRoom);
     this.saveDatabase();
-    this.syncFirestoreDoc('rooms', roomId, newRoom);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('rooms', roomId, newRoom);
     return newRoom;
   }
 
-  updateRoom(roomId: string, updates: Partial<Room>): Room | null {
+  async updateRoom(roomId: string, updates: Partial<Room>): Promise<Room | null> {
     const index = this.data.rooms.findIndex((r) => r.roomId === roomId);
     if (index === -1) return null;
     this.data.rooms[index] = {
@@ -1108,23 +1220,26 @@ class DatabaseService {
       ...updates
     };
     this.saveDatabase();
-    this.syncFirestoreDoc('rooms', roomId, this.data.rooms[index]);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('rooms', roomId, this.data.rooms[index]);
     return this.data.rooms[index];
   }
 
-  deleteRoom(roomId: string): boolean {
+  async deleteRoom(roomId: string): Promise<boolean> {
     const initLen = this.data.rooms.length;
     this.data.rooms = this.data.rooms.filter((r) => r.roomId !== roomId);
     if (this.data.rooms.length !== initLen) {
       this.saveDatabase();
-      this.deleteFirestoreDoc('rooms', roomId);
+      this.lastFirestoreSync = Date.now();
+      await this.deleteFirestoreDoc('rooms', roomId);
       return true;
     }
     return false;
   }
 
   // BOOKINGS
-  getBookings(filter?: { userId?: string; hotelId?: string; status?: string; paymentStatus?: string; category?: string; search?: string }) {
+  async getBookings(filter?: { userId?: string; hotelId?: string; status?: string; paymentStatus?: string; category?: string; search?: string }): Promise<Booking[]> {
+    await this.syncFromFirestore();
     let result = [...this.data.bookings];
     if (filter?.userId) {
       result = result.filter((b) => b.userId === filter.userId);
@@ -1154,11 +1269,12 @@ class DatabaseService {
     return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  getBookingById(id: string): Booking | null {
+  async getBookingById(id: string): Promise<Booking | null> {
+    await this.syncFromFirestore();
     return this.data.bookings.find((b) => b.bookingId === id || b.bookingReference === id) || null;
   }
 
-  createBooking(bookingData: Omit<Booking, 'bookingId' | 'createdAt' | 'updatedAt'>): Booking {
+  async createBooking(bookingData: Omit<Booking, 'bookingId' | 'createdAt' | 'updatedAt'>): Promise<Booking> {
     const bookingId = 'bk_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
     const newBooking: Booking = {
       ...bookingData,
@@ -1168,11 +1284,12 @@ class DatabaseService {
     };
     this.data.bookings.push(newBooking);
     this.saveDatabase();
-    this.syncFirestoreDoc('bookings', bookingId, newBooking);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('bookings', bookingId, newBooking);
     return newBooking;
   }
 
-  updateBooking(id: string, updates: Partial<Booking>): Booking | null {
+  async updateBooking(id: string, updates: Partial<Booking>): Promise<Booking | null> {
     const index = this.data.bookings.findIndex((b) => b.bookingId === id);
     if (index === -1) return null;
     this.data.bookings[index] = {
@@ -1181,27 +1298,30 @@ class DatabaseService {
       updatedAt: new Date().toISOString()
     };
     this.saveDatabase();
-    this.syncFirestoreDoc('bookings', id, this.data.bookings[index]);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('bookings', id, this.data.bookings[index]);
     return this.data.bookings[index];
   }
 
-  deleteBooking(id: string): boolean {
+  async deleteBooking(id: string): Promise<boolean> {
     const index = this.data.bookings.findIndex((b) => b.bookingId === id || b.bookingReference === id);
     if (index === -1) return false;
     const booking = this.data.bookings[index];
     this.data.bookings.splice(index, 1);
     this.saveDatabase();
-    this.deleteFirestoreDoc('bookings', booking.bookingId);
+    this.lastFirestoreSync = Date.now();
+    await this.deleteFirestoreDoc('bookings', booking.bookingId);
     return true;
   }
 
   // REVIEWS
-  getReviews(hotelId?: string) {
+  async getReviews(hotelId?: string): Promise<Review[]> {
+    await this.syncFromFirestore();
     if (hotelId) return this.data.reviews.filter((r) => r.hotelId === hotelId);
     return this.data.reviews;
   }
 
-  createReview(review: Omit<Review, 'reviewId' | 'createdAt'>): Review {
+  async createReview(review: Omit<Review, 'reviewId' | 'createdAt'>): Promise<Review> {
     const reviewId = 'rev_' + Date.now();
     const newReview: Review = {
       ...review,
@@ -1213,17 +1333,18 @@ class DatabaseService {
     // Update hotel average rating
     const hotelReviews = this.data.reviews.filter((r) => r.hotelId === review.hotelId);
     const avg = hotelReviews.reduce((sum, r) => sum + r.rating, 0) / hotelReviews.length;
-    this.updateHotel(review.hotelId, {
+    await this.updateHotel(review.hotelId, {
       rating: Number(avg.toFixed(1)),
       reviewCount: hotelReviews.length
     });
 
     this.saveDatabase();
-    this.syncFirestoreDoc('reviews', reviewId, newReview);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('reviews', reviewId, newReview);
     return newReview;
   }
 
-  deleteReview(reviewId: string): boolean {
+  async deleteReview(reviewId: string): Promise<boolean> {
     const index = this.data.reviews.findIndex((r) => r.reviewId === reviewId);
     if (index === -1) return false;
     const review = this.data.reviews[index];
@@ -1234,41 +1355,46 @@ class DatabaseService {
     const hotelReviews = this.data.reviews.filter((r) => r.hotelId === hotelId);
     if (hotelReviews.length > 0) {
       const avg = hotelReviews.reduce((sum, r) => sum + r.rating, 0) / hotelReviews.length;
-      this.updateHotel(hotelId, {
+      await this.updateHotel(hotelId, {
         rating: Number(avg.toFixed(1)),
         reviewCount: hotelReviews.length
       });
     } else {
-      this.updateHotel(hotelId, {
+      await this.updateHotel(hotelId, {
         rating: 0,
         reviewCount: 0
       });
     }
 
     this.saveDatabase();
-    this.deleteFirestoreDoc('reviews', reviewId);
+    this.lastFirestoreSync = Date.now();
+    await this.deleteFirestoreDoc('reviews', reviewId);
     return true;
   }
 
   // USERS
-  getUserByEmail(email: string): UserProfile | null {
+  async getUserByEmail(email: string): Promise<UserProfile | null> {
+    await this.syncFromFirestore();
     return this.data.users.find((u) => u.email.toLowerCase() === email.toLowerCase()) || null;
   }
 
-  getUserByPhone(phone: string): UserProfile | null {
+  async getUserByPhone(phone: string): Promise<UserProfile | null> {
+    await this.syncFromFirestore();
     const clean = phone.replace(/[^0-9]/g, '');
     return this.data.users.find((u) => u.phone?.replace(/[^0-9]/g, '') === clean) || null;
   }
 
-  getUserById(uid: string): UserProfile | null {
+  async getUserById(uid: string): Promise<UserProfile | null> {
+    await this.syncFromFirestore();
     return this.data.users.find((u) => u.uid === uid) || null;
   }
 
-  getAllUsers(): UserProfile[] {
+  async getAllUsers(): Promise<UserProfile[]> {
+    await this.syncFromFirestore();
     return [...this.data.users];
   }
 
-  saveUser(user: UserProfile): UserProfile {
+  async saveUser(user: UserProfile): Promise<UserProfile> {
     const index = this.data.users.findIndex((u) => u.uid === user.uid);
     let saved: UserProfile;
     if (index >= 0) {
@@ -1279,11 +1405,12 @@ class DatabaseService {
       this.data.users.push(saved);
     }
     this.saveDatabase();
-    this.syncFirestoreDoc('users', user.uid, saved);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('users', user.uid, saved);
     return saved;
   }
 
-  updateUser(uid: string, updates: Partial<UserProfile>): UserProfile | null {
+  async updateUser(uid: string, updates: Partial<UserProfile>): Promise<UserProfile | null> {
     const index = this.data.users.findIndex((u) => u.uid === uid);
     if (index === -1) return null;
     this.data.users[index] = {
@@ -1292,21 +1419,24 @@ class DatabaseService {
       updatedAt: new Date().toISOString()
     };
     this.saveDatabase();
-    this.syncFirestoreDoc('users', uid, this.data.users[index]);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('users', uid, this.data.users[index]);
     return this.data.users[index];
   }
 
-  deleteUser(uid: string): boolean {
+  async deleteUser(uid: string): Promise<boolean> {
     const index = this.data.users.findIndex((u) => u.uid === uid);
     if (index === -1) return false;
     this.data.users.splice(index, 1);
     this.saveDatabase();
-    this.deleteFirestoreDoc('users', uid);
+    this.lastFirestoreSync = Date.now();
+    await this.deleteFirestoreDoc('users', uid);
     return true;
   }
 
   // PLATFORM SETTINGS
-  getSettings(): PlatformSettings {
+  async getSettings(): Promise<PlatformSettings> {
+    await this.syncFromFirestore();
     if (!this.data.settings) {
       this.data.settings = { ...DEFAULT_SETTINGS };
       this.saveDatabase();
@@ -1314,8 +1444,8 @@ class DatabaseService {
     return this.data.settings;
   }
 
-  updateSettings(updates: Partial<PlatformSettings>): PlatformSettings {
-    const current = this.getSettings();
+  async updateSettings(updates: Partial<PlatformSettings>): Promise<PlatformSettings> {
+    const current = await this.getSettings();
     this.data.settings = {
       ...current,
       ...updates,
@@ -1325,7 +1455,8 @@ class DatabaseService {
       }
     };
     this.saveDatabase();
-    this.syncFirestoreDoc('settings', 'platform_settings', this.data.settings);
+    this.lastFirestoreSync = Date.now();
+    await this.syncFirestoreDoc('settings', 'platform_settings', this.data.settings);
     return this.data.settings;
   }
 
@@ -1350,7 +1481,8 @@ class DatabaseService {
   }
 
   // METRICS
-  getMetrics() {
+  async getMetrics() {
+    await this.syncFromFirestore();
     const confirmed = this.data.bookings.filter((b) => b.bookingStatus === 'confirmed');
     const grossBookingValue = confirmed.reduce((acc, b) => acc + (b.totalAmount || 0), 0);
     const advancePaymentsReceived = confirmed.reduce((acc, b) => acc + (b.paidAmount || 0), 0);

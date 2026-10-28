@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { Hotel, Room, Review } from '@/types';
 import { CategoryBadge } from '@/components/CategoryBadge';
 import { useAuth } from '@/context/AuthContext';
+import { subscribeToDataChanges } from '@/lib/sync';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
 import {
   MapPin,
   Star,
@@ -46,12 +49,16 @@ export default function HotelDetailPage() {
   useEffect(() => {
     async function loadHotel() {
       try {
-        const res = await fetch(`/api/hotels/${hotelId}`);
+        const res = await fetch(`/api/hotels/${hotelId}`, { cache: 'no-store' });
         const data = await res.json();
         if (data.success && data.hotel) {
           setHotel(data.hotel);
           if (data.hotel.rooms && data.hotel.rooms.length > 0) {
-            setSelectedRoom(data.hotel.rooms[0]);
+            setSelectedRoom((prev) => {
+              if (!prev) return data.hotel.rooms[0];
+              const stillExists = data.hotel.rooms.find((r: Room) => r.roomId === prev.roomId);
+              return stillExists || data.hotel.rooms[0];
+            });
           }
         }
       } catch (err) {
@@ -60,7 +67,33 @@ export default function HotelDetailPage() {
         setLoading(false);
       }
     }
-    if (hotelId) loadHotel();
+
+    if (hotelId) {
+      loadHotel();
+
+      // 1. Cross-tab and window broadcast listener
+      const unsubscribeSync = subscribeToDataChanges((event) => {
+        loadHotel();
+      });
+
+      // 2. Real-time Firestore doc listener for instant sub-second sync
+      let unsubscribeFirestore: (() => void) | undefined;
+      if (firestore) {
+        try {
+          const docRef = doc(firestore, 'hotels', hotelId);
+          unsubscribeFirestore = onSnapshot(docRef, () => {
+            loadHotel();
+          });
+        } catch (err) {
+          console.warn('Firestore doc listener notice:', err);
+        }
+      }
+
+      return () => {
+        unsubscribeSync();
+        if (unsubscribeFirestore) unsubscribeFirestore();
+      };
+    }
   }, [hotelId]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {

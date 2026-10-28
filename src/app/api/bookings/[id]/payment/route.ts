@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -9,7 +12,7 @@ export async function POST(
     const { id } = await params;
     const { amount, method = 'Cash / Desk POS', recordedBy } = await req.json();
 
-    const booking = db.getBookingById(id);
+    const booking = await db.getBookingById(id);
     if (!booking) {
       return NextResponse.json({ success: false, message: 'Booking not found' }, { status: 404 });
     }
@@ -23,7 +26,7 @@ export async function POST(
     const newRemainingBalance = Math.max(0, booking.totalAmount - newPaidAmount);
     const newPaymentStatus = newRemainingBalance === 0 ? 'fully_paid' : 'advance_paid';
 
-    const updated = db.updateBooking(id, {
+    const updated = await db.updateBooking(id, {
       paidAmount: newPaidAmount,
       remainingBalance: newRemainingBalance,
       paymentStatus: newPaymentStatus,

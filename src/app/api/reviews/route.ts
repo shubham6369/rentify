@@ -2,12 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { StayCategory } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const hotelId = searchParams.get('hotelId') || undefined;
-    const reviews = db.getReviews(hotelId);
-    return NextResponse.json({ success: true, count: reviews.length, reviews });
+    const reviews = await db.getReviews(hotelId);
+    return NextResponse.json(
+      { success: true, count: reviews.length, reviews },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
   }
@@ -22,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Hotel, rating, and comment are required' }, { status: 400 });
     }
 
-    const review = db.createReview({
+    const review = await db.createReview({
       hotelId,
       bookingId,
       userId: userId || 'demo_user',
@@ -51,7 +61,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Review ID is required' }, { status: 400 });
     }
 
-    const deleted = db.deleteReview(reviewId);
+    const deleted = await db.deleteReview(reviewId);
     if (!deleted) {
       return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
     }

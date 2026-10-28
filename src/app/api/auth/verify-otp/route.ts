@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     const isEmail = target.includes('@');
     // Check if user already exists
-    let user = isEmail ? db.getUserByEmail(target) : db.getUserByPhone(target);
+    let user = isEmail ? await db.getUserByEmail(target) : await db.getUserByPhone(target);
 
     if (!user) {
       // Create new user profile
@@ -46,12 +46,12 @@ export async function POST(req: NextRequest) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      db.saveUser(user);
+      await db.saveUser(user);
     } else {
       user.phoneVerified = true;
       user.emailVerified = true;
       user.updatedAt = new Date().toISOString();
-      db.saveUser(user);
+      await db.saveUser(user);
     }
 
     return NextResponse.json({

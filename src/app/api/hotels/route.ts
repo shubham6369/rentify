@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { StayCategory, PropertyType, ApprovalStatus, Hotel } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -36,13 +39,20 @@ export async function GET(req: NextRequest) {
       filterOptions.approvalStatus = approvalStatus;
     }
 
-    const hotels = db.getHotels(filterOptions);
+    const hotels = await db.getHotels(filterOptions);
 
-    return NextResponse.json({
-      success: true,
-      count: hotels.length,
-      hotels
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        count: hotels.length,
+        hotels
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     console.error('Fetch hotels error:', error);
     return NextResponse.json(
@@ -125,10 +135,10 @@ export async function POST(req: NextRequest) {
       featured: false
     };
 
-    const created = db.createHotel(newHotel);
+    const created = await db.createHotel(newHotel);
 
     // Create a default room for this hotel
-    db.createRoom({
+    await db.createRoom({
       hotelId: created.hotelId,
       roomType: category === 'student' ? 'Single Student Bed with Study Pod' : category === 'family' ? 'Full Family Villa Suite' : 'Deluxe King Suite',
       description: 'Fully furnished with air conditioning, premium linen, and fast Wi-Fi.',

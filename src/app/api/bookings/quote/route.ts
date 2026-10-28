@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { StayCategory } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(req: NextRequest) {
   try {
     const {
@@ -14,12 +17,12 @@ export async function POST(req: NextRequest) {
       payFull = false
     } = await req.json();
 
-    const hotel = db.getHotelById(hotelId);
+    const hotel = await db.getHotelById(hotelId);
     if (!hotel) {
       return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
     }
 
-    const rooms = db.getRoomsByHotel(hotelId);
+    const rooms = await db.getRoomsByHotel(hotelId);
     const room = rooms.find((r) => r.roomId === roomId) || rooms[0];
 
     let baseAmount = 0;

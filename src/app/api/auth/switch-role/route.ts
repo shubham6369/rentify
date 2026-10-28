@@ -13,11 +13,11 @@ export async function POST(req: NextRequest) {
     let targetUser = null;
 
     if (role === 'admin') {
-      targetUser = db.getUserById('usr_admin_master');
+      targetUser = await db.getUserById('usr_admin_master');
     } else if (role === 'property_owner') {
-      targetUser = db.getUserById('owner_demo_1');
+      targetUser = await db.getUserById('owner_demo_1');
     } else {
-      targetUser = db.getUserById('usr_customer_1') || db.getUserById('demo_user_student');
+      targetUser = (await db.getUserById('usr_customer_1')) || (await db.getUserById('demo_user_student'));
     }
 
     if (!targetUser) {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      db.saveUser(targetUser);
+      await db.saveUser(targetUser);
     }
 
     return NextResponse.json({

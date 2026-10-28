@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const existing = db.getUserByEmail(cleanEmail);
+    const existing = await db.getUserByEmail(cleanEmail);
 
     if (existing) {
       return NextResponse.json(
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString()
     };
 
-    db.saveUser(newUser);
+    await db.saveUser(newUser);
 
     return NextResponse.json({
       success: true,

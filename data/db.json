@@ -1,573 +1,105 @@
 {
   "hotels": [
     {
-      "hotelId": "hostel_apex_jaunpur",
-      "name": "Apex Scholar Youth Hostel & PG",
-      "slug": "apex-scholar-youth-hostel-jaunpur",
-      "description": "Premier student hostel & PG near Purvanchal University in Civil Lines, Jaunpur. Ergonomic study desks, high-speed WiFi, 4 wholesome meals, and 24/7 power backup.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "Near Purvanchal University Road, Civil Lines",
-      "city": "Jaunpur",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "222002",
-      "latitude": 25.751,
-      "longitude": 82.689,
-      "monthlyRent": 4500,
-      "securityDeposit": 5000,
-      "startingPrice": 4500,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 2000,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 72,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Full advance refund up to 72h prior to check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/hostel-jaunpur.jpg",
-      "images": [
-        "/images/hostel-jaunpur.jpg",
-        "/images/student-onboarding.jpg"
-      ],
       "amenities": [
-        "300 Mbps Wi-Fi",
-        "Homestyle Mess Meals",
-        "Quiet Study Library",
-        "Power Backup 24/7",
-        "RO Drinking Water",
-        "CCTV Security"
+        "Stone Fireplace & Radiators",
+        "Family Dining Table (Seats 10)",
+        "Board Games & Kid Book Corner",
+        "Herbal Tea Garden",
+        "Mountain Trekking Guide on Request"
       ],
-      "rules": [
-        "Student / College ID required",
-        "Curfew: 10:00 PM",
-        "Alcohol and smoking strictly prohibited"
-      ],
-      "nearbyLandmarks": [
-        "VBS Purvanchal University (1.5 km)",
-        "Civil Lines Market (800m)",
-        "Jaunpur Junction (2.2 km)"
-      ],
-      "rating": 4.8,
-      "reviewCount": 320,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z"
-    },
-    {
-      "hotelId": "hostel_bhu_varanasi",
-      "name": "Kashi Scholar Co-Living & Hostel",
-      "slug": "kashi-scholar-co-living-varanasi",
-      "description": "Ideal student hostel situated at Lanka near BHU main gate in Varanasi. Features air-conditioned study pods, hygienic mess food, biometric security, and fast fiber broadband.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "Lanka, Near BHU Main Gate",
-      "city": "Varanasi",
-      "state": "Uttar Pradesh",
       "country": "India",
-      "postalCode": "221005",
-      "latitude": 25.275,
-      "longitude": 82.998,
-      "monthlyRent": 5500,
-      "securityDeposit": 6000,
-      "startingPrice": 5500,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 2500,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 72,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Full refund before 72 hours of move-in date.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/hostel-varanasi.jpg",
-      "images": [
-        "/images/hostel-varanasi.jpg",
-        "/images/student-onboarding.jpg"
-      ],
-      "amenities": [
-        "High-Speed Wi-Fi",
-        "Hygienic Mess Meals",
-        "AC Study Rooms",
-        "Biometric Security",
-        "Laundry Service",
-        "Power Backup"
-      ],
-      "rules": [
-        "Valid student ID or coaching verification required",
-        "Quiet hours: 11:00 PM - 6:00 AM"
-      ],
-      "nearbyLandmarks": [
-        "BHU Main Gate (300m)",
-        "Lanka Crossing (200m)",
-        "Assi Ghat (1.8 km)"
-      ],
-      "rating": 4.9,
-      "reviewCount": 410,
       "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z"
-    },
-    {
-      "hotelId": "hostel_hazratganj_lucknow",
-      "name": "Hazratganj Student Suites & Hostel",
-      "slug": "hazratganj-student-suites-lucknow",
-      "description": "Centrally located student hostel on University Road near Hazratganj. Perfect for university scholars and civil service aspirants with individual study desks and nutritious food.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "University Road, Hazratganj",
-      "city": "Lucknow",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "226001",
-      "latitude": 26.856,
-      "longitude": 80.945,
-      "monthlyRent": 5200,
-      "securityDeposit": 6000,
-      "startingPrice": 5200,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 2000,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Refundable security deposit with 48h prior notice.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/hostel-lucknow.jpg",
-      "images": [
-        "/images/hostel-lucknow.jpg",
-        "/images/student-onboarding.jpg"
-      ],
-      "amenities": [
-        "High-Speed Wi-Fi",
-        "Nutritious Meals",
-        "AC Rooms",
-        "Study Desks",
-        "24/7 Security",
-        "RO Drinking Water"
-      ],
-      "rules": [
-        "Student ID required",
-        "Curfew: 10:30 PM"
-      ],
-      "nearbyLandmarks": [
-        "Lucknow University (800m)",
-        "Hazratganj Metro (400m)",
-        "Civil Hospital (1 km)"
-      ],
-      "rating": 4.7,
-      "reviewCount": 285,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z"
-    },
-    {
-      "hotelId": "hostel_mariyahu_pg",
-      "name": "Mariyahu Campus PG & Youth Hostel",
-      "slug": "mariyahu-campus-pg-hostel",
-      "description": "Safe and budget-friendly student accommodation in Mariyahu. Near Degree College with clean rooms, healthy homemade food, power backup, and high-speed internet.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "Station Road, Near Degree College",
-      "city": "Mariyahu",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "222161",
-      "latitude": 25.605,
-      "longitude": 82.614,
-      "monthlyRent": 3800,
-      "securityDeposit": 4000,
-      "startingPrice": 3800,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 1500,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 0,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/student-onboarding.jpg",
-      "images": [
-        "/images/student-onboarding.jpg"
-      ],
-      "amenities": [
-        "Free Wi-Fi",
-        "Daily Home Mess",
-        "Power Backup",
-        "Purified RO Water",
-        "Study Tables",
-        "CCTV Security"
-      ],
-      "rules": [
-        "College admission proof required",
-        "Quiet hours post 10:30 PM"
-      ],
-      "nearbyLandmarks": [
-        "Mariyahu Degree College (200m)",
-        "Mariyahu Railway Station (500m)"
-      ],
-      "rating": 4.6,
-      "reviewCount": 195,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z"
-    },
-    {
-      "hotelId": "hotel_grand_vista_jnp",
-      "name": "Hotel Grand Vista",
-      "slug": "hotel-grand-vista-jaunpur",
-      "description": "Premier luxury stay in Civil Lines, Jaunpur. Featuring elegant modern rooms, panoramic views, multi-cuisine dining, and exceptional hospitality.",
-      "category": "regular",
-      "propertyType": "hotel",
-      "address": "Civil Lines",
-      "city": "Jaunpur",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "222002",
-      "startingPrice": 2499,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 1000,
+      "city": "Shimla",
       "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 24,
-      "cancellationFeePercentage": 0,
-      "cancellationDescription": "Free cancellation up to 24 hours before check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/hotel-grand-vista.jpg",
-      "images": [
-        "/images/hotel-grand-vista.jpg",
-        "/images/hero-panoramic.jpg"
-      ],
-      "amenities": [
-        "Free WiFi",
-        "Free Parking",
-        "Restaurant",
-        "Air Conditioning",
-        "24/7 Front Desk"
-      ],
+      "postalCode": "171007",
+      "rating": 4.88,
+      "description": "Charming 3-bedroom mountain chalet surrounded by deodar forests. Features floor-to-ceiling panoramic glass windows, cozy wooden fireplace, heated floors, and indoor board games for families.",
       "rules": [
-        "Valid Government Photo ID required at check-in",
-        "Check-in: 12:00 PM, Check-out: 11:00 AM"
+        "Family-friendly environment",
+        "Smoking only in designated outdoor verandas"
       ],
-      "nearbyLandmarks": [
-        "Shahi Bridge (1.5 km)",
-        "Jaunpur Junction (2.0 km)"
-      ],
-      "rating": 4.6,
-      "reviewCount": 1200,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z",
-      "latitude": 25.7464,
-      "longitude": 82.6837
-    },
-    {
-      "hotelId": "royal_heritage_resort_vns",
-      "name": "Royal Heritage Resort",
-      "slug": "royal-heritage-resort-varanasi",
-      "description": "Scenic resort on Ganga Ghat Road, Varanasi. Enjoy river views, refreshing outdoor swimming pool, royal heritage ambiance, and multi-cuisine restaurant.",
-      "category": "family",
-      "propertyType": "resort",
-      "address": "Ganga Ghat Road",
-      "city": "Varanasi",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "221001",
-      "startingPrice": 3199,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 1500,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Free cancellation up to 48 hours before check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
+      "startingPrice": 14200,
       "ownerId": "owner_demo_1",
-      "coverImage": "/images/hotel-royal-heritage.jpg",
-      "images": [
-        "/images/hotel-royal-heritage.jpg",
-        "/images/hero-panoramic.jpg"
-      ],
-      "amenities": [
-        "Free WiFi",
-        "Swimming Pool",
-        "Restaurant",
-        "River View",
-        "Kids Play Area"
-      ],
-      "rules": [
-        "Government ID required for all adult guests",
-        "Pool timings: 7:00 AM - 8:00 PM"
-      ],
+      "createdAt": "2026-01-25T00:00:00.000Z",
       "nearbyLandmarks": [
-        "Dashashwamedh Ghat (800m)",
-        "Kashi Vishwanath Temple (1.2 km)"
+        "Mashobra Ridge (1km)",
+        "Craignano Nature Park (2.5km)",
+        "Shimla Mall Road (10km)"
       ],
-      "rating": 4.5,
-      "reviewCount": 856,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z",
-      "latitude": 25.2677,
-      "longitude": 82.9913
-    },
-    {
-      "hotelId": "the_park_inn_lko",
-      "name": "The Park Inn",
-      "slug": "the-park-inn-lucknow",
-      "description": "Stylish and comfortable stay situated in Hazratganj, Lucknow. Clean AC rooms, 24/7 room service, fast WiFi, and proximity to major shopping centers.",
-      "category": "hourly",
-      "propertyType": "hotel",
-      "address": "Hazratganj",
-      "city": "Lucknow",
-      "state": "Uttar Pradesh",
-      "country": "India",
-      "postalCode": "226001",
-      "startingPrice": 1799,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 500,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 12,
-      "cancellationFeePercentage": 0,
-      "cancellationDescription": "Flexible free cancellation up to 12 hours prior.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "/images/hotel-the-park-inn.jpg",
-      "images": [
-        "/images/hotel-the-park-inn.jpg",
-        "/images/hero-panoramic.jpg"
-      ],
-      "amenities": [
-        "Free WiFi",
-        "AC Rooms",
-        "Room Service",
-        "Express Check-in",
-        "Power Backup"
-      ],
-      "rules": [
-        "Valid Government Photo ID required",
-        "Couple friendly with local ID accepted"
-      ],
-      "nearbyLandmarks": [
-        "Hazratganj Metro (200m)",
-        "Bara Imambara (4 km)"
-      ],
-      "rating": 4.3,
-      "reviewCount": 642,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z",
-      "latitude": 26.85,
-      "longitude": 80.94
-    },
-    {
-      "hotelId": "stu_hostel_blr_1",
-      "name": "Oxford Scholars Luxury Hostel & Co-Living",
-      "slug": "oxford-scholars-hostel-bangalore",
-      "description": "Premier student residence tailored for university scholars and interns. Features ergonomic study pods, 300 Mbps symmetrical Wi-Fi, 4 wholesome home-style meals daily, library, and 24/7 biometric security.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "Near Christ University Main Gate, SG Palya, Koramangala",
-      "city": "Bangalore",
-      "state": "Karnataka",
-      "country": "India",
-      "postalCode": "560029",
-      "monthlyRent": 11500,
-      "securityDeposit": 15000,
-      "startingPrice": 11500,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 15000,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
       "freeCancellationHours": 72,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Full security deposit refund up to 72 hours prior to semester move-in date.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
-      "images": [
-        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "amenities": [
-        "300 Mbps Dedicated Wi-Fi",
-        "4-Time Nutritious Mess Meals",
-        "Quiet Study Library",
-        "Biometric Access & CCTV",
-        "Laundry & Housekeeping",
-        "RO Drinking Water",
-        "Power Backup 24/7"
-      ],
-      "rules": [
-        "Student ID & College Verification Required",
-        "Curfew: 10:30 PM (Exceptions with Parent Approval)",
-        "Visitors permitted in lounge area until 7:00 PM",
-        "Non-smoking & Alcohol-free academic premises"
-      ],
-      "nearbyLandmarks": [
-        "Christ University (300m)",
-        "Forum Mall (1.2km)",
-        "Koramangala Metro (1.5km)"
-      ],
-      "rating": 4.8,
-      "reviewCount": 42,
-      "featured": true,
-      "createdAt": "2026-01-15T00:00:00.000Z",
-      "updatedAt": "2026-10-24T11:59:18.728Z",
-      "latitude": 12.9352,
-      "longitude": 77.6245
-    },
-    {
-      "hotelId": "stu_pg_delhi_2",
-      "name": "Apex North Campus Premium PG",
-      "slug": "apex-north-campus-delhi",
-      "description": "Modern student accommodations across Delhi University North Campus. Fully air-conditioned twin and single rooms with attached bathrooms, study desks, and healthy hygienic meals.",
-      "category": "student",
-      "propertyType": "pg",
-      "address": "Hudson Lane, GTB Nagar, North Campus",
-      "city": "Delhi",
-      "state": "Delhi",
-      "country": "India",
-      "postalCode": "110009",
-      "monthlyRent": 9800,
-      "securityDeposit": 12000,
-      "startingPrice": 9800,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 12000,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 15,
-      "cancellationDescription": "Refundable security deposit with 48h prior notice.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
-      "images": [
-        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "amenities": [
-        "High-Speed Wi-Fi",
-        "All-Inclusive Meals (Veg/Non-Veg)",
-        "Split Air Conditioners",
-        "Attached Bathrooms with Geysers",
-        "Daily Room Cleaning",
-        "Washing Machines"
-      ],
-      "rules": [
-        "Valid University ID card mandatory",
-        "Silent study hours from 11:00 PM to 6:00 AM"
-      ],
-      "nearbyLandmarks": [
-        "GTB Nagar Metro (400m)",
-        "SRCC (800m)",
-        "Hindu College (1km)"
-      ],
-      "rating": 4.7,
-      "reviewCount": 38,
-      "featured": true,
-      "createdAt": "2026-01-20T00:00:00.000Z",
-      "updatedAt": "2026-02-05T00:00:00.000Z",
-      "latitude": 28.6942,
-      "longitude": 77.2089
-    },
-    {
-      "hotelId": "stu_coliving_pune_3",
-      "name": "Horizon Campus Suites & Co-Living",
-      "slug": "horizon-campus-suites-pune",
-      "description": "Youth co-living community in Viman Nagar near Symbiosis. Includes gaming arena, shared kitchen, fitness studio, co-working workstations, and vibrant weekend social events.",
-      "category": "student",
-      "propertyType": "hostel",
-      "address": "Near Symbiosis International School, Viman Nagar",
-      "city": "Pune",
-      "state": "Maharashtra",
-      "country": "India",
-      "postalCode": "411014",
-      "monthlyRent": 12500,
-      "securityDeposit": 15000,
-      "startingPrice": 12500,
-      "advancePaymentType": "fixed",
-      "advancePaymentValue": 15000,
-      "gstPercentage": 5,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 72,
-      "cancellationFeePercentage": 10,
-      "cancellationDescription": "Advance deposit returned if canceled before move-in date.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
-      "images": [
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "amenities": [
-        "Gaming Zone & PS5 Lounge",
-        "High-Speed Wi-Fi",
-        "Fitness Gym",
-        "Communal Chef Kitchen",
-        "Bi-weekly Housekeeping"
-      ],
-      "rules": [
-        "Quiet hours post midnight",
-        "No unauthorized overnight guests"
-      ],
-      "nearbyLandmarks": [
-        "Symbiosis Campus (600m)",
-        "Phoenix Marketcity (1.5km)",
-        "Pune Airport (2km)"
-      ],
-      "rating": 4.9,
-      "reviewCount": 56,
-      "featured": true,
-      "createdAt": "2026-02-01T00:00:00.000Z",
-      "updatedAt": "2026-02-10T00:00:00.000Z",
-      "latitude": 18.5679,
-      "longitude": 73.9143
-    },
-    {
-      "hotelId": "fam_villa_goa_1",
-      "name": "Sea Breeze Infinity Pool Villa",
-      "slug": "sea-breeze-infinity-villa-goa",
-      "description": "Lavish 4-bedroom beachfront private villa nestled amidst swaying coconut groves. Features private azure swimming pool, modular kitchen with child feeding seats, toddler safety gates, and private chef on request.",
-      "category": "family",
-      "propertyType": "villa",
-      "address": "Candolim Beach Road, North Goa",
-      "city": "Goa",
-      "state": "Goa",
-      "country": "India",
-      "postalCode": "403515",
-      "startingPrice": 18500,
+      "reviewCount": 52,
       "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 3,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 20,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in. 30% advance required online, remaining 70% payable at check-in.",
-      "status": "published",
+      "coverImage": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "villa",
+      "state": "Himachal Pradesh",
+      "slug": "himalayan-cedar-estate-shimla",
+      "updatedAt": "2026-02-18T00:00:00.000Z",
       "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
       "images": [
-        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1200&q=80"
       ],
+      "address": "Mashobra Forest Valley, Upper Shimla",
+      "serviceFeePercentage": 3,
+      "hotelId": "fam_estate_shimla_2",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 25,
+      "name": "Himalayan Cedar Pine Estate",
+      "cancellationDescription": "Free cancellation up to 72 hours prior to arrival. Pay 30% advance now, balance at check-in.",
+      "category": "family",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Lake Pichola Views",
+        "Traditional Courtyard Lounge",
+        "Royal Rajasthani Meals Available",
+        "Family Suite Rooms with Extra Cots",
+        "Doctor on Call 24/7"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Udaipur",
+      "gstPercentage": 12,
+      "postalCode": "313001",
+      "rating": 4.92,
+      "description": "Historic Mewari family residence fronting Lake Pichola. Restored with courtyards, fountain verandas, 5 large family bedrooms, and rooftop dining with royal palace views.",
+      "rules": [
+        "Peaceful residential heritage enclave",
+        "No outdoor parties"
+      ],
+      "startingPrice": 22000,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-02-05T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "City Palace (800m)",
+        "Jagdish Temple (700m)",
+        "Bagore Ki Haveli (500m)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 64,
+      "advancePaymentType": "percentage",
+      "coverImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "villa",
+      "state": "Rajasthan",
+      "slug": "lakefront-royal-haveli-udaipur",
+      "updatedAt": "2026-02-20T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "Hanuman Ghat, Outside Chandpole",
+      "serviceFeePercentage": 3,
+      "hotelId": "fam_haveli_udaipur_3",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 20,
+      "name": "Lakefront Royal Heritage Haveli",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
+      "category": "family",
+      "status": "published"
+    },
+    {
       "amenities": [
         "Private Swimming Pool",
         "Fully Equipped Modular Kitchen",
@@ -577,149 +109,673 @@
         "Dedicated Caretaker & Housekeeping",
         "Washing Machine & Dryer"
       ],
+      "country": "India",
+      "featured": true,
+      "city": "Goa",
+      "gstPercentage": 12,
+      "postalCode": "403515",
+      "rating": 4.95,
+      "description": "Lavish 4-bedroom beachfront private villa nestled amidst swaying coconut groves. Features private azure swimming pool, modular kitchen with child feeding seats, toddler safety gates, and private chef on request.",
       "rules": [
         "Perfect for families with children and grandparents",
         "No loud outdoor music after 10:00 PM (Local Noise Regulations)",
         "Pet friendly with prior notice"
       ],
+      "startingPrice": 18500,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-10T00:00:00.000Z",
       "nearbyLandmarks": [
         "Candolim Beach (300m)",
         "Fort Aguada (2km)",
         "Calangute Market (3km)"
       ],
-      "rating": 4.95,
-      "reviewCount": 78,
-      "featured": true,
-      "createdAt": "2026-01-10T00:00:00.000Z",
-      "updatedAt": "2026-02-15T00:00:00.000Z"
-    },
-    {
-      "hotelId": "fam_estate_shimla_2",
-      "name": "Himalayan Cedar Pine Estate",
-      "slug": "himalayan-cedar-estate-shimla",
-      "description": "Charming 3-bedroom mountain chalet surrounded by deodar forests. Features floor-to-ceiling panoramic glass windows, cozy wooden fireplace, heated floors, and indoor board games for families.",
-      "category": "family",
-      "propertyType": "villa",
-      "address": "Mashobra Forest Valley, Upper Shimla",
-      "city": "Shimla",
-      "state": "Himachal Pradesh",
-      "country": "India",
-      "postalCode": "171007",
-      "startingPrice": 14200,
-      "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 3,
-      "freeCancellationHours": 72,
-      "cancellationFeePercentage": 25,
-      "cancellationDescription": "Free cancellation up to 72 hours prior to arrival. Pay 30% advance now, balance at check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
-      "images": [
-        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "amenities": [
-        "Stone Fireplace & Radiators",
-        "Family Dining Table (Seats 10)",
-        "Board Games & Kid Book Corner",
-        "Herbal Tea Garden",
-        "Mountain Trekking Guide on Request"
-      ],
-      "rules": [
-        "Family-friendly environment",
-        "Smoking only in designated outdoor verandas"
-      ],
-      "nearbyLandmarks": [
-        "Mashobra Ridge (1km)",
-        "Craignano Nature Park (2.5km)",
-        "Shimla Mall Road (10km)"
-      ],
-      "rating": 4.88,
-      "reviewCount": 52,
-      "featured": true,
-      "createdAt": "2026-01-25T00:00:00.000Z",
-      "updatedAt": "2026-02-18T00:00:00.000Z"
-    },
-    {
-      "hotelId": "fam_haveli_udaipur_3",
-      "name": "Lakefront Royal Heritage Haveli",
-      "slug": "lakefront-royal-haveli-udaipur",
-      "description": "Historic Mewari family residence fronting Lake Pichola. Restored with courtyards, fountain verandas, 5 large family bedrooms, and rooftop dining with royal palace views.",
-      "category": "family",
-      "propertyType": "villa",
-      "address": "Hanuman Ghat, Outside Chandpole",
-      "city": "Udaipur",
-      "state": "Rajasthan",
-      "country": "India",
-      "postalCode": "313001",
-      "startingPrice": 22000,
-      "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 3,
       "freeCancellationHours": 48,
-      "cancellationFeePercentage": 20,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
-      "status": "published",
+      "reviewCount": 78,
+      "advancePaymentType": "percentage",
+      "coverImage": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "villa",
+      "state": "Goa",
+      "slug": "sea-breeze-infinity-villa-goa",
+      "updatedAt": "2026-02-15T00:00:00.000Z",
       "approvalStatus": "approved",
+      "images": [
+        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "Candolim Beach Road, North Goa",
+      "serviceFeePercentage": 3,
+      "hotelId": "fam_villa_goa_1",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 20,
+      "name": "Sea Breeze Infinity Pool Villa",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in. 30% advance required online, remaining 70% payable at check-in.",
+      "category": "family",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "300 Mbps Wi-Fi",
+        "Homestyle Mess Meals",
+        "Quiet Study Library",
+        "Power Backup 24/7",
+        "RO Drinking Water",
+        "CCTV Security"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Jaunpur",
+      "gstPercentage": 5,
+      "latitude": 25.751,
+      "postalCode": "222002",
+      "rating": 4.8,
+      "description": "Premier student hostel & PG near Purvanchal University in Civil Lines, Jaunpur. Ergonomic study desks, high-speed WiFi, 4 wholesome meals, and 24/7 power backup.",
+      "rules": [
+        "Student / College ID required",
+        "Curfew: 10:00 PM",
+        "Alcohol and smoking strictly prohibited"
+      ],
+      "securityDeposit": 5000,
+      "startingPrice": 4500,
       "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "VBS Purvanchal University (1.5 km)",
+        "Civil Lines Market (800m)",
+        "Jaunpur Junction (2.2 km)"
+      ],
+      "freeCancellationHours": 72,
+      "reviewCount": 320,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hostel-jaunpur.jpg",
+      "propertyType": "hostel",
+      "state": "Uttar Pradesh",
+      "slug": "apex-scholar-youth-hostel-jaunpur",
+      "longitude": 82.689,
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hostel-jaunpur.jpg",
+        "/images/student-onboarding.jpg"
+      ],
+      "address": "Near Purvanchal University Road, Civil Lines",
+      "serviceFeePercentage": 2,
+      "hotelId": "hostel_apex_jaunpur",
+      "advancePaymentValue": 2000,
+      "monthlyRent": 4500,
+      "cancellationFeePercentage": 10,
+      "name": "Apex Scholar Youth Hostel & PG",
+      "cancellationDescription": "Full advance refund up to 72h prior to check-in.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "High-Speed Wi-Fi",
+        "Hygienic Mess Meals",
+        "AC Study Rooms",
+        "Biometric Security",
+        "Laundry Service",
+        "Power Backup"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Varanasi",
+      "gstPercentage": 5,
+      "latitude": 25.275,
+      "postalCode": "221005",
+      "rating": 4.9,
+      "description": "Ideal student hostel situated at Lanka near BHU main gate in Varanasi. Features air-conditioned study pods, hygienic mess food, biometric security, and fast fiber broadband.",
+      "rules": [
+        "Valid student ID or coaching verification required",
+        "Quiet hours: 11:00 PM - 6:00 AM"
+      ],
+      "securityDeposit": 6000,
+      "startingPrice": 5500,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "BHU Main Gate (300m)",
+        "Lanka Crossing (200m)",
+        "Assi Ghat (1.8 km)"
+      ],
+      "freeCancellationHours": 72,
+      "reviewCount": 410,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hostel-varanasi.jpg",
+      "propertyType": "hostel",
+      "state": "Uttar Pradesh",
+      "slug": "kashi-scholar-co-living-varanasi",
+      "longitude": 82.998,
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hostel-varanasi.jpg",
+        "/images/student-onboarding.jpg"
+      ],
+      "address": "Lanka, Near BHU Main Gate",
+      "serviceFeePercentage": 2,
+      "hotelId": "hostel_bhu_varanasi",
+      "advancePaymentValue": 2500,
+      "monthlyRent": 5500,
+      "cancellationFeePercentage": 10,
+      "name": "Kashi Scholar Co-Living & Hostel",
+      "cancellationDescription": "Full refund before 72 hours of move-in date.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "High-Speed Wi-Fi",
+        "Nutritious Meals",
+        "AC Rooms",
+        "Study Desks",
+        "24/7 Security",
+        "RO Drinking Water"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Lucknow",
+      "gstPercentage": 5,
+      "latitude": 26.856,
+      "postalCode": "226001",
+      "rating": 4.7,
+      "description": "Centrally located student hostel on University Road near Hazratganj. Perfect for university scholars and civil service aspirants with individual study desks and nutritious food.",
+      "rules": [
+        "Student ID required",
+        "Curfew: 10:30 PM"
+      ],
+      "securityDeposit": 6000,
+      "startingPrice": 5200,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Lucknow University (800m)",
+        "Hazratganj Metro (400m)",
+        "Civil Hospital (1 km)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 285,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hostel-lucknow.jpg",
+      "propertyType": "hostel",
+      "state": "Uttar Pradesh",
+      "slug": "hazratganj-student-suites-lucknow",
+      "longitude": 80.945,
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hostel-lucknow.jpg",
+        "/images/student-onboarding.jpg"
+      ],
+      "address": "University Road, Hazratganj",
+      "serviceFeePercentage": 2,
+      "hotelId": "hostel_hazratganj_lucknow",
+      "advancePaymentValue": 2000,
+      "monthlyRent": 5200,
+      "cancellationFeePercentage": 10,
+      "name": "Hazratganj Student Suites & Hostel",
+      "cancellationDescription": "Refundable security deposit with 48h prior notice.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Free Wi-Fi",
+        "Daily Home Mess",
+        "Power Backup",
+        "Purified RO Water",
+        "Study Tables",
+        "CCTV Security"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Mariyahu",
+      "gstPercentage": 5,
+      "latitude": 25.605,
+      "postalCode": "222161",
+      "rating": 4.6,
+      "description": "Safe and budget-friendly student accommodation in Mariyahu. Near Degree College with clean rooms, healthy homemade food, power backup, and high-speed internet.",
+      "rules": [
+        "College admission proof required",
+        "Quiet hours post 10:30 PM"
+      ],
+      "securityDeposit": 4000,
+      "startingPrice": 3800,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Mariyahu Degree College (200m)",
+        "Mariyahu Railway Station (500m)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 195,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/student-onboarding.jpg",
+      "propertyType": "hostel",
+      "state": "Uttar Pradesh",
+      "slug": "mariyahu-campus-pg-hostel",
+      "longitude": 82.614,
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/student-onboarding.jpg"
+      ],
+      "address": "Station Road, Near Degree College",
+      "serviceFeePercentage": 2,
+      "hotelId": "hostel_mariyahu_pg",
+      "advancePaymentValue": 1500,
+      "monthlyRent": 3800,
+      "cancellationFeePercentage": 0,
+      "name": "Mariyahu Campus PG & Youth Hostel",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Free WiFi",
+        "Free Parking",
+        "Restaurant",
+        "Air Conditioning",
+        "24/7 Front Desk"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Jaunpur",
+      "gstPercentage": 12,
+      "postalCode": "222002",
+      "rating": 4.6,
+      "description": "Premier luxury stay in Civil Lines, Jaunpur. Featuring elegant modern rooms, panoramic views, multi-cuisine dining, and exceptional hospitality.",
+      "rules": [
+        "Valid Government Photo ID required at check-in",
+        "Check-in: 12:00 PM, Check-out: 11:00 AM"
+      ],
+      "startingPrice": 2499,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Shahi Bridge (1.5 km)",
+        "Jaunpur Junction (2.0 km)"
+      ],
+      "freeCancellationHours": 24,
+      "reviewCount": 1200,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hotel-grand-vista.jpg",
+      "propertyType": "hotel",
+      "state": "Uttar Pradesh",
+      "slug": "hotel-grand-vista-jaunpur",
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hotel-grand-vista.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "address": "Civil Lines",
+      "serviceFeePercentage": 2,
+      "hotelId": "hotel_grand_vista_jnp",
+      "advancePaymentValue": 1000,
+      "cancellationFeePercentage": 0,
+      "name": "Hotel Grand Vista",
+      "cancellationDescription": "Free cancellation up to 24 hours before check-in.",
+      "category": "regular",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Free WiFi",
+        "Swimming Pool",
+        "Restaurant",
+        "River View",
+        "Kids Play Area"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Varanasi",
+      "gstPercentage": 12,
+      "postalCode": "221001",
+      "rating": 4.5,
+      "description": "Scenic resort on Ganga Ghat Road, Varanasi. Enjoy river views, refreshing outdoor swimming pool, royal heritage ambiance, and multi-cuisine restaurant.",
+      "rules": [
+        "Government ID required for all adult guests",
+        "Pool timings: 7:00 AM - 8:00 PM"
+      ],
+      "startingPrice": 3199,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Dashashwamedh Ghat (800m)",
+        "Kashi Vishwanath Temple (1.2 km)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 856,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hotel-royal-heritage.jpg",
+      "propertyType": "resort",
+      "state": "Uttar Pradesh",
+      "slug": "royal-heritage-resort-varanasi",
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hotel-royal-heritage.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "address": "Ganga Ghat Road",
+      "serviceFeePercentage": 2,
+      "hotelId": "royal_heritage_resort_vns",
+      "advancePaymentValue": 1500,
+      "cancellationFeePercentage": 10,
+      "name": "Royal Heritage Resort",
+      "cancellationDescription": "Free cancellation up to 48 hours before check-in.",
+      "category": "family",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Gaming Zone & PS5 Lounge",
+        "High-Speed Wi-Fi",
+        "Fitness Gym",
+        "Communal Chef Kitchen",
+        "Bi-weekly Housekeeping"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Pune",
+      "gstPercentage": 5,
+      "postalCode": "411014",
+      "rating": 4.9,
+      "description": "Youth co-living community in Viman Nagar near Symbiosis. Includes gaming arena, shared kitchen, fitness studio, co-working workstations, and vibrant weekend social events.",
+      "rules": [
+        "Quiet hours post midnight",
+        "No unauthorized overnight guests"
+      ],
+      "securityDeposit": 15000,
+      "startingPrice": 12500,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-02-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Symbiosis Campus (600m)",
+        "Phoenix Marketcity (1.5km)",
+        "Pune Airport (2km)"
+      ],
+      "freeCancellationHours": 72,
+      "reviewCount": 56,
+      "advancePaymentType": "fixed",
+      "coverImage": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "hostel",
+      "state": "Maharashtra",
+      "slug": "horizon-campus-suites-pune",
+      "updatedAt": "2026-02-10T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "Near Symbiosis International School, Viman Nagar",
+      "serviceFeePercentage": 2,
+      "hotelId": "stu_coliving_pune_3",
+      "advancePaymentValue": 15000,
+      "monthlyRent": 12500,
+      "cancellationFeePercentage": 10,
+      "name": "Horizon Campus Suites & Co-Living",
+      "cancellationDescription": "Advance deposit returned if canceled before move-in date.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "300 Mbps Dedicated Wi-Fi",
+        "4-Time Nutritious Mess Meals",
+        "Quiet Study Library",
+        "Biometric Access & CCTV",
+        "Laundry & Housekeeping",
+        "RO Drinking Water",
+        "Power Backup 24/7"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Bangalore",
+      "gstPercentage": 5,
+      "postalCode": "560029",
+      "rating": 4.8,
+      "description": "Premier student residence tailored for university scholars and interns. Features ergonomic study pods, 300 Mbps symmetrical Wi-Fi, 4 wholesome home-style meals daily, library, and 24/7 biometric security.",
+      "rules": [
+        "Student ID & College Verification Required",
+        "Curfew: 10:30 PM (Exceptions with Parent Approval)",
+        "Visitors permitted in lounge area until 7:00 PM",
+        "Non-smoking & Alcohol-free academic premises"
+      ],
+      "securityDeposit": 15000,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-15T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Christ University (300m)",
+        "Forum Mall (1.2km)",
+        "Koramangala Metro (1.5km)"
+      ],
+      "freeCancellationHours": 72,
+      "reviewCount": 42,
+      "advancePaymentType": "fixed",
+      "coverImage": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "hostel",
+      "state": "Karnataka",
+      "slug": "oxford-scholars-hostel-bangalore",
+      "approvalStatus": "approved",
+      "images": [
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "Near Christ University Main Gate, SG Palya, Koramangala",
+      "serviceFeePercentage": 2,
+      "hotelId": "stu_hostel_blr_1",
+      "advancePaymentValue": 15000,
+      "cancellationFeePercentage": 10,
+      "name": "Oxford Scholars Luxury Hostel & Co-Living",
+      "cancellationDescription": "Full security deposit refund up to 72 hours prior to semester move-in date.",
+      "category": "student",
+      "status": "published",
+      "startingPrice": 11500,
+      "monthlyRent": 11500,
+      "updatedAt": "2026-10-24T11:59:18.728Z"
+    },
+    {
+      "amenities": [
+        "High-Speed Wi-Fi",
+        "All-Inclusive Meals (Veg/Non-Veg)",
+        "Split Air Conditioners",
+        "Attached Bathrooms with Geysers",
+        "Daily Room Cleaning",
+        "Washing Machines"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Delhi",
+      "gstPercentage": 5,
+      "postalCode": "110009",
+      "rating": 4.7,
+      "description": "Modern student accommodations across Delhi University North Campus. Fully air-conditioned twin and single rooms with attached bathrooms, study desks, and healthy hygienic meals.",
+      "rules": [
+        "Valid University ID card mandatory",
+        "Silent study hours from 11:00 PM to 6:00 AM"
+      ],
+      "securityDeposit": 12000,
+      "startingPrice": 9800,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-20T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "GTB Nagar Metro (400m)",
+        "SRCC (800m)",
+        "Hindu College (1km)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 38,
+      "advancePaymentType": "fixed",
+      "coverImage": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "pg",
+      "state": "Delhi",
+      "slug": "apex-north-campus-delhi",
+      "updatedAt": "2026-02-05T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "Hudson Lane, GTB Nagar, North Campus",
+      "serviceFeePercentage": 2,
+      "hotelId": "stu_pg_delhi_2",
+      "advancePaymentValue": 12000,
+      "monthlyRent": 9800,
+      "cancellationFeePercentage": 15,
+      "name": "Apex North Campus Premium PG",
+      "cancellationDescription": "Refundable security deposit with 48h prior notice.",
+      "category": "student",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Free WiFi",
+        "AC Rooms",
+        "Room Service",
+        "Express Check-in",
+        "Power Backup"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Lucknow",
+      "gstPercentage": 12,
+      "postalCode": "226001",
+      "rating": 4.3,
+      "description": "Stylish and comfortable stay situated in Hazratganj, Lucknow. Clean AC rooms, 24/7 room service, fast WiFi, and proximity to major shopping centers.",
+      "rules": [
+        "Valid Government Photo ID required",
+        "Couple friendly with local ID accepted"
+      ],
+      "startingPrice": 1799,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Hazratganj Metro (200m)",
+        "Bara Imambara (4 km)"
+      ],
+      "freeCancellationHours": 12,
+      "reviewCount": 642,
+      "advancePaymentType": "fixed",
+      "coverImage": "/images/hotel-the-park-inn.jpg",
+      "propertyType": "hotel",
+      "state": "Uttar Pradesh",
+      "slug": "the-park-inn-lucknow",
+      "updatedAt": "2026-02-01T00:00:00.000Z",
+      "approvalStatus": "approved",
+      "images": [
+        "/images/hotel-the-park-inn.jpg",
+        "/images/hero-panoramic.jpg"
+      ],
+      "address": "Hazratganj",
+      "serviceFeePercentage": 2,
+      "hotelId": "the_park_inn_lko",
+      "advancePaymentValue": 500,
+      "cancellationFeePercentage": 0,
+      "name": "The Park Inn",
+      "cancellationDescription": "Flexible free cancellation up to 12 hours prior.",
+      "category": "hourly",
+      "status": "published"
+    },
+    {
+      "amenities": [
+        "Heated Alpine Jacuzzi",
+        "Mountain View Private Balconies",
+        "Bonfire & Barbecue Nights",
+        "High-Speed Wi-Fi"
+      ],
+      "country": "India",
+      "featured": true,
+      "city": "Shimla",
+      "gstPercentage": 12,
+      "postalCode": "171001",
+      "rating": 4.85,
+      "description": "Panoramic mountain sanctuary perched on the Jakhoo slopes. Enjoy snow-capped Himalayan vistas, glass tea lounges, and cedarwood interiors.",
+      "rules": [
+        "Check-in: 2:00 PM",
+        "Check-out: 11:00 AM"
+      ],
+      "startingPrice": 6200,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-12T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "Mall Road (1km)",
+        "Jakhoo Ropeway (400m)",
+        "Christ Church (1.2km)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 84,
+      "advancePaymentType": "percentage",
       "coverImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "hotel",
+      "state": "Himachal Pradesh",
+      "slug": "himalayan-peaks-hotel-shimla",
+      "updatedAt": "2026-02-10T00:00:00.000Z",
+      "approvalStatus": "approved",
       "images": [
         "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
       ],
-      "amenities": [
-        "Lake Pichola Views",
-        "Traditional Courtyard Lounge",
-        "Royal Rajasthani Meals Available",
-        "Family Suite Rooms with Extra Cots",
-        "Doctor on Call 24/7"
-      ],
-      "rules": [
-        "Peaceful residential heritage enclave",
-        "No outdoor parties"
-      ],
-      "nearbyLandmarks": [
-        "City Palace (800m)",
-        "Jagdish Temple (700m)",
-        "Bagore Ki Haveli (500m)"
-      ],
-      "rating": 4.92,
-      "reviewCount": 64,
-      "featured": true,
-      "createdAt": "2026-02-05T00:00:00.000Z",
-      "updatedAt": "2026-02-20T00:00:00.000Z"
+      "address": "Near Jakhoo Temple Road",
+      "serviceFeePercentage": 2,
+      "hotelId": "trip_hotel_shimla_2",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 20,
+      "name": "Himalayan Peaks Luxury Alpine Hotel",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
+      "category": "trip",
+      "status": "published"
     },
     {
-      "hotelId": "trip_resort_goa_1",
-      "name": "The Grand Azure Beachfront Resort & Spa",
-      "slug": "grand-azure-beach-resort-goa",
-      "description": "Five-star coastal sanctuary on Calangute Beach with direct beach access, infinity pool, Ayurvedic wellness spa, beachfront cocktail bar, and water sports excursions.",
-      "category": "trip",
-      "propertyType": "resort",
-      "address": "Beachfront Boulevard, Calangute",
-      "city": "Goa",
-      "state": "Goa",
+      "amenities": [
+        "Sunset Lake Boat Cruises",
+        "Marble Bathrooms & Bathtubs",
+        "Rooftop Candlelight Dining",
+        "Rajasthani Cultural Shows"
+      ],
       "country": "India",
-      "postalCode": "403516",
-      "startingPrice": 7500,
-      "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
+      "featured": true,
+      "city": "Udaipur",
       "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 20,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
+      "postalCode": "313001",
+      "rating": 4.94,
+      "description": "Exquisite regal hotel overlooking Lake Pichola. Features hand-painted frescoes, sunset boat cruises, royal dining, and luxury courtyards.",
+      "rules": [
+        "Valet parking provided",
+        "Smart casual attire in dining rooms"
+      ],
+      "startingPrice": 8900,
       "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
+      "createdAt": "2026-01-08T00:00:00.000Z",
+      "nearbyLandmarks": [
+        "City Palace (600m)",
+        "Lake Pichola Ghats (200m)"
+      ],
+      "freeCancellationHours": 48,
+      "reviewCount": 96,
+      "advancePaymentType": "percentage",
+      "coverImage": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "hotel",
+      "state": "Rajasthan",
+      "slug": "royal-lakefront-palace-udaipur",
+      "updatedAt": "2026-02-12T00:00:00.000Z",
+      "approvalStatus": "approved",
       "images": [
-        "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
       ],
+      "address": "Lake Palace Road, Pichola",
+      "serviceFeePercentage": 2,
+      "hotelId": "trip_palace_udaipur_3",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 20,
+      "name": "Royal Lakefront Palace & Luxury Suites",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
+      "category": "trip",
+      "status": "published"
+    },
+    {
       "amenities": [
         "Direct Private Beach Access",
         "Infinity Pool with Ocean View",
@@ -727,182 +783,51 @@
         "24/7 Butler Service & Concierge",
         "Multi-cuisine Gourmet Restaurant"
       ],
+      "country": "India",
+      "featured": true,
+      "city": "Goa",
+      "gstPercentage": 12,
+      "postalCode": "403516",
+      "rating": 4.9,
+      "description": "Five-star coastal sanctuary on Calangute Beach with direct beach access, infinity pool, Ayurvedic wellness spa, beachfront cocktail bar, and water sports excursions.",
       "rules": [
         "Government photo ID required at check-in",
         "Pool timing: 7:00 AM - 9:00 PM"
       ],
+      "startingPrice": 7500,
+      "ownerId": "owner_demo_1",
+      "createdAt": "2026-01-01T00:00:00.000Z",
       "nearbyLandmarks": [
         "Calangute Beach (Direct)",
         "Tito Lane Baga (1.5km)",
         "Saturday Night Market (4km)"
       ],
-      "rating": 4.9,
+      "freeCancellationHours": 48,
       "reviewCount": 112,
-      "featured": true,
-      "createdAt": "2026-01-01T00:00:00.000Z",
-      "updatedAt": "2026-02-15T00:00:00.000Z"
-    },
-    {
-      "hotelId": "trip_hotel_shimla_2",
-      "name": "Himalayan Peaks Luxury Alpine Hotel",
-      "slug": "himalayan-peaks-hotel-shimla",
-      "description": "Panoramic mountain sanctuary perched on the Jakhoo slopes. Enjoy snow-capped Himalayan vistas, glass tea lounges, and cedarwood interiors.",
-      "category": "trip",
-      "propertyType": "hotel",
-      "address": "Near Jakhoo Temple Road",
-      "city": "Shimla",
-      "state": "Himachal Pradesh",
-      "country": "India",
-      "postalCode": "171001",
-      "startingPrice": 6200,
       "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 20,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
-      "status": "published",
+      "coverImage": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "resort",
+      "state": "Goa",
+      "slug": "grand-azure-beach-resort-goa",
+      "updatedAt": "2026-02-15T00:00:00.000Z",
       "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
       "images": [
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "amenities": [
-        "Heated Alpine Jacuzzi",
-        "Mountain View Private Balconies",
-        "Bonfire & Barbecue Nights",
-        "High-Speed Wi-Fi"
-      ],
-      "rules": [
-        "Check-in: 2:00 PM",
-        "Check-out: 11:00 AM"
-      ],
-      "nearbyLandmarks": [
-        "Mall Road (1km)",
-        "Jakhoo Ropeway (400m)",
-        "Christ Church (1.2km)"
-      ],
-      "rating": 4.85,
-      "reviewCount": 84,
-      "featured": true,
-      "createdAt": "2026-01-12T00:00:00.000Z",
-      "updatedAt": "2026-02-10T00:00:00.000Z"
-    },
-    {
-      "hotelId": "trip_palace_udaipur_3",
-      "name": "Royal Lakefront Palace & Luxury Suites",
-      "slug": "royal-lakefront-palace-udaipur",
-      "description": "Exquisite regal hotel overlooking Lake Pichola. Features hand-painted frescoes, sunset boat cruises, royal dining, and luxury courtyards.",
-      "category": "trip",
-      "propertyType": "hotel",
-      "address": "Lake Palace Road, Pichola",
-      "city": "Udaipur",
-      "state": "Rajasthan",
-      "country": "India",
-      "postalCode": "313001",
-      "startingPrice": 8900,
-      "advancePaymentType": "percentage",
-      "advancePaymentValue": 30,
-      "gstPercentage": 12,
-      "serviceFeePercentage": 2,
-      "freeCancellationHours": 48,
-      "cancellationFeePercentage": 20,
-      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
-      "status": "published",
-      "approvalStatus": "approved",
-      "ownerId": "owner_demo_1",
-      "coverImage": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
-      "images": [
+        "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
       ],
-      "amenities": [
-        "Sunset Lake Boat Cruises",
-        "Marble Bathrooms & Bathtubs",
-        "Rooftop Candlelight Dining",
-        "Rajasthani Cultural Shows"
-      ],
-      "rules": [
-        "Valet parking provided",
-        "Smart casual attire in dining rooms"
-      ],
-      "nearbyLandmarks": [
-        "City Palace (600m)",
-        "Lake Pichola Ghats (200m)"
-      ],
-      "rating": 4.94,
-      "reviewCount": 96,
-      "featured": true,
-      "createdAt": "2026-01-08T00:00:00.000Z",
-      "updatedAt": "2026-02-12T00:00:00.000Z"
+      "address": "Beachfront Boulevard, Calangute",
+      "serviceFeePercentage": 2,
+      "hotelId": "trip_resort_goa_1",
+      "advancePaymentValue": 30,
+      "cancellationFeePercentage": 20,
+      "name": "The Grand Azure Beachfront Resort & Spa",
+      "cancellationDescription": "Free cancellation up to 48 hours prior to check-in.",
+      "category": "trip",
+      "status": "published"
     }
   ],
   "rooms": [
     {
-      "roomId": "room_stu_oxf_1",
-      "hotelId": "stu_hostel_blr_1",
-      "roomType": "Single Private Scholar Room",
-      "description": "Private single room with study desk, ergonomic chair, wardrobe, and high-speed Wi-Fi.",
-      "capacity": {
-        "adults": 1,
-        "children": 0,
-        "maxGuests": 1
-      },
-      "totalInventory": 15,
-      "bedType": "Single Bed with Orthopedic Mattress",
-      "basePrice": 11500,
-      "monthlyPrice": 11500,
-      "amenities": [
-        "Study Desk & Lamp",
-        "300 Mbps Wi-Fi",
-        "Wardrobe & Lockers",
-        "Attached Washroom",
-        "Air Conditioning"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80"
-      ],
-      "enabled": true
-    },
-    {
-      "roomId": "room_stu_oxf_2",
-      "hotelId": "stu_hostel_blr_1",
-      "roomType": "Twin Sharing Academic Suite",
-      "description": "Shared room for two students with individual study desks and personal wardrobes.",
-      "capacity": {
-        "adults": 2,
-        "children": 0,
-        "maxGuests": 2
-      },
-      "totalInventory": 25,
-      "bedType": "2 Separate Single Beds",
-      "basePrice": 8500,
-      "monthlyPrice": 8500,
-      "amenities": [
-        "Dual Study Desks",
-        "300 Mbps Wi-Fi",
-        "Individual Wardrobes",
-        "Attached Washroom"
-      ],
-      "images": [
-        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80"
-      ],
-      "enabled": true
-    },
-    {
-      "roomId": "room_fam_villa_1",
-      "hotelId": "fam_villa_goa_1",
-      "roomType": "Entire 4-Bedroom Luxury Villa (Private Pool)",
-      "description": "Full private access to the entire 4-bedroom villa, private pool, modular kitchen, and private garden.",
-      "capacity": {
-        "adults": 8,
-        "children": 4,
-        "maxGuests": 12
-      },
-      "totalInventory": 1,
-      "bedType": "4 King Beds + Extra Cots Available",
-      "basePrice": 18500,
       "amenities": [
         "Private Pool",
         "Modular Kitchen",
@@ -914,21 +839,72 @@
       "images": [
         "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80"
       ],
-      "enabled": true
+      "description": "Full private access to the entire 4-bedroom villa, private pool, modular kitchen, and private garden.",
+      "hotelId": "fam_villa_goa_1",
+      "totalInventory": 1,
+      "bedType": "4 King Beds + Extra Cots Available",
+      "enabled": true,
+      "roomId": "room_fam_villa_1",
+      "roomType": "Entire 4-Bedroom Luxury Villa (Private Pool)",
+      "basePrice": 18500,
+      "capacity": {
+        "children": 4,
+        "maxGuests": 12,
+        "adults": 8
+      }
     },
     {
-      "roomId": "room_trip_azure_1",
-      "hotelId": "trip_resort_goa_1",
-      "roomType": "Azure Ocean Deluxe Room",
-      "description": "Spacious ocean-facing room with private sun deck, marble bathroom, and plush king bed.",
+      "amenities": [
+        "Study Desk & Lamp",
+        "300 Mbps Wi-Fi",
+        "Wardrobe & Lockers",
+        "Attached Washroom",
+        "Air Conditioning"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Private single room with study desk, ergonomic chair, wardrobe, and high-speed Wi-Fi.",
+      "hotelId": "stu_hostel_blr_1",
+      "totalInventory": 15,
+      "monthlyPrice": 11500,
+      "bedType": "Single Bed with Orthopedic Mattress",
+      "enabled": true,
+      "roomId": "room_stu_oxf_1",
+      "roomType": "Single Private Scholar Room",
+      "basePrice": 11500,
       "capacity": {
-        "adults": 2,
-        "children": 1,
-        "maxGuests": 3
-      },
-      "totalInventory": 20,
-      "bedType": "1 King Bed",
-      "basePrice": 7500,
+        "children": 0,
+        "maxGuests": 1,
+        "adults": 1
+      }
+    },
+    {
+      "amenities": [
+        "Dual Study Desks",
+        "300 Mbps Wi-Fi",
+        "Individual Wardrobes",
+        "Attached Washroom"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Shared room for two students with individual study desks and personal wardrobes.",
+      "hotelId": "stu_hostel_blr_1",
+      "totalInventory": 25,
+      "monthlyPrice": 8500,
+      "bedType": "2 Separate Single Beds",
+      "enabled": true,
+      "roomId": "room_stu_oxf_2",
+      "roomType": "Twin Sharing Academic Suite",
+      "basePrice": 8500,
+      "capacity": {
+        "children": 0,
+        "maxGuests": 2,
+        "adults": 2
+      }
+    },
+    {
       "amenities": [
         "Ocean Balcony",
         "Rain Shower & Bathtub",
@@ -938,21 +914,21 @@
       "images": [
         "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80"
       ],
-      "enabled": true
+      "description": "Spacious ocean-facing room with private sun deck, marble bathroom, and plush king bed.",
+      "hotelId": "trip_resort_goa_1",
+      "totalInventory": 20,
+      "bedType": "1 King Bed",
+      "enabled": true,
+      "roomId": "room_trip_azure_1",
+      "roomType": "Azure Ocean Deluxe Room",
+      "basePrice": 7500,
+      "capacity": {
+        "children": 1,
+        "maxGuests": 3,
+        "adults": 2
+      }
     },
     {
-      "roomId": "room_trip_azure_2",
-      "hotelId": "trip_resort_goa_1",
-      "roomType": "Royal Azure Beach Villa Suite",
-      "description": "Premier standalone suite with direct sand access, private jacuzzi, and butler service.",
-      "capacity": {
-        "adults": 3,
-        "children": 2,
-        "maxGuests": 5
-      },
-      "totalInventory": 6,
-      "bedType": "1 King Bed + 1 Daybed",
-      "basePrice": 14500,
       "amenities": [
         "Private Jacuzzi",
         "Direct Beachfront Access",
@@ -962,248 +938,158 @@
       "images": [
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80"
       ],
-      "enabled": true
+      "description": "Premier standalone suite with direct sand access, private jacuzzi, and butler service.",
+      "hotelId": "trip_resort_goa_1",
+      "totalInventory": 6,
+      "bedType": "1 King Bed + 1 Daybed",
+      "enabled": true,
+      "roomId": "room_trip_azure_2",
+      "roomType": "Royal Azure Beach Villa Suite",
+      "basePrice": 14500,
+      "capacity": {
+        "children": 2,
+        "maxGuests": 5,
+        "adults": 3
+      }
     }
   ],
   "bookings": [
     {
-      "bookingReference": "FYS-STU-1712",
-      "userId": "test_student_1",
-      "hotelId": "stu_hostel_blr_1",
-      "hotelName": "Oxford Scholars Luxury Hostel & Co-Living",
-      "roomId": "room_stu_oxf_1",
-      "roomTypeName": "Single Private Scholar Room",
-      "stayCategory": "student",
-      "checkIn": "2026-07-01",
-      "numberOfNights": 1,
-      "stayDurationMonths": 6,
-      "numberOfGuests": {
-        "adults": 1,
-        "children": 0
-      },
-      "roomQuantity": 1,
-      "guestDetails": {
-        "fullName": "Devansh Verma",
-        "email": "devansh@university.edu",
-        "phone": "+91 99887 76655"
-      },
-      "studentDetails": {
-        "collegeOrUniversity": "Christ University",
-        "studentIdNumber": "CU2026-CS-101",
-        "course": "BCA Cloud Computing",
-        "guardianName": "Ramesh Verma",
-        "guardianPhone": "+91 99887 11223",
-        "durationMonths": 6,
-        "moveInDate": "2026-07-01",
-        "mealPlanOpted": true
-      },
-      "totalAmount": 88830,
-      "advanceAmount": 15000,
-      "paidAmount": 15000,
-      "remainingBalance": 73830,
-      "bookingStatus": "confirmed",
-      "paymentStatus": "advance_paid",
-      "balanceDueDate": "2026-07-01",
-      "holdExpiresAt": "2026-10-22T19:13:35.819Z",
-      "internalNotes": [
-        "Reserved at 23/10/2026, 12:28:35 am",
-        "Payment verified on 23/10/2026, 12:28:36 am (Ref: pay_test_lifecycle_001, ₹15000)"
-      ],
-      "bookingId": "bk_1792695515850_0mf3",
-      "createdAt": "2026-10-22T18:58:35.850Z",
-      "updatedAt": "2026-10-22T18:58:36.225Z",
-      "paymentDetails": {
-        "razorpayOrderId": "order_sim_1792695515852",
-        "razorpayPaymentId": "pay_test_lifecycle_001",
-        "razorpaySignature": "simulated_sig",
-        "method": "UPI (GPay)"
-      }
-    },
-    {
-      "bookingReference": "FYS-TRI-5641",
-      "userId": "usr_1792700776681_wptn",
-      "hotelId": "trip_resort_goa_1",
-      "hotelName": "The Grand Azure Beachfront Resort & Spa",
-      "roomId": "room_trip_azure_1",
-      "roomTypeName": "Azure Ocean Deluxe Room",
-      "stayCategory": "trip",
-      "checkIn": "2026-10-24",
-      "checkOut": "2026-10-26",
-      "numberOfNights": 2,
-      "numberOfGuests": {
-        "adults": 1,
-        "children": 0
-      },
-      "roomQuantity": 1,
-      "guestDetails": {
-        "fullName": "ShubhamPatel",
-        "email": "7080328260@phone.findyourstay.in",
-        "phone": "7080328260",
-        "specialRequests": ""
-      },
-      "tripDetails": {
-        "destination": "Goa",
-        "travelPurpose": "Leisure & Vacation",
-        "packageIncluded": false
-      },
-      "totalAmount": 17100,
-      "advanceAmount": 5130,
-      "paidAmount": 5130,
-      "remainingBalance": 11970,
-      "bookingStatus": "confirmed",
-      "paymentStatus": "advance_paid",
-      "balanceDueDate": "2026-10-24",
-      "holdExpiresAt": "2026-10-23T07:27:41.004Z",
-      "internalNotes": [
-        "Reserved at 23/10/2026, 12:42:41 pm",
-        "Payment verified on 23/10/2026, 12:42:42 pm (Ref: pay_mvkmuhn7psjs, ₹5130)"
-      ],
-      "bookingId": "bk_1792739561013_rn55",
-      "createdAt": "2026-10-23T07:12:41.013Z",
-      "updatedAt": "2026-10-23T07:12:42.449Z",
-      "paymentDetails": {
-        "razorpayOrderId": "order_sim_1792739561014",
-        "razorpayPaymentId": "pay_mvkmuhn7psjs",
-        "razorpaySignature": "simulated_sig",
-        "method": "UPI / NetBanking (Razorpay Verified)"
-      }
-    },
-    {
-      "bookingReference": "FYS-STU-8784",
-      "userId": "usr_1792700280091_p4p0",
-      "hotelId": "stu_hostel_blr_1",
-      "hotelName": "Oxford Scholars Luxury Hostel & Co-Living",
-      "roomId": "room_stu_oxf_1",
-      "roomTypeName": "Single Private Scholar Room",
-      "stayCategory": "student",
-      "checkIn": "2026-10-29",
-      "numberOfNights": 180,
-      "stayDurationMonths": 6,
-      "numberOfGuests": {
-        "adults": 1,
-        "children": 0
-      },
-      "roomQuantity": 1,
-      "guestDetails": {
-        "fullName": "User 3210",
-        "email": "9876543210@phone.findyourstay.in",
-        "phone": "+919876543210",
-        "specialRequests": ""
-      },
-      "studentDetails": {
-        "collegeOrUniversity": "Christ University",
-        "studentIdNumber": "CU2026-ENG-492",
-        "course": "B. Tech Computer Science",
-        "guardianName": "Rajesh Sharma",
-        "guardianPhone": "+91 98111 22334",
-        "durationMonths": 6,
-        "moveInDate": "2026-10-29",
-        "mealPlanOpted": true
-      },
-      "totalAmount": 88830,
-      "advanceAmount": 15000,
-      "paidAmount": 15000,
-      "remainingBalance": 73830,
-      "bookingStatus": "confirmed",
-      "paymentStatus": "advance_paid",
-      "balanceDueDate": "2026-10-29",
       "holdExpiresAt": "2026-10-26T09:27:49.326Z",
+      "stayCategory": "student",
+      "advanceAmount": 15000,
+      "roomQuantity": 1,
+      "studentDetails": {
+        "durationMonths": 6,
+        "mealPlanOpted": true,
+        "collegeOrUniversity": "Christ University",
+        "guardianName": "Rajesh Sharma",
+        "moveInDate": "2026-10-29",
+        "course": "B. Tech Computer Science",
+        "guardianPhone": "+91 98111 22334",
+        "studentIdNumber": "CU2026-ENG-492"
+      },
+      "balanceDueDate": "2026-10-29",
+      "stayDurationMonths": 6,
+      "roomId": "room_stu_oxf_1",
+      "bookingReference": "FYS-STU-8784",
+      "createdAt": "2026-10-26T09:12:49.331Z",
+      "bookingStatus": "confirmed",
+      "remainingBalance": 73830,
+      "guestDetails": {
+        "phone": "+919876543210",
+        "fullName": "User 3210",
+        "specialRequests": "",
+        "email": "9876543210@phone.findyourstay.in"
+      },
+      "paymentDetails": {
+        "method": "UPI / NetBanking (Razorpay Verified)",
+        "razorpayPaymentId": "pay_mvp1gkgwwsz3",
+        "razorpaySignature": "simulated_sig",
+        "razorpayOrderId": "order_sim_1793005969463"
+      },
+      "paymentStatus": "advance_paid",
+      "updatedAt": "2026-10-26T09:12:50.397Z",
+      "numberOfNights": 180,
+      "roomTypeName": "Single Private Scholar Room",
+      "numberOfGuests": {
+        "children": 0,
+        "adults": 1
+      },
+      "hotelId": "stu_hostel_blr_1",
       "internalNotes": [
         "Reserved at 26/10/2026, 2:42:49 pm",
         "Payment verified on 26/10/2026, 2:42:50 pm (Ref: pay_mvp1gkgwwsz3, ₹15000)"
       ],
+      "hotelName": "Oxford Scholars Luxury Hostel & Co-Living",
+      "userId": "usr_1792700280091_p4p0",
       "bookingId": "bk_1793005969331_8ukg",
-      "createdAt": "2026-10-26T09:12:49.331Z",
-      "updatedAt": "2026-10-26T09:12:50.397Z",
-      "paymentDetails": {
-        "razorpayOrderId": "order_sim_1793005969463",
-        "razorpayPaymentId": "pay_mvp1gkgwwsz3",
-        "razorpaySignature": "simulated_sig",
-        "method": "UPI / NetBanking (Razorpay Verified)"
-      }
+      "totalAmount": 88830,
+      "checkIn": "2026-10-29",
+      "paidAmount": 15000
     }
   ],
   "reviews": [],
   "users": [
     {
-      "uid": "admin_default_1",
-      "fullName": "System Administrator",
-      "email": "admin@findyourstay.com",
-      "phone": "+919999900001",
-      "phoneVerified": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
       "emailVerified": true,
+      "uid": "admin_default_1",
       "role": "admin",
       "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
-      "createdAt": "2026-01-01T00:00:00.000Z",
+      "phone": "+919999900001",
+      "phoneVerified": true,
+      "fullName": "System Administrator",
+      "email": "admin@findyourstay.com",
       "updatedAt": "2026-01-01T00:00:00.000Z"
     },
     {
-      "uid": "owner_demo_1",
-      "fullName": "Rajesh Sharma (Property Owner)",
-      "email": "owner@findyourstay.com",
-      "phone": "+919999900002",
-      "phoneVerified": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
       "emailVerified": true,
+      "uid": "owner_demo_1",
       "role": "property_owner",
       "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
-      "createdAt": "2026-01-01T00:00:00.000Z",
+      "phone": "+919999900002",
+      "phoneVerified": true,
+      "fullName": "Rajesh Sharma (Property Owner)",
+      "email": "owner@findyourstay.com",
       "updatedAt": "2026-01-01T00:00:00.000Z"
     },
     {
-      "uid": "student_demo_1",
-      "fullName": "Aarav Mehta",
-      "email": "aarav.student@gmail.com",
-      "phone": "+919876543210",
-      "phoneVerified": true,
-      "emailVerified": true,
       "role": "customer",
-      "collegeName": "Christ University Bangalore",
-      "studentIdNumber": "CU-2025-CS-104",
-      "emergencyContact": "Suresh Mehta (Father): +91 98765 00112",
       "avatarUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80",
+      "emergencyContact": "Suresh Mehta (Father): +91 98765 00112",
+      "phoneVerified": true,
+      "fullName": "Aarav Mehta",
+      "collegeName": "Christ University Bangalore",
       "createdAt": "2026-01-05T00:00:00.000Z",
+      "emailVerified": true,
+      "uid": "student_demo_1",
+      "phone": "+919876543210",
+      "studentIdNumber": "CU-2025-CS-104",
+      "email": "aarav.student@gmail.com",
       "updatedAt": "2026-01-05T00:00:00.000Z"
     },
     {
+      "createdAt": "2026-10-22T20:18:00.091Z",
+      "emailVerified": true,
       "uid": "usr_1792700280091_p4p0",
+      "role": "customer",
+      "phoneVerified": true,
       "fullName": "User 3210",
       "email": "9876543210@phone.findyourstay.in",
-      "phone": "+919876543210",
-      "phoneVerified": true,
-      "emailVerified": true,
-      "role": "customer",
-      "createdAt": "2026-10-22T20:18:00.091Z",
-      "updatedAt": "2026-10-26T09:11:51.993Z",
-      "aadhaarNumber": "542189012345",
       "collegeName": "Christ University",
+      "aadhaarNumber": "542189012345",
+      "phone": "+919876543210",
+      "emergencyContact": "+91 98111 22334",
       "studentIdNumber": "CU2026-ENG-492",
-      "emergencyContact": "+91 98111 22334"
+      "updatedAt": "2026-10-26T09:11:51.993Z"
     },
     {
+      "createdAt": "2026-10-22T20:18:05.877Z",
+      "emailVerified": true,
       "uid": "usr_1792700285877_5d83",
-      "fullName": "test",
-      "email": "test@example.com",
+      "role": "customer",
       "phone": "+91 98765 43210",
       "phoneVerified": true,
-      "emailVerified": true,
-      "role": "customer",
-      "createdAt": "2026-10-22T20:18:05.877Z",
+      "fullName": "test",
+      "email": "test@example.com",
       "updatedAt": "2026-10-22T20:18:05.877Z"
     },
     {
-      "uid": "usr_1792700776681_wptn",
-      "fullName": "ShubhamPatel",
-      "email": "7080328260@phone.findyourstay.in",
-      "phone": "7080328260",
-      "phoneVerified": true,
-      "emailVerified": true,
       "role": "customer",
-      "createdAt": "2026-10-22T20:26:16.681Z",
-      "updatedAt": "2026-10-23T06:57:15.318Z",
       "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
       "emergencyContact": "Rajesh Sharma (+91 98111 22334)",
+      "phoneVerified": true,
+      "fullName": "ShubhamPatel",
       "collegeName": "Christ University",
-      "studentIdNumber": "CU2026-ENG-492"
+      "createdAt": "2026-10-22T20:26:16.681Z",
+      "emailVerified": true,
+      "uid": "usr_1792700776681_wptn",
+      "phone": "7080328260",
+      "studentIdNumber": "CU2026-ENG-492",
+      "email": "7080328260@phone.findyourstay.in",
+      "updatedAt": "2026-10-23T06:57:15.318Z"
     }
   ],
   "otps": [
@@ -1217,5 +1103,27 @@
       "otp": "5556",
       "expiresAt": 1793009486307
     }
-  ]
+  ],
+  "settings": {
+    "supportedCities": [
+      "Bangalore",
+      "Mumbai",
+      "Delhi",
+      "Jaunpur",
+      "Varanasi",
+      "Kota",
+      "Pune",
+      "Hyderabad",
+      "Jaipur",
+      "Dehradun"
+    ],
+    "minAdvanceDepositPercentage": 25,
+    "maintenanceMode": false,
+    "platformFeePercentage": 5,
+    "announcementBanner": {
+      "message": "Welcome to Rentify! Verified students get up to ₹2,000 off on semester bookings.",
+      "type": "offer",
+      "enabled": true
+    }
+  }
 }

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import Razorpay from 'razorpay';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -26,12 +29,12 @@ export async function POST(req: NextRequest) {
       payFull = false
     } = body;
 
-    const hotel = db.getHotelById(hotelId);
+    const hotel = await db.getHotelById(hotelId);
     if (!hotel) {
       return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
     }
 
-    const rooms = db.getRoomsByHotel(hotelId);
+    const rooms = await db.getRoomsByHotel(hotelId);
     const room = rooms.find((r) => r.roomId === roomId) || rooms[0];
 
     // Generate unique booking reference like FYS-2026-STU-4921
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
     // Hold expires in 15 minutes if payment isn't completed
     const holdExpiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
-    const booking = db.createBooking({
+    const booking = await db.createBooking({
       bookingReference,
       userId: userId || 'demo_user_student',
       hotelId,
@@ -108,7 +111,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Attach order ID to booking
-    db.updateBooking(booking.bookingId, {
+    await db.updateBooking(booking.bookingId, {
       paymentDetails: {
         razorpayOrderId
       }

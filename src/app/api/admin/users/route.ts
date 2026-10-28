@@ -2,14 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { UserRole } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
-    const users = db.getAllUsers();
-    return NextResponse.json({
-      success: true,
-      count: users.length,
-      users
-    });
+    const users = await db.getAllUsers();
+    return NextResponse.json(
+      {
+        success: true,
+        count: users.length,
+        users
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error?.message || 'Server error loading users' },
@@ -35,7 +45,7 @@ export async function PUT(req: NextRequest) {
       updates.role = role as UserRole;
     }
 
-    const updated = db.updateUser(uid, updates);
+    const updated = await db.updateUser(uid, updates);
     if (!updated) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }
@@ -62,7 +72,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'User ID is required' }, { status: 400 });
     }
 
-    const deleted = db.deleteUser(uid);
+    const deleted = await db.deleteUser(uid);
     if (!deleted) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }

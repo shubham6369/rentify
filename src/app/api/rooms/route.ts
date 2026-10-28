@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -10,8 +13,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'hotelId parameter is required' }, { status: 400 });
     }
 
-    const rooms = db.getRooms(hotelId);
-    return NextResponse.json({ success: true, count: rooms.length, rooms });
+    const rooms = await db.getRooms(hotelId);
+    return NextResponse.json(
+      { success: true, count: rooms.length, rooms },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        }
+      }
+    );
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error?.message || 'Server error' }, { status: 500 });
   }
@@ -29,7 +39,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const newRoom = db.createRoom({
+    const newRoom = await db.createRoom({
       hotelId,
       roomType,
       description: description || '',

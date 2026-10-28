@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Booking, Hotel } from '@/types';
+import { subscribeToDataChanges } from '@/lib/sync';
 import {
   CheckCircle2,
   Calendar,
@@ -37,7 +38,7 @@ export default function BookingConfirmationPage() {
     async function fetchBooking() {
       if (!bookingId) return;
       try {
-        const res = await fetch(`/api/bookings/${bookingId}`);
+        const res = await fetch(`/api/bookings/${bookingId}`, { cache: 'no-store' });
         const data = await res.json();
         if (data.success && data.booking) {
           setBooking(data.booking);
@@ -63,6 +64,16 @@ export default function BookingConfirmationPage() {
       }
     }
     fetchBooking();
+
+    const unsubscribe = subscribeToDataChanges((event) => {
+      if (event.type.startsWith('booking_') || event.type === 'payment_recorded') {
+        fetchBooking();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, [bookingId]);
 
   const formatINR = (amt: number) => {

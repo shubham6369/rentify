@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Booking } from '@/types';
 import { CategoryBadge } from '@/components/CategoryBadge';
+import { subscribeToDataChanges } from '@/lib/sync';
 import {
   User,
   Calendar,
@@ -83,7 +84,7 @@ function AccountContent() {
     if (!user) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/bookings?userId=${user.uid}`);
+      const res = await fetch(`/api/bookings?userId=${user.uid}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) {
         setBookings(data.bookings);
@@ -97,6 +98,16 @@ function AccountContent() {
 
   useEffect(() => {
     loadBookings();
+
+    const unsubscribe = subscribeToDataChanges((event) => {
+      if (event.type.startsWith('booking_') || event.type === 'payment_recorded') {
+        loadBookings();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, [user]);
 
   const formatAadhaar = (val: string) => {
