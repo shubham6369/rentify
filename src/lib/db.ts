@@ -1159,6 +1159,7 @@ class DatabaseService {
   }
 
   async updateHotel(id: string, updates: Partial<Hotel>): Promise<Hotel | null> {
+    await this.syncFromFirestore();
     const index = this.data.hotels.findIndex((h) => h.hotelId === id);
     if (index === -1) return null;
     this.data.hotels[index] = {
@@ -1213,6 +1214,7 @@ class DatabaseService {
   }
 
   async updateRoom(roomId: string, updates: Partial<Room>): Promise<Room | null> {
+    await this.syncFromFirestore();
     const index = this.data.rooms.findIndex((r) => r.roomId === roomId);
     if (index === -1) return null;
     this.data.rooms[index] = {
