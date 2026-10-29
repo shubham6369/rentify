@@ -1,6 +1,6 @@
 {
   "appId": "com.findyourstay.app",
-  "appName": "Find Your Stay",
+  "appName": "Rentify",
   "webDir": "out",
   "server": {
     "url": "https://rentify-nine-roan.vercel.app",

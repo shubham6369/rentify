@@ -16,9 +16,33 @@ const fontSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Find Your Stay | Student, Family & Trip Accommodations',
+  metadataBase: new URL('https://rentify-nine-roan.vercel.app'),
+  title: 'Rentify | Your Room, Your Way',
   description:
-    'Complete multi-category booking platform for university students, family vacations with children, and weekend leisure trip stays with advance payments.'
+    'Rentify - Your Room, Your Way. Complete multi-category accommodation platform for student hostels, family vacations, hourly day stays, and hotel bookings.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  openGraph: {
+    title: 'Rentify | Your Room, Your Way',
+    description: 'Find your ideal stay: Student Hostels & PGs, Family Stays, Hourly Day Stays & Hotels.',
+    url: 'https://rentify-nine-roan.vercel.app',
+    siteName: 'Rentify',
+    images: [
+      {
+        url: '/images/rentify-thumbnail.png',
+        width: 1200,
+        height: 630,
+        alt: 'Rentify - Your Room, Your Way',
+      },
+    ],
+    locale: 'en_IN',
+    type: 'website',
+  },
 };
 
 export const viewport: Viewport = {

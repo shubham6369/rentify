@@ -210,44 +210,14 @@ function HomeFlowContent() {
             </div>
 
             {/* Middle Logo & Branding */}
-            <div className="flex flex-col items-center justify-center text-center space-y-4 my-auto relative z-10">
-              {/* Paper Plane Origami Icon */}
-              <div className="relative mb-2">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)]"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {/* Main Wing (White) */}
-                  <path
-                    d="M18 52 L85 18 L50 82 L44 58 Z"
-                    fill="#FFFFFF"
-                  />
-                  {/* Upper Right Fold (Soft Cyan / Light Slate) */}
-                  <path
-                    d="M85 18 L44 58 L64 60 Z"
-                    fill="#E0E7FF"
-                  />
-                  {/* Under Shadow Fold */}
-                  <path
-                    d="M44 58 L50 82 L58 68 Z"
-                    fill="#93C5FD"
-                  />
-                </svg>
+            <div className="flex flex-col items-center justify-center text-center space-y-4 my-auto relative z-10 px-4">
+              <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-3xl shadow-2xl shadow-indigo-950/40 border border-white/40 max-w-[320px] sm:max-w-[360px] transform hover:scale-102 transition-all duration-300">
+                <img
+                  src="/images/rentify-logo.png"
+                  alt="Rentify - Your Room, Your Way"
+                  className="w-full h-auto object-contain select-none"
+                />
               </div>
-
-              {/* Brand Name: Rentify */}
-              <div className="flex items-center justify-center">
-                <span className="text-4xl sm:text-[42px] font-black tracking-tight text-white drop-shadow-sm select-none">
-                  Rent<span className="text-[#38bdf8]">ify</span>
-                </span>
-              </div>
-
-              {/* Tagline: Study • Stay • Travel */}
-              <p className="text-white/95 text-base sm:text-lg font-medium italic tracking-wide font-serif pt-1">
-                Study &nbsp;•&nbsp; Stay &nbsp;•&nbsp; Travel
-              </p>
             </div>
 
             {/* Bottom Section: Heritage City Skyline Silhouette & Slogan */}
@@ -280,19 +250,11 @@ function HomeFlowContent() {
           <div className="flex-1 bg-white flex flex-col justify-between p-6 sm:p-7 animate-fade-in select-none">
             {/* Top Brand / Skip */}
             <div className="pt-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-xs">
-                  <BedDouble className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-lg font-black tracking-tight text-slate-900 select-none">
-                    Rent<span className="text-[#3b49df]">ify</span>
-                  </span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-indigo-50 text-[#3b49df] rounded-md border border-indigo-200/60 select-none">
-                    Find Your Stay
-                  </span>
-                </div>
-              </div>
+              <img
+                src="/images/rentify-logo.png"
+                alt="Rentify - Your Room, Your Way"
+                className="h-8 sm:h-9 w-auto object-contain select-none"
+              />
               <button
                 onClick={() => goToStep('choose')}
                 className="text-xs font-semibold text-slate-400 hover:text-slate-700 py-1 px-2.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
@@ -400,17 +362,11 @@ function HomeFlowContent() {
                     <ChevronLeft className="w-4 h-4 text-white" />
                   </button>
 
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center shadow-md shadow-indigo-950/40 text-white">
-                    <BedDouble className="w-4 h-4 text-white" strokeWidth={2.4} />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg sm:text-xl font-black tracking-tight text-white select-none">
-                      Rent<span className="text-[#38bdf8]">ify</span>
-                    </span>
-                    <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 bg-white/10 text-indigo-200 rounded-md border border-white/20 select-none backdrop-blur-xs">
-                      Find Your Stay
-                    </span>
-                  </div>
+                  <img
+                    src="/images/rentify-logo-white.png"
+                    alt="Rentify - Your Room, Your Way"
+                    className="h-8 sm:h-9 w-auto object-contain select-none ml-1"
+                  />
                 </div>
               </div>
 

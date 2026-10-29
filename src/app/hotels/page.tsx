@@ -581,19 +581,13 @@ function HotelsPageContent() {
           {/* ========================================================================= */}
           <header className="sticky top-0 z-30 bg-[#070a29] border-b border-white/5 px-4 pt-3.5 pb-3 flex items-center justify-between">
             {/* Center: Rentify Brand Identity */}
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3b49df] to-[#7916e2] flex items-center justify-center text-white shadow-md shadow-indigo-950/60">
-                <BedDouble className="w-5 h-5 text-white" strokeWidth={2.2} />
-              </div>
-              <div className="text-left">
-                <div className="text-xl font-black tracking-tight text-white leading-none select-none">
-                  Rent<span className="text-[#38bdf8]">ify</span>
-                </div>
-                <p className="text-[9.5px] font-semibold text-indigo-200/70 tracking-tight leading-none mt-1 select-none">
-                  Hotels &middot; Stays &middot; Better Journey
-                </p>
-              </div>
-            </div>
+            <Link href="/" className="flex items-center gap-2.5">
+              <img
+                src="/images/rentify-logo-white.png"
+                alt="Rentify - Your Room, Your Way"
+                className="h-8 sm:h-9 w-auto object-contain select-none"
+              />
+            </Link>
 
             {/* Right: Notifications & User Profile Avatar */}
             <div className="flex items-center gap-2">

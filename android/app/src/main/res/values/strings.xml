@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Find Your Stay</string>
-    <string name="title_activity_main">Find Your Stay</string>
+    <string name="app_name">Rentify</string>
+    <string name="title_activity_main">Rentify</string>
     <string name="package_name">com.findyourstay.app</string>
     <string name="custom_url_scheme">com.findyourstay.app</string>
 </resources>
+
