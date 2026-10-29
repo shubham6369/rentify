@@ -77,7 +77,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2.5 group">
             <img
               src="/images/rentify-logo.png"
-              alt="Rentify - Your Room, Your Way"
+              alt="Rentify"
               className="h-9 sm:h-11 w-auto object-contain select-none group-hover:scale-102 transition-transform"
             />
           </Link>

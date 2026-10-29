@@ -423,7 +423,7 @@ function HotelsPageContent() {
             <Link href="/" className="flex items-center gap-2.5">
               <img
                 src="/images/rentify-logo-white.png"
-                alt="Rentify - Your Room, Your Way"
+                alt="Rentify"
                 className="h-8 sm:h-9 w-auto object-contain select-none"
               />
             </Link>

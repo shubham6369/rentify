@@ -214,7 +214,7 @@ function HomeFlowContent() {
               <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-3xl shadow-2xl shadow-indigo-950/40 border border-white/40 max-w-[320px] sm:max-w-[360px] transform hover:scale-102 transition-all duration-300">
                 <img
                   src="/images/rentify-logo.png"
-                  alt="Rentify - Your Room, Your Way"
+                  alt="Rentify"
                   className="w-full h-auto object-contain select-none"
                 />
               </div>
@@ -252,7 +252,7 @@ function HomeFlowContent() {
             <div className="pt-2 flex items-center justify-between">
               <img
                 src="/images/rentify-logo.png"
-                alt="Rentify - Your Room, Your Way"
+                alt="Rentify"
                 className="h-8 sm:h-9 w-auto object-contain select-none"
               />
               <button
@@ -364,7 +364,7 @@ function HomeFlowContent() {
 
                   <img
                     src="/images/rentify-logo-white.png"
-                    alt="Rentify - Your Room, Your Way"
+                    alt="Rentify"
                     className="h-8 sm:h-9 w-auto object-contain select-none ml-1"
                   />
                 </div>
