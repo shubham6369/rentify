@@ -10,15 +10,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Invalid role' }, { status: 400 });
     }
 
-    let targetUser = null;
-
-    if (role === 'admin') {
-      targetUser = await db.getUserById('usr_admin_master');
-    } else if (role === 'property_owner') {
-      targetUser = await db.getUserById('owner_demo_1');
-    } else {
-      targetUser = (await db.getUserById('usr_customer_1')) || (await db.getUserById('demo_user_student'));
-    }
+    let targetUser = await db.getUserById(`demo_${role}_user`);
 
     if (!targetUser) {
       // Fallback: create role user

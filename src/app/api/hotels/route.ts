@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
       cancellationDescription: 'Full advance refund if cancelled 48 hours prior to check-in/move-in.',
       status: 'published',
       approvalStatus: isDirectAdmin ? 'approved' : 'pending',
-      ownerId: ownerId || 'owner_demo_1',
+      ownerId: ownerId || 'admin_user',
       coverImage: coverImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
       images: images.length > 0 ? images : [coverImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80'],
       amenities: amenities.length > 0 ? amenities : ['Wi-Fi', 'Air Conditioning', 'Power Backup'],

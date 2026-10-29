@@ -186,7 +186,7 @@ function AccountContent() {
     <div className="min-h-screen bg-[#070a29] flex justify-center sm:py-6 sm:px-4 select-none">
       {/* Mobile Device Frame Shell */}
       <div className="w-full max-w-[420px] h-[100dvh] sm:h-[890px] bg-slate-50 sm:rounded-[2.75rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800/90 overflow-hidden flex flex-col justify-between transition-all relative">
-        
+
         {/* ========================================================================= */}
         {/* 1. TOP STICKY MIDNIGHT HEADER BAR (#070a29)                                */}
         {/* ========================================================================= */}
@@ -305,11 +305,10 @@ function AccountContent() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('bookings')}
-                  className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                    activeTab === 'bookings'
+                  className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'bookings'
                       ? 'bg-white text-[#3b49df] shadow-xs font-extrabold'
                       : 'text-slate-500 hover:text-slate-800'
-                  }`}
+                    }`}
                 >
                   <ShoppingBag className="w-3.5 h-3.5" />
                   <span>My Bookings ({bookings.length})</span>
@@ -317,11 +316,10 @@ function AccountContent() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('profile')}
-                  className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                    activeTab === 'profile'
+                  className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'profile'
                       ? 'bg-white text-[#3b49df] shadow-xs font-extrabold'
                       : 'text-slate-500 hover:text-slate-800'
-                  }`}
+                    }`}
                 >
                   <User className="w-3.5 h-3.5" />
                   <span>Edit Profile</span>
@@ -365,13 +363,12 @@ function AccountContent() {
                             <div className="flex items-center justify-between gap-2">
                               <CategoryBadge category={b.stayCategory} />
                               <span
-                                className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                                  isConfirmed
+                                className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${isConfirmed
                                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                     : isCancelled
-                                    ? 'bg-red-50 text-red-700 border border-red-200'
-                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
-                                }`}
+                                      ? 'bg-red-50 text-red-700 border border-red-200'
+                                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                  }`}
                               >
                                 {b.bookingStatus}
                               </span>
@@ -594,11 +591,10 @@ function AccountContent() {
                   {/* Message Banner */}
                   {profileMsg && (
                     <div
-                      className={`p-2.5 rounded-xl text-xs font-bold flex items-center gap-2 ${
-                        profileMsg.isError
+                      className={`p-2.5 rounded-xl text-xs font-bold flex items-center gap-2 ${profileMsg.isError
                           ? 'bg-rose-50 text-rose-700 border border-rose-200'
                           : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      }`}
+                        }`}
                     >
                       {profileMsg.isError ? (
                         <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
@@ -712,9 +708,8 @@ function AccountContent() {
           <button
             onClick={() => setActiveTab('bookings')}
             type="button"
-            className={`flex flex-col items-center gap-0.5 transition-colors cursor-pointer ${
-              activeTab === 'bookings' ? 'text-[#3b49df] font-bold' : 'text-slate-400 hover:text-slate-700'
-            }`}
+            className={`flex flex-col items-center gap-0.5 transition-colors cursor-pointer ${activeTab === 'bookings' ? 'text-[#3b49df] font-bold' : 'text-slate-400 hover:text-slate-700'
+              }`}
           >
             <ShoppingBag className="w-5 h-5" strokeWidth={activeTab === 'bookings' ? 2.5 : 2} />
             <span className="text-[10px]">Bookings</span>
@@ -741,9 +736,8 @@ function AccountContent() {
           <button
             onClick={() => setActiveTab('profile')}
             type="button"
-            className={`flex flex-col items-center gap-0.5 transition-colors cursor-pointer ${
-              activeTab === 'profile' ? 'text-[#3b49df] font-bold' : 'text-slate-400 hover:text-slate-700'
-            }`}
+            className={`flex flex-col items-center gap-0.5 transition-colors cursor-pointer ${activeTab === 'profile' ? 'text-[#3b49df] font-bold' : 'text-slate-400 hover:text-slate-700'
+              }`}
           >
             <User className="w-5 h-5" strokeWidth={activeTab === 'profile' ? 2.5 : 2} />
             <span className="text-[10px]">Profile</span>

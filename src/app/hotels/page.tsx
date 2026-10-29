@@ -70,167 +70,6 @@ const POPULAR_CITIES = [
   { id: 'nearby', name: 'Nearby', isNearbyAction: true }
 ];
 
-const DEFAULT_HOTELS: DisplayHotel[] = [
-  {
-    id: 'hotel_grand_vista_jnp',
-    name: 'Hotel Grand Vista',
-    city: 'Jaunpur',
-    location: 'Civil Lines, Jaunpur',
-    category: 'regular',
-    rating: 4.6,
-    reviewCount: 1200,
-    badge: '🔥 Top Rated',
-    badgeColor: 'bg-indigo-600',
-    currentPrice: 2499,
-    originalPrice: 3999,
-    discountPercentage: 38,
-    coverImage: '/images/hotel-grand-vista.jpg',
-    amenities: [
-      { icon: Wifi, label: 'Free WiFi' },
-      { icon: Car, label: 'Free Parking' },
-      { icon: Utensils, label: 'Restaurant' }
-    ],
-    latitude: 25.7464,
-    longitude: 82.6837
-  },
-  {
-    id: 'hotel_royal_heritage_vns',
-    name: 'Royal Heritage Resort',
-    city: 'Varanasi',
-    location: 'Ganga Ghat Road, Varanasi',
-    category: 'family',
-    rating: 4.5,
-    reviewCount: 856,
-    badge: '🛡️ Best Value',
-    badgeColor: 'bg-emerald-600',
-    currentPrice: 3199,
-    originalPrice: 5499,
-    discountPercentage: 42,
-    coverImage: '/images/hotel-royal-heritage.jpg',
-    amenities: [
-      { icon: Wifi, label: 'Free WiFi' },
-      { icon: Waves, label: 'Swimming Pool' },
-      { icon: Utensils, label: 'Restaurant' }
-    ],
-    latitude: 25.3176,
-    longitude: 82.9739
-  },
-  {
-    id: 'hotel_the_park_inn_lko',
-    name: 'The Park Inn',
-    city: 'Lucknow',
-    location: 'Hazratganj, Lucknow',
-    category: 'regular',
-    rating: 4.3,
-    reviewCount: 642,
-    badge: '🛡️ Budget Friendly',
-    badgeColor: 'bg-blue-600',
-    currentPrice: 1799,
-    originalPrice: 2999,
-    discountPercentage: 40,
-    coverImage: '/images/hotel-the-park-inn.jpg',
-    amenities: [
-      { icon: Wifi, label: 'Free WiFi' },
-      { icon: Snowflake, label: 'AC Rooms' },
-      { icon: Utensils, label: 'Room Service' }
-    ],
-    latitude: 26.8467,
-    longitude: 80.9462
-  },
-  {
-    id: 'apex_scholar_jaunpur',
-    name: 'Apex Scholar Youth Hostel & PG',
-    city: 'Jaunpur',
-    location: 'Civil Lines, Jaunpur',
-    category: 'student',
-    rating: 4.8,
-    reviewCount: 120,
-    badge: '🎓 Student Hub',
-    badgeColor: 'bg-purple-600',
-    currentPrice: 4500,
-    originalPrice: 6500,
-    discountPercentage: 30,
-    coverImage: '/images/hostel-jaunpur.jpg',
-    isMonthRental: true,
-    amenities: [
-      { icon: Wifi, label: '300 Mbps WiFi' },
-      { icon: Utensils, label: 'Mess Meals' },
-      { icon: Sparkles, label: 'Study Library' }
-    ],
-    latitude: 25.751,
-    longitude: 82.689
-  },
-  {
-    id: 'kashi_scholar_varanasi',
-    name: 'Kashi Scholar Co-Living & Hostel',
-    city: 'Varanasi',
-    location: 'Lanka, BHU Campus Road, Varanasi',
-    category: 'student',
-    rating: 4.7,
-    reviewCount: 94,
-    badge: '🎓 BHU Campus PG',
-    badgeColor: 'bg-indigo-600',
-    currentPrice: 5500,
-    originalPrice: 7800,
-    discountPercentage: 29,
-    coverImage: '/images/hostel-varanasi.jpg',
-    isMonthRental: true,
-    amenities: [
-      { icon: Wifi, label: 'WiFi & RO' },
-      { icon: Snowflake, label: 'AC & Cooler' },
-      { icon: Utensils, label: 'Mess Food' }
-    ],
-    latitude: 25.275,
-    longitude: 82.998
-  },
-  {
-    id: 'hazratganj_student_suites',
-    name: 'Hazratganj Student Suites & Hostel',
-    city: 'Lucknow',
-    location: 'Hazratganj, Lucknow',
-    category: 'student',
-    rating: 4.9,
-    reviewCount: 145,
-    badge: '🎓 Metro Connected',
-    badgeColor: 'bg-purple-600',
-    currentPrice: 5200,
-    originalPrice: 7500,
-    discountPercentage: 31,
-    coverImage: '/images/hostel-lucknow.jpg',
-    isMonthRental: true,
-    amenities: [
-      { icon: Wifi, label: '400 Mbps WiFi' },
-      { icon: Utensils, label: '4 Meals/day' },
-      { icon: Sparkles, label: 'Laundry' }
-    ],
-    latitude: 26.856,
-    longitude: 80.945
-  },
-  {
-    id: 'mariyahu_campus_pg',
-    name: 'Mariyahu Campus PG & Youth Hostel',
-    city: 'Mariyahu',
-    location: 'Station Road, Mariyahu',
-    category: 'student',
-    rating: 4.6,
-    reviewCount: 78,
-    badge: '🎓 Budget PG',
-    badgeColor: 'bg-emerald-600',
-    currentPrice: 3800,
-    originalPrice: 5000,
-    discountPercentage: 24,
-    coverImage: '/images/city-mariyahu.jpg',
-    isMonthRental: true,
-    amenities: [
-      { icon: Wifi, label: 'Free WiFi' },
-      { icon: Utensils, label: 'Home Food' },
-      { icon: Sparkles, label: 'Power Backup' }
-    ],
-    latitude: 25.605,
-    longitude: 82.614
-  }
-];
-
 const KNOWN_CITY_IMAGES: Record<string, string> = {
   mariyahu: '/images/city-mariyahu.jpg',
   jaunpur: '/images/city-jaunpur.jpg',
@@ -315,7 +154,7 @@ function HotelsPageContent() {
   const initialCity = searchParams.get('city') || null;
 
   // Real-Time Synchronized Data States
-  const [hotelsList, setHotelsList] = useState<DisplayHotel[]>(DEFAULT_HOTELS);
+  const [hotelsList, setHotelsList] = useState<DisplayHotel[]>([]);
   const [loadingHotels, setLoadingHotels] = useState<boolean>(true);
   const [platformSettings, setPlatformSettings] = useState<PlatformSettings | null>(null);
   const [citiesList, setCitiesList] = useState(POPULAR_CITIES);
@@ -907,7 +746,12 @@ function HotelsPageContent() {
           {/* 6. HOTEL CARDS MATCHING EXACT CARDS IN IMAGE 2                            */}
           {/* ========================================================================= */}
           <div className="px-4 space-y-3 pb-6">
-            {displayedHotels.length === 0 ? (
+            {loadingHotels ? (
+              <div className="py-12 text-center bg-white rounded-3xl border border-slate-100 p-6">
+                <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-xs font-semibold text-slate-500">Loading accommodations...</p>
+              </div>
+            ) : displayedHotels.length === 0 ? (
               <div className="py-12 text-center bg-white rounded-3xl border border-slate-100 p-6">
                 <BedDouble className="w-10 h-10 text-slate-300 mx-auto mb-2" />
                 <h4 className="text-sm font-bold text-slate-800">No accommodations found</h4>
