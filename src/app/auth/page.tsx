@@ -69,6 +69,11 @@ function AuthContent() {
     return parts.join(' ');
   }
 
+  // Instant prefetch destinations for 0ms transition
+  useEffect(() => {
+    router.prefetch('/hotels');
+  }, [router]);
+
   // Sync user details if already logged in
   useEffect(() => {
     if (user) {

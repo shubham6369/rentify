@@ -382,11 +382,15 @@
       "emailVerified": true,
       "uid": "usr_1793290458586_kao1",
       "role": "customer",
-      "phone": "9876500000",
       "phoneVerified": true,
       "fullName": "System Administrator",
       "email": "9876500000@phone.findyourstay.in",
-      "updatedAt": "2026-10-29T16:14:18.586Z"
+      "collegeName": "Christ University",
+      "aadhaarNumber": "542189012345",
+      "phone": "+919876500000",
+      "emergencyContact": "+91 98111 22334",
+      "studentIdNumber": "CU2026-ENG-492",
+      "updatedAt": "2026-10-29T18:43:41.158Z"
     },
     {
       "createdAt": "2026-10-29T16:17:21.510Z",
@@ -432,6 +436,32 @@
       "emergencyContact": "+91 98111 22334",
       "studentIdNumber": "CU2026-ENG-492",
       "updatedAt": "2026-10-29T18:09:35.226Z"
+    },
+    {
+      "createdAt": "2026-10-29T18:44:08.404Z",
+      "emailVerified": true,
+      "uid": "usr_1793299448404_x01g",
+      "role": "customer",
+      "phoneVerified": true,
+      "fullName": "User 2826",
+      "email": "0708032826@phone.findyourstay.in",
+      "collegeName": "Christ University",
+      "aadhaarNumber": "542189012345",
+      "phone": "+910708032826",
+      "emergencyContact": "+91 98111 22334",
+      "studentIdNumber": "CU2026-ENG-492",
+      "updatedAt": "2026-10-29T18:44:13.392Z"
+    },
+    {
+      "createdAt": "2026-10-29T19:25:12.751Z",
+      "emailVerified": true,
+      "uid": "usr_1793301912751_836h",
+      "role": "customer",
+      "phone": "0708032826",
+      "phoneVerified": true,
+      "fullName": "User 2826",
+      "email": "0708032826@phone.findyourstay.in",
+      "updatedAt": "2026-10-29T19:25:12.751Z"
     }
   ],
   "otps": [

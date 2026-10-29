@@ -279,6 +279,12 @@ function HotelsPageContent() {
     };
   }, []);
 
+  // Instant route prefetching for 0ms transitions
+  useEffect(() => {
+    router.prefetch('/account');
+    router.prefetch('/auth');
+  }, [router]);
+
   const toggleWishlist = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setWishlist((prev) => {
@@ -398,6 +404,15 @@ function HotelsPageContent() {
     wishlist,
     userCoords
   ]);
+
+  // Instant prefetch visible hotels into Next.js memory cache for 0ms page loads
+  useEffect(() => {
+    if (displayedHotels && displayedHotels.length > 0) {
+      displayedHotels.slice(0, 8).forEach((h) => {
+        router.prefetch(`/hotels/${h.id}`);
+      });
+    }
+  }, [displayedHotels, router]);
 
   return (
     <div className="min-h-screen bg-[#070a29] flex justify-center sm:py-6 sm:px-4 select-none">
@@ -776,7 +791,8 @@ function HotelsPageContent() {
                   <div
                     key={h.id}
                     onClick={() => router.push(`/hotels/${h.id}`)}
-                    className="bg-white rounded-3xl p-3 shadow-xs border border-slate-100 flex gap-2.5 sm:gap-3 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden"
+                    onPointerDown={() => router.prefetch(`/hotels/${h.id}`)}
+                    className="bg-white rounded-3xl p-3 shadow-xs border border-slate-100 flex gap-2.5 sm:gap-3 hover:shadow-md active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden"
                   >
                     {/* Left: Hotel Image with Badges */}
                     <div className="relative w-28 h-28 sm:w-34 sm:h-30 rounded-2xl overflow-hidden shrink-0 bg-slate-100">

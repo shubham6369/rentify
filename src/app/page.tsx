@@ -70,10 +70,18 @@ function HomeFlowContent() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<StayCategory>('student');
   const [mounted, setMounted] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // Instant prefetch high-priority routes so navigation has zero latency
+    router.prefetch('/auth');
+    router.prefetch('/hotels');
+    router.prefetch('/account');
+    (['student', 'family', 'hourly', 'regular'] as StayCategory[]).forEach((cat) => {
+      router.prefetch(`/auth?category=${cat}`);
+    });
+  }, [router]);
 
   // Step navigation with history push so going back doesn't close the app
   const goToStep = (step: 'onboarding' | 'choose') => {
@@ -173,6 +181,7 @@ function HomeFlowContent() {
   ];
 
   const handleContinue = () => {
+    setIsNavigating(true);
     router.push(`/auth?category=${selectedCategory}`);
   };
 
@@ -423,7 +432,8 @@ function HomeFlowContent() {
                       key={opt.id}
                       type="button"
                       onClick={() => setSelectedCategory(opt.id)}
-                      className={`w-full py-3.5 px-4 rounded-[1.25rem] transition-all duration-200 text-left flex items-center justify-between cursor-pointer group ${
+                      onPointerDown={() => router.prefetch(`/auth?category=${opt.id}`)}
+                      className={`w-full py-3.5 px-4 rounded-[1.25rem] transition-all duration-150 text-left flex items-center justify-between cursor-pointer group active:scale-[0.98] ${
                         isSelected
                           ? 'bg-blue-50/20 border-2 border-[#2563eb] shadow-[0_4px_16px_rgba(37,99,235,0.08)]'
                           : 'bg-white hover:bg-slate-50/60 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]'
@@ -475,14 +485,24 @@ function HomeFlowContent() {
 
               {/* Bottom Action Area: CONTINUE & Legal Links */}
               <div className="pt-6 sm:pt-7 space-y-3">
-                {/* Gradient CONTINUE Button matching Image 1 */}
+                {/* Gradient CONTINUE Button with Instant Feedback */}
                 <button
                   onClick={handleContinue}
+                  disabled={isNavigating}
                   type="button"
-                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 text-center cursor-pointer"
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#12106e] via-[#2d1296] to-[#7114dd] hover:opacity-95 active:scale-[0.97] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all shadow-xl shadow-indigo-950/25 flex items-center justify-center gap-2 text-center cursor-pointer disabled:opacity-90"
                 >
-                  <span>CONTINUE</span>
-                  <ArrowRight className="w-5 h-5 text-white" strokeWidth={2.5} />
+                  {isNavigating ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>OPENING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>CONTINUE</span>
+                      <ArrowRight className="w-5 h-5 text-white" strokeWidth={2.5} />
+                    </>
+                  )}
                 </button>
 
                 {/* Privacy Policy • Terms of Service */}

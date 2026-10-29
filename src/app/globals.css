@@ -14,11 +14,39 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior-y: none;
   }
 
   body {
     @apply bg-slate-50 text-slate-900 antialiased selection:bg-slate-900 selection:text-white min-h-screen flex flex-col font-sans;
     letter-spacing: -0.011em;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  *, *::before, *::after {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Ultra-responsive native feel: 0ms tap delay, GPU accelerated transform, instant active state */
+  button, a, [role="button"], input[type="button"], input[type="submit"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: transform 60ms ease-out, opacity 60ms ease-out;
+  }
+
+  button:active, a:active, [role="button"]:active {
+    transform: scale(0.96) translateZ(0);
   }
 
   input, textarea, select, button {

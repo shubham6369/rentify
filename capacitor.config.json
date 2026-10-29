@@ -8,6 +8,7 @@
     "errorPath": "index.html"
   },
   "android": {
-    "allowMixedContent": true
+    "allowMixedContent": true,
+    "backgroundColor": "#ffffff"
   }
 }
