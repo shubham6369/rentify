@@ -374,6 +374,53 @@
     },
     {
       "amenities": [
+        "High-Speed Wi-Fi",
+        "24/7 Power Backup",
+        "Housekeeping",
+        "CCTV Security",
+        "RO Filtered Water"
+      ],
+      "country": "India",
+      "featured": false,
+      "city": "Bangalore",
+      "gstPercentage": 12,
+      "postalCode": "560001",
+      "rating": 5,
+      "description": "eovjeobeobjeogb eogjbgbgg",
+      "rules": [
+        "Valid Government ID mandatory at check-in",
+        "No loud noise after 10 PM",
+        "Follow house safety guidelines"
+      ],
+      "securityDeposit": 1.5e+27,
+      "startingPrice": 12000,
+      "ownerId": "demo_admin_user",
+      "createdAt": "2026-10-29T12:20:18.920Z",
+      "freeCancellationHours": 48,
+      "reviewCount": 0,
+      "advancePaymentType": "fixed",
+      "coverImage": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
+      "propertyType": "hostel",
+      "state": "Bangalore",
+      "slug": "ssmsmsmcmmdnsdkdvkdvkdvnvnfvnfnkvsfvfv-9207",
+      "images": [
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "address": "bn bbn",
+      "serviceFeePercentage": 3,
+      "hotelId": "hotel_1793276418920",
+      "advancePaymentValue": 1.5e+27,
+      "monthlyRent": 12000,
+      "cancellationFeePercentage": 10,
+      "name": "ssmsmsmcmmdnsdkdvkdvkdvnvnfvnfnkvsfvfv",
+      "cancellationDescription": "Full advance refund if cancelled 48 hours prior to check-in/move-in.",
+      "category": "student",
+      "status": "published",
+      "approvalStatus": "approved",
+      "updatedAt": "2026-10-29T12:20:25.785Z"
+    },
+    {
+      "amenities": [
         "Free WiFi",
         "Free Parking",
         "Restaurant",
@@ -829,6 +876,32 @@
   "rooms": [
     {
       "amenities": [
+        "High-Speed Wi-Fi",
+        "24/7 Power Backup",
+        "Housekeeping",
+        "CCTV Security",
+        "RO Filtered Water"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "Fully furnished with air conditioning, premium linen, and fast Wi-Fi.",
+      "hotelId": "hotel_1793276418920",
+      "totalInventory": 5,
+      "monthlyPrice": 12000,
+      "bedType": "Single Bed",
+      "enabled": true,
+      "roomId": "room_1793276419253_t8k6",
+      "roomType": "Single Student Bed with Study Pod",
+      "basePrice": 12000,
+      "capacity": {
+        "children": 0,
+        "maxGuests": 1,
+        "adults": 1
+      }
+    },
+    {
+      "amenities": [
         "Private Pool",
         "Modular Kitchen",
         "Child Safety Gates",
@@ -1086,10 +1159,26 @@
       "createdAt": "2026-10-22T20:26:16.681Z",
       "emailVerified": true,
       "uid": "usr_1792700776681_wptn",
-      "phone": "7080328260",
       "studentIdNumber": "CU2026-ENG-492",
       "email": "7080328260@phone.findyourstay.in",
-      "updatedAt": "2026-10-23T06:57:15.318Z"
+      "aadhaarNumber": "542189012345",
+      "phone": "+917080328260",
+      "updatedAt": "2026-10-29T12:13:41.875Z"
+    },
+    {
+      "createdAt": "2026-10-29T12:19:49.868Z",
+      "emailVerified": true,
+      "uid": "usr_1793276389868_m7tl",
+      "role": "customer",
+      "phoneVerified": true,
+      "fullName": "ShubhamPatel",
+      "email": "7080328260@phone.findyourstay.in",
+      "collegeName": "Christ University",
+      "aadhaarNumber": "542189012345",
+      "phone": "+917080328260",
+      "emergencyContact": "Rajesh Sharma (+91 98111 22334)",
+      "studentIdNumber": "CU2026-ENG-492",
+      "updatedAt": "2026-10-29T12:19:56.130Z"
     }
   ],
   "otps": [

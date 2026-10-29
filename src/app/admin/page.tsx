@@ -64,7 +64,9 @@ import {
   AlertTriangle,
   Award,
   Layers,
-  Filter
+  Filter,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -158,7 +160,59 @@ export default function AdminDashboardPage() {
   const [newRoomMonthlyPrice, setNewRoomMonthlyPrice] = useState(9000);
   const [newRoomAdults, setNewRoomAdults] = useState(1);
   const [newRoomInventory, setNewRoomInventory] = useState(5);
+  const [newRoomImage, setNewRoomImage] = useState<string>('');
   const [addingRoom, setAddingRoom] = useState(false);
+
+  // Helper to read and compress image files from device to lightweight base64 Data URLs
+  const handleImageFileUpload = (
+    file: File,
+    onSuccess: (dataUrl: string) => void,
+    onError?: (err: string) => void
+  ) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1280;
+        const MAX_HEIGHT = 960;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          onSuccess(compressedDataUrl);
+        } else {
+          onSuccess(readerEvent.target?.result as string);
+        }
+      };
+      img.src = readerEvent.target?.result as string;
+    };
+    reader.onerror = () => {
+      if (onError) onError('Failed to read file');
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Booking Details & Action Modal States
   const [selectedBookingDetails, setSelectedBookingDetails] = useState<Booking | null>(null);
@@ -423,6 +477,12 @@ export default function AdminDashboardPage() {
     if (!selectedHotelForRooms || !newRoomType) return;
     setAddingRoom(true);
     try {
+      const roomImgList = newRoomImage
+        ? [newRoomImage]
+        : (selectedHotelForRooms.images && selectedHotelForRooms.images.length > 0)
+        ? [selectedHotelForRooms.images[0]]
+        : [selectedHotelForRooms.coverImage];
+
       const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -433,13 +493,15 @@ export default function AdminDashboardPage() {
           basePrice: Number(newRoomBasePrice),
           monthlyPrice: Number(newRoomMonthlyPrice),
           capacity: { adults: Number(newRoomAdults), children: 1, maxGuests: Number(newRoomAdults) + 1 },
-          totalInventory: Number(newRoomInventory)
+          totalInventory: Number(newRoomInventory),
+          images: roomImgList
         })
       });
       const data = await res.json();
       if (data.success && data.room) {
         setHotelRooms((prev) => [...prev, data.room]);
         setNewRoomType('');
+        setNewRoomImage('');
         showToast('New room type created and added to inventory!');
         broadcastDataChange('room_added', data.room);
       } else {
@@ -449,6 +511,24 @@ export default function AdminDashboardPage() {
       alert('Error creating room');
     } finally {
       setAddingRoom(false);
+    }
+  };
+
+  const handleUpdateRoomImage = async (roomId: string, newImage: string) => {
+    try {
+      const res = await fetch(`/api/rooms/${roomId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: [newImage] })
+      });
+      const data = await res.json();
+      if (data.success && data.room) {
+        setHotelRooms((prev) => prev.map((r) => (r.roomId === roomId ? { ...r, images: [newImage] } : r)));
+        showToast('Room photo updated successfully!');
+        broadcastDataChange('room_updated', { roomId, images: [newImage] });
+      }
+    } catch (err) {
+      alert('Error updating room photo');
     }
   };
 
@@ -1611,16 +1691,25 @@ export default function AdminDashboardPage() {
                           key={r.roomId}
                           className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between gap-3"
                         >
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-slate-900 text-sm">{r.roomType}</span>
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
-                                Stock: {r.totalInventory} units
+                          <div className="flex items-start gap-3">
+                            <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200/80 shrink-0 bg-slate-200 relative">
+                              <img
+                                src={(r.images && r.images.length > 0) ? r.images[0] : (selectedHotelForRooms?.coverImage || '')}
+                                alt={r.roomType}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-slate-900 text-sm truncate">{r.roomType}</span>
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800 shrink-0">
+                                  Stock: {r.totalInventory} units
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-slate-500 mt-0.5 block truncate">
+                                Bed: {r.bedType} • Max Adults: {r.capacity.adults}
                               </span>
                             </div>
-                            <span className="text-[11px] text-slate-500 mt-1 block">
-                              Bed: {r.bedType} • Max Adults: {r.capacity.adults}
-                            </span>
                           </div>
 
                           <div className="flex items-center justify-between pt-2 border-t border-slate-200/50">
@@ -1635,7 +1724,25 @@ export default function AdminDashboardPage() {
                               )}
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <label className="cursor-pointer px-2 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors">
+                                <Upload className="w-3 h-3 text-indigo-600" />
+                                <span>Photo</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      handleImageFileUpload(file, (dataUrl) => {
+                                        handleUpdateRoomImage(r.roomId, dataUrl);
+                                      });
+                                    }
+                                  }}
+                                />
+                              </label>
+
                               <button
                                 onClick={() => {
                                   const p = window.prompt(
@@ -1646,7 +1753,7 @@ export default function AdminDashboardPage() {
                                     handleUpdateRoomPrice(r.roomId, Number(p), r.monthlyPrice);
                                   }
                                 }}
-                                className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center gap-1"
+                                className="px-2 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center gap-1"
                               >
                                 <Edit3 className="w-3 h-3" />
                                 <span>Rate</span>
@@ -1738,6 +1845,53 @@ export default function AdminDashboardPage() {
                         onChange={(e) => setNewRoomInventory(Number(e.target.value))}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold"
                       />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block font-bold text-slate-700">Room Photo</label>
+                        <label className="cursor-pointer text-[11px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/60 px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-colors">
+                          <Upload className="w-3 h-3" />
+                          <span>Choose File</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleImageFileUpload(file, (dataUrl) => {
+                                  setNewRoomImage(dataUrl);
+                                  showToast('Room photo selected from device!');
+                                });
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {newRoomImage && (
+                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-slate-100 relative">
+                            <img src={newRoomImage} alt="Room Preview" className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          placeholder="Paste image URL or click 'Choose File' above (optional)"
+                          value={newRoomImage.startsWith('data:image') ? 'Uploaded image from device' : newRoomImage}
+                          onChange={(e) => setNewRoomImage(e.target.value)}
+                          className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                        />
+                        {newRoomImage && (
+                          <button
+                            type="button"
+                            onClick={() => setNewRoomImage('')}
+                            className="text-[11px] text-slate-400 hover:text-red-500 font-semibold px-1.5 py-1"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <button
@@ -2559,13 +2713,50 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Cover Photo URL</label>
-                  <input
-                    type="url"
-                    value={coverImage}
-                    onChange={(e) => setCoverImage(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-slate-700 font-bold">Cover Photo</label>
+                    <label className="cursor-pointer text-[11px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/60 px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-colors">
+                      <Upload className="w-3 h-3" />
+                      <span>Choose File</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleImageFileUpload(file, (dataUrl) => {
+                              setCoverImage(dataUrl);
+                              showToast('Cover photo selected from device!');
+                            });
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {coverImage && (
+                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-slate-100 relative">
+                        <img src={coverImage} alt="Cover Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Paste image URL or click 'Choose File' above"
+                      value={coverImage.startsWith('data:image') ? 'Uploaded image from device' : coverImage}
+                      onChange={(e) => setCoverImage(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                    />
+                    {coverImage && (
+                      <button
+                        type="button"
+                        onClick={() => setCoverImage('')}
+                        className="text-[11px] text-slate-400 hover:text-red-500 font-semibold px-1.5 py-1"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -2706,13 +2897,50 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Cover Image URL</label>
-                <input
-                  type="url"
-                  value={editCover}
-                  onChange={(e) => setEditCover(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-slate-600"
-                />
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-slate-700">Cover Photo</label>
+                  <label className="cursor-pointer text-[11px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/60 px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-colors">
+                    <Upload className="w-3 h-3" />
+                    <span>Choose File</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleImageFileUpload(file, (dataUrl) => {
+                            setEditCover(dataUrl);
+                            showToast('Cover photo selected from device!');
+                          });
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  {editCover && (
+                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-slate-100 relative">
+                      <img src={editCover} alt="Cover Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Paste image URL or click 'Choose File' above"
+                    value={editCover.startsWith('data:image') ? 'Uploaded image from device' : editCover}
+                    onChange={(e) => setEditCover(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-600"
+                  />
+                  {editCover && (
+                    <button
+                      type="button"
+                      onClick={() => setEditCover('')}
+                      className="text-[11px] text-slate-400 hover:text-red-500 font-semibold px-1.5 py-1"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div>
